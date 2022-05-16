@@ -37,6 +37,9 @@
     <ClCompile Include="Framework\Scene.c">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Framework\Audio.c">
+      <Filter>Framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -67,5 +70,8 @@
     </ClInclude>
     <ClInclude Include="Config.h" />
     <ClInclude Include="Framework.h" />
+    <ClInclude Include="Framework\Audio.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,19 +1,15 @@
 #include "stdafx.h"
 #include "App.h"
 
-#include "Framework/Window.h"
-#include "Framework/Renderer.h"
-#include "Framework/Image.h"
-#include "Framework/Input.h"
-#include "Framework/Timer.h"
-#include "Framework/Random.h"
+#include "Framework.h"
 #include "Framework/Scene.h"
+#include "Framework/Window.h"
 
 App g_App;
 
 bool App_Init(void)
 {
-	if (0 != SDL_Init(SDL_INIT_VIDEO))
+	if (0 != SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
 	{
 		LogWithErrorCode("Fail to initialize SDL", SDL_GetError());
 
@@ -39,15 +35,25 @@ bool App_Init(void)
 	if (false == Image_Init())
 	{
 		LogWithErrorCode("Fail to initalize image library", IMG_GetError());
+
+		return false;
 	}
 
 	Random_Init();
+
+	if (false == Audio_Init())
+	{
+		LogWithErrorCode("Fail to intialize audio library", Mix_GetError());
+
+		return false;
+	}
 
 	return true;
 }
 
 void cleanup(void)
 {
+	Audio_Cleanup();
 	Image_Cleanup();
 	Renderer_Cleanup();
 	Window_Cleanup();

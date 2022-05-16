@@ -3,6 +3,8 @@
 #pragma comment(lib, "SDL2/SDL2.lib")
 #pragma comment(lib, "SDL2/SDL2main.lib")
 #pragma comment(lib, "SDL2/SDL2_image.lib")
+#pragma comment(lib, "SDL2/SDL2_mixer.lib")
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,6 +20,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "Type.h"
 #include "Macro.h"
