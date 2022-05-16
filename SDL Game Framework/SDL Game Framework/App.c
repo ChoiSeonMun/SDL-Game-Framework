@@ -88,7 +88,7 @@ int32 App_Run(void)
 {
 	atexit(cleanup);
 
-	Timer_Init(60);
+	Timer_Init(FPS);
 
 	Scene_SetNextScene(SCENE_TITLE);
 

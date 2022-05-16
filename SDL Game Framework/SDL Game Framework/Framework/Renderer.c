@@ -17,7 +17,8 @@ void Renderer_Cleanup(void)
 void Renderer_Flip(void)
 {
 	SDL_RenderPresent(g_App.Renderer);
-	SDL_SetRenderDrawColor(g_App.Renderer, 255, 255, 255, 255);
+	SDL_SetRenderDrawColor(g_App.Renderer,
+		CLEAR_COLOR_R, CLEAR_COLOR_G, CLEAR_COLOR_B, CLEAR_COLOR_A);
 	SDL_RenderClear(g_App.Renderer);
 }
 
