@@ -3,7 +3,7 @@
 typedef struct Text
 {
 	struct TTF_Font*	Font;
-	const wchar_t*		String;
+	wchar_t*			String;
 	int32				Length;
 } Text;
 
@@ -52,7 +52,7 @@ void Text_FreeText(Text* text);
 void Text_SetFont(Text* text, const char* fontFile, int32 fontSize);
 
 /// <summary>
-/// 폰트 스타일을 변경한다.
+/// 폰트 스타일을 변경한다. | 연산자로 여러 스타일을 한 번에 지정할 수 있다.
 /// </summary>
 /// <param name="text">텍스트 객체</param>
 /// <param name="style">폰트 스타일</param>
