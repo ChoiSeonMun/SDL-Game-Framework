@@ -5,6 +5,7 @@
 #include "Framework/Renderer.h"
 #include "Framework/Image.h"
 #include "Framework/Input.h"
+#include "Framework/Timer.h"
 
 App g_App;
 
@@ -90,6 +91,8 @@ int32 App_Run(void)
 {
 	atexit(cleanup);
 
+	Timer_Init(60);
+
 	Image_LoadImage(&image, "Background.jfif");
 
 	SDL_Event event;
@@ -104,10 +107,13 @@ int32 App_Run(void)
 		}
 		else
 		{
-			Renderer_Prepare();
-			processInput();
-			update();
-			render();
+			if (Timer_Update())
+			{
+				Renderer_Prepare();
+				processInput();
+				update();
+				render();
+			}
 		}
 	}
 

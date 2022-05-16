@@ -155,6 +155,7 @@
     <ClCompile Include="Framework\Image.c" />
     <ClCompile Include="Framework\Input.c" />
     <ClCompile Include="Framework\Renderer.c" />
+    <ClCompile Include="Framework\Timer.c" />
     <ClCompile Include="Framework\Window.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="stdafx.c">
@@ -168,6 +169,7 @@
     <ClInclude Include="Framework\Image.h" />
     <ClInclude Include="Framework\Input.h" />
     <ClInclude Include="Framework\Renderer.h" />
+    <ClInclude Include="Framework\Timer.h" />
     <ClInclude Include="Framework\Window.h" />
     <ClInclude Include="Macro.h" />
     <ClInclude Include="stdafx.h" />
