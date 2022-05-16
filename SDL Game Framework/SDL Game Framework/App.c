@@ -7,6 +7,7 @@
 #include "Framework/Input.h"
 #include "Framework/Timer.h"
 #include "Framework/Random.h"
+#include "Framework/Scene.h"
 
 App g_App;
 
@@ -58,35 +59,14 @@ void processInput(void)
 	Input_Update();
 }
 
-int x = 100;
-int y = 100;
 void update(void)
 {
-	if (Input_GetKeyDown(VK_DOWN))
-	{
-		y += 4;
-	}
-	
-	if (Input_GetKeyDown(VK_UP))
-	{
-		y -= 4;
-	}
-
-	if (Input_GetKeyDown(VK_LEFT))
-	{
-		x -= 4;
-	}
-
-	if (Input_GetKeyDown(VK_RIGHT))
-	{
-		x += 4;
-	}
+	g_Scene.Update();
 }
 
-Image image;
 void render(void)
 {
-	Renderer_DrawImage(&image, x, y);
+	g_Scene.Render();
 	Renderer_Flip();
 }
 
@@ -96,7 +76,7 @@ int32 App_Run(void)
 
 	Timer_Init(60);
 
-	Image_LoadImage(&image, "Background.jfif");
+	Scene_SetNextScene(SCENE_TITLE);
 
 	SDL_Event event;
 	while (true)
@@ -110,6 +90,11 @@ int32 App_Run(void)
 		}
 		else
 		{
+			if (Scene_IsSetNextScene())
+			{
+				Scene_Change();
+			}
+
 			if (Timer_Update())
 			{
 				Renderer_Prepare();
