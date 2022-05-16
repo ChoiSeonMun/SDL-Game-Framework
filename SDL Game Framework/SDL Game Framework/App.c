@@ -1,21 +1,20 @@
 #include "stdafx.h"
 #include "App.h"
 
-App g_App;
+#include "Framework/Window.h"
 
 bool App_Init(void)
 {
 	if (0 != SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
 	{
-		SDL_LOG_WITH_ERRORCODE("Fail to initialize");
+		SDL_LOG_WITH_ERRORCODE("Fail to initialize SDL");
 
 		return false;
 	}
 
-	int32 windowFlags = 0;
-	if (0 != SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, windowFlags, &g_App.Window, &g_App.Renderer))
+	if (false == Window_Init())
 	{
-		SDL_LOG_WITH_ERRORCODE("Fail to create window");
+		SDL_LOG_WITH_ERRORCODE("Fail to intialize window");
 
 		return false;
 	}
@@ -25,12 +24,28 @@ bool App_Init(void)
 
 void cleanup(void)
 {
+	Window_Cleanup();
 	SDL_Quit();
+}
+
+void processInput(void)
+{
+
+}
+
+void update(void)
+{
+
+}
+
+void render(void)
+{
 }
 
 int32 App_Run(void)
 {
 	atexit(cleanup);
+
 
 	return 0;
 }

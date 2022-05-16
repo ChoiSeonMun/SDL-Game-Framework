@@ -15,17 +15,25 @@
   <ItemGroup>
     <ClCompile Include="Main.c" />
     <ClCompile Include="stdafx.c" />
-    <ClCompile Include="App.c">
+    <ClCompile Include="Framework\Renderer.c">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Framework\Window.c">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="App.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Type.h" />
     <ClInclude Include="Macro.h" />
     <ClInclude Include="Common.h" />
-    <ClInclude Include="App.h">
+    <ClInclude Include="Framework\Renderer.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="Framework\Window.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="App.h" />
   </ItemGroup>
 </Project>

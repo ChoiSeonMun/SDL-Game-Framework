@@ -78,12 +78,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)External\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)External\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)External\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)External\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(SolutionDir)External\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)External\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -152,6 +152,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.c" />
+    <ClCompile Include="Framework\Renderer.c" />
+    <ClCompile Include="Framework\Window.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="stdafx.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -161,6 +163,8 @@
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="Framework\Renderer.h" />
+    <ClInclude Include="Framework\Window.h" />
     <ClInclude Include="Macro.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Type.h" />
