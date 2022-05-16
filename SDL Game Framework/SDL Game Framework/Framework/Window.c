@@ -24,3 +24,8 @@ void Window_Cleanup(void)
 {
 	SDL_DestroyWindow(s_Window);
 }
+
+SDL_Window* Window_GetWindow(void)
+{
+	return s_Window;
+}
