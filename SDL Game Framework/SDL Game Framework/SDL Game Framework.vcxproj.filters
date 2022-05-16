@@ -25,6 +25,9 @@
     <ClCompile Include="Framework\Image.c">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Framework\Input.c">
+      <Filter>Framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -39,6 +42,9 @@
     </ClInclude>
     <ClInclude Include="App.h" />
     <ClInclude Include="Framework\Image.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Input.h">
       <Filter>Framework</Filter>
     </ClInclude>
   </ItemGroup>

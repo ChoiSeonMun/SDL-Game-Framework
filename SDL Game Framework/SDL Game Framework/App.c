@@ -4,6 +4,7 @@
 #include "Framework/Window.h"
 #include "Framework/Renderer.h"
 #include "Framework/Image.h"
+#include "Framework/Input.h"
 
 App g_App;
 
@@ -50,23 +51,39 @@ void cleanup(void)
 
 void processInput(void)
 {
+	Input_Update();
 }
 
+int x = 100;
+int y = 100;
 void update(void)
 {
+	if (Input_GetKeyDown(VK_DOWN))
+	{
+		y += 4;
+	}
+	
+	if (Input_GetKeyDown(VK_UP))
+	{
+		y -= 4;
+	}
 
+	if (Input_GetKeyDown(VK_LEFT))
+	{
+		x -= 4;
+	}
+
+	if (Input_GetKeyDown(VK_RIGHT))
+	{
+		x += 4;
+	}
 }
 
 Image image;
 void render(void)
 {
-	Renderer_DrawImage(&image, 100, 100);
+	Renderer_DrawImage(&image, x, y);
 	Renderer_Flip();
-}
-
-void processEvent(SDL_Event event)
-{
-	
 }
 
 int32 App_Run(void)
@@ -84,8 +101,6 @@ int32 App_Run(void)
 			{
 				break;
 			}
-
-			processEvent(event);
 		}
 		else
 		{
