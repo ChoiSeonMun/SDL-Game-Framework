@@ -154,6 +154,7 @@
     <ClCompile Include="App.c" />
     <ClCompile Include="Framework\Image.c" />
     <ClCompile Include="Framework\Input.c" />
+    <ClCompile Include="Framework\Random.c" />
     <ClCompile Include="Framework\Renderer.c" />
     <ClCompile Include="Framework\Timer.c" />
     <ClCompile Include="Framework\Window.c" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="Framework\Image.h" />
     <ClInclude Include="Framework\Input.h" />
+    <ClInclude Include="Framework\Random.h" />
     <ClInclude Include="Framework\Renderer.h" />
     <ClInclude Include="Framework\Timer.h" />
     <ClInclude Include="Framework\Window.h" />

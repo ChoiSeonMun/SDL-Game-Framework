@@ -31,6 +31,9 @@
     <ClCompile Include="Framework\Timer.c">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Framework\Random.c">
+      <Filter>Framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -51,6 +54,9 @@
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Framework\Timer.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Random.h">
       <Filter>Framework</Filter>
     </ClInclude>
   </ItemGroup>

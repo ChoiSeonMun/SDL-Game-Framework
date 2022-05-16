@@ -6,6 +6,7 @@
 #include "Framework/Image.h"
 #include "Framework/Input.h"
 #include "Framework/Timer.h"
+#include "Framework/Random.h"
 
 App g_App;
 
@@ -38,6 +39,8 @@ bool App_Init(void)
 	{
 		LogWithErrorCode("Fail to initalize image library", IMG_GetError());
 	}
+
+	Random_Init();
 
 	return true;
 }
