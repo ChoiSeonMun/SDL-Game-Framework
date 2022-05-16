@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.c" />
+    <ClCompile Include="Framework\Image.c" />
     <ClCompile Include="Framework\Renderer.c" />
     <ClCompile Include="Framework\Window.c" />
     <ClCompile Include="Main.c" />
@@ -163,6 +164,7 @@
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="Framework\Image.h" />
     <ClInclude Include="Framework\Renderer.h" />
     <ClInclude Include="Framework\Window.h" />
     <ClInclude Include="Macro.h" />

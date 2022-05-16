@@ -1,34 +1,34 @@
 #include "stdafx.h"
+#include "App.h"
+#include "Image.h"
 
-static SDL_Renderer* s_Renderer;
-
-bool Renderer_Init(SDL_Window* window)
+void Renderer_Init(void)
 {
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-	s_Renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
-	if (NULL == s_Renderer)
-	{
-		return false;
-	}
-
-	return true;
+	g_App.Renderer = SDL_CreateRenderer(g_App.Window, -1, SDL_RENDERER_ACCELERATED);
 }
 
 void Renderer_Cleanup(void)
 {
-	SDL_DestroyRenderer(s_Renderer);
+	SDL_DestroyRenderer(g_App.Renderer);
 }
 
 void Renderer_Prepare(void)
 {
-	SDL_SetRenderDrawColor(s_Renderer, 255, 255, 255, 255);
-	SDL_RenderClear(s_Renderer);
+	SDL_SetRenderDrawColor(g_App.Renderer, 255, 255, 255, 255);
+	SDL_RenderClear(g_App.Renderer);
 }
 
 void Renderer_Flip(void)
 {
-	SDL_RenderPresent(s_Renderer);
+	SDL_RenderPresent(g_App.Renderer);
 	//SDL_SetRenderDrawColor(s_Renderer, 255, 255, 255, 255);
 	//SDL_RenderClear(s_Renderer);
+}
+
+void Renderer_DrawImage(const Image* image, int x, int y)
+{
+	SDL_Rect rect = { .x = x, .y = y, .w = image->Width, .h = image->Height };
+	
+	SDL_RenderCopy(g_App.Renderer, image->Texture, NULL, &rect);
 }
