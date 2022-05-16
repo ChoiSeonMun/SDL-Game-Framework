@@ -63,3 +63,9 @@ void Renderer_DrawTextBlended(const Text* text, int x, int y, SDL_Color foregrou
 
 	SDL_FreeSurface(surface);
 }
+
+void Renderer_DrawRect(int32 x, int32 y, int32 w, int32 h)
+{
+	SDL_Rect rect = { .x = x, .y = y, .w = w, .h = h };
+	SDL_RenderDrawRect(g_App.Renderer, &rect);
+}

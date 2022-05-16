@@ -9,22 +9,19 @@ static ESceneType s_nextScene = SCENE_NULL;
 
 #pragma region TitleScene
 
-Image image;
+Image image, image2;
 int x, y;
 float speed;
-Text text;
-int32 fontSize = 16;
+uint8 alpha = 255;
 
 void init_title(void)
 {
 	Image_LoadImage(&image, "Background.jfif");
-	x = 100;
-	y = 100;
 	speed = 400.0f;
 	image.ScaleX = 1.5f;
 	image.ScaleY = 1.6f;
 
-	Text_CreateText(&text, "d2coding.ttf", fontSize, L"안녕하세요, 폰트입니다.", 14);
+	Image_LoadImage(&image2, "Background2.jfif");
 }
 
 int32 renderMode;
@@ -50,70 +47,23 @@ void update_title(void)
 		x += speed * Timer_GetDeltaTime();
 	}
 
-	if (Input_GetKeyDown('C'))
+	if (Input_GetKey('1'))
 	{
-		renderMode = (renderMode + 1) % 3;
+		alpha = Clamp(0, alpha - 1, 255);
+		Image_SetAlphaValue(&image, alpha);
 	}
 
-	if (Input_GetKeyDown('1'))
+	if (Input_GetKey('2'))
 	{
-		--fontSize;
-		Text_SetFont(&text, "d2coding.ttf", fontSize);
-	}
-
-	if (Input_GetKeyDown('2'))
-	{
-		++fontSize;
-		Text_SetFont(&text, "d2coding.ttf", fontSize);
-	}
-
-	if (Input_GetKey('B'))
-	{
-		Text_SetFontStyle(&text, FS_BOLD);
-	}
-
-	if (Input_GetKeyDown('I'))
-	{
-		Text_SetFontStyle(&text, FS_ITALIC);
-	}
-
-	if (Input_GetKeyDown('U'))
-	{
-		Text_SetFontStyle(&text, FS_UNDERLINE);
-	}
-
-	if (Input_GetKeyDown('S'))
-	{
-		Text_SetFontStyle(&text, FS_STRIKETHROUGH);
+		alpha = Clamp(0, alpha + 1, 255);
+		Image_SetAlphaValue(&image, alpha);
 	}
 }
 
 void render_title(void)
 {
-	switch (renderMode)
-	{
-	case 0:
-	{
-		SDL_Color color = { 0 };
-		color.a = 255;
-		Renderer_DrawTextSolid(&text, 100, 100, color);
-	}
-	break;
-	case 1:
-	{
-		SDL_Color bg = { .a = 255 };
-		SDL_Color fg = { .r = 255, .g = 255, .a = 255 };
-		Renderer_DrawTextShaded(&text, 100, 100, fg, bg);
-	}
-	break;
-	case 2:
-	{
-		Renderer_DrawImage(&image, 100, 100);
-		SDL_Color fg = { .r = 255, .g = 255, .b = 255, .a = 255 };
-		Renderer_DrawTextBlended(&text, 100, 100, fg);
-	}
-	break;
-	}
+	Renderer_DrawImage(&image2, 100, 100);
+	Renderer_DrawImage(&image, x, y);
 }
 
 void release_title(void)

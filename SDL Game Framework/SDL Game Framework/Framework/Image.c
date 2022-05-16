@@ -29,4 +29,11 @@ void Image_LoadImage(Image* image, const char* filename)
 	image->Texture = IMG_LoadTexture(g_App.Renderer, path);
 	SDL_QueryTexture(image->Texture, NULL, NULL, &image->Width, &image->Height);
 	image->ScaleX = image->ScaleY = 1.0f;
+
+	SDL_SetTextureBlendMode(image->Texture, SDL_BLENDMODE_BLEND);
+}
+
+void Image_SetAlphaValue(Image* image, uint8 alpha)
+{
+	SDL_SetTextureAlphaMod(image->Texture, alpha);
 }
