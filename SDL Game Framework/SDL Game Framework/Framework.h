@@ -6,3 +6,4 @@
 #include "Framework/Renderer.h"
 #include "Framework/Timer.h"
 #include "Framework/Audio.h"
+#include "Framework/Text.h"

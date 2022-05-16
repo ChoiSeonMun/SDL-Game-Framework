@@ -12,14 +12,8 @@ static ESceneType s_nextScene = SCENE_NULL;
 Image image;
 int x, y;
 float speed;
-Music music;
-SoundEffect effect;
-float volume = 0.5f;
-
-void LogTemp(int32 channel)
-{
-	LogInfo("Sound Effect End!");
-}
+Text text;
+int32 fontSize = 16;
 
 void init_title(void)
 {
@@ -30,14 +24,10 @@ void init_title(void)
 	image.ScaleX = 1.5f;
 	image.ScaleY = 1.6f;
 
-	Audio_LoadMusic(&music, "powerful.mp3");
-	Audio_LoadSoundEffect(&effect, "effect2.wav");
-	//Audio_Play(&effect, INFINITY_LOOP);
-	Audio_PlayFadeIn(&music, INFINITY_LOOP, 10000);
-	Audio_HookSoundEffectFinished(LogTemp);
+	Text_CreateText(&text, "d2coding.ttf", fontSize, L"안녕하세요, 폰트입니다.", 14);
 }
 
-int num;
+int32 renderMode;
 void update_title(void)
 {
 	if (Input_GetKey(VK_DOWN))
@@ -60,61 +50,75 @@ void update_title(void)
 		x += speed * Timer_GetDeltaTime();
 	}
 
-	if (Input_GetKey('1'))
+	if (Input_GetKeyDown('C'))
 	{
-		volume -= 0.01f;
-		Audio_SetVolume(volume);
-		LogInfo("Current Volume : %f", Audio_GetVolume());
+		renderMode = (renderMode + 1) % 3;
 	}
 
-	if (Input_GetKey('2'))
+	if (Input_GetKeyDown('1'))
 	{
-		volume += 0.01f;
-		Audio_SetVolume(volume);
-		LogInfo("Current Volume : %f", Audio_GetVolume());
+		--fontSize;
+		Text_SetFont(&text, "d2coding.ttf", fontSize);
 	}
 
-	if (Input_GetKeyDown('P'))
+	if (Input_GetKeyDown('2'))
 	{
-		Audio_PauseSoundEffect();
+		++fontSize;
+		Text_SetFont(&text, "d2coding.ttf", fontSize);
 	}
 
-	if (Input_GetKeyDown('R'))
+	if (Input_GetKey('B'))
 	{
-		Audio_ResumeSoundEffect();
+		Text_SetFontStyle(&text, FS_BOLD);
 	}
 
-	if (Input_GetKeyDown('E'))
+	if (Input_GetKeyDown('I'))
 	{
-		Audio_PlaySoundEffect(&effect, 1);
+		Text_SetFontStyle(&text, FS_ITALIC);
 	}
 
-	if (Input_GetKeyDown('Z'))
+	if (Input_GetKeyDown('U'))
 	{
-		Audio_Rewind();
+		Text_SetFontStyle(&text, FS_UNDERLINE);
 	}
 
-	if (Input_GetKeyDown('M'))
+	if (Input_GetKeyDown('S'))
 	{
-		Audio_StopSoundEffect();
+		Text_SetFontStyle(&text, FS_STRIKETHROUGH);
 	}
-
-	if (Input_GetKeyDown('W'))
-	{
-		Audio_FadeOut(3000);
-	}
-	//LogInfo("Is paused : %s", (Audio_IsSoundEffectPaused() ? "true" : "false"));
 }
 
 void render_title(void)
 {
-	Renderer_DrawImage(&image, x, y);
+	switch (renderMode)
+	{
+	case 0:
+	{
+		SDL_Color color = { 0 };
+		color.a = 255;
+		Renderer_DrawTextSolid(&text, 100, 100, color);
+	}
+	break;
+	case 1:
+	{
+		SDL_Color bg = { .a = 255 };
+		SDL_Color fg = { .r = 255, .g = 255, .a = 255 };
+		Renderer_DrawTextShaded(&text, 100, 100, fg, bg);
+	}
+	break;
+	case 2:
+	{
+		Renderer_DrawImage(&image, 100, 100);
+		SDL_Color fg = { .r = 255, .g = 255, .b = 255, .a = 255 };
+		Renderer_DrawTextBlended(&text, 100, 100, fg);
+	}
+	break;
+	}
 }
 
 void release_title(void)
 {
-	Audio_FreeSoundEffect(&effect);
-	Audio_FreeMusic(&music);
+
 }
 #pragma endregion
 

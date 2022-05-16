@@ -40,6 +40,9 @@
     <ClCompile Include="Framework\Audio.c">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Framework\Text.c">
+      <Filter>Framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -71,6 +74,9 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="Framework\Audio.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\Text.h">
       <Filter>Framework</Filter>
     </ClInclude>
   </ItemGroup>

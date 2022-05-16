@@ -158,6 +158,7 @@
     <ClCompile Include="Framework\Random.c" />
     <ClCompile Include="Framework\Renderer.c" />
     <ClCompile Include="Framework\Scene.c" />
+    <ClCompile Include="Framework\Text.c" />
     <ClCompile Include="Framework\Timer.c" />
     <ClCompile Include="Framework\Window.c" />
     <ClCompile Include="Main.c" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Framework\Random.h" />
     <ClInclude Include="Framework\Renderer.h" />
     <ClInclude Include="Framework\Scene.h" />
+    <ClInclude Include="Framework\Text.h" />
     <ClInclude Include="Framework\Timer.h" />
     <ClInclude Include="Framework\Window.h" />
     <ClInclude Include="Macro.h" />

@@ -48,11 +48,19 @@ bool App_Init(void)
 		return false;
 	}
 
+	if (false == Text_Init())
+	{
+		LogWithErrorCode("Fail to initialize font library", TTF_GetError());
+
+		return false;
+	}
+
 	return true;
 }
 
 void cleanup(void)
 {
+	Text_Cleanup();
 	Audio_Cleanup();
 	Image_Cleanup();
 	Renderer_Cleanup();
