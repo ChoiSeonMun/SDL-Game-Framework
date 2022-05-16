@@ -2,8 +2,8 @@
 #include "App.h"
 
 static const char* s_Title = "Hello SDL";
-static int32 s_Width = 1280;
-static int32 s_Height = 720;
+static int32 s_Width = WINDOW_WIDTH;
+static int32 s_Height = WINDOW_HEIGHT;
 static uint32 s_flags = 0;
 
 void Window_Init(void)

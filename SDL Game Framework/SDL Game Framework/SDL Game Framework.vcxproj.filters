@@ -65,5 +65,7 @@
     <ClInclude Include="Framework\Scene.h">
       <Filter>Framework</Filter>
     </ClInclude>
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="Framework.h" />
   </ItemGroup>
 </Project>

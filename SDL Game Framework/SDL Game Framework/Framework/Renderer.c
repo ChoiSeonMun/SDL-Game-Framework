@@ -28,7 +28,9 @@ void Renderer_Flip(void)
 
 void Renderer_DrawImage(const Image* image, int x, int y)
 {
-	SDL_Rect rect = { .x = x, .y = y, .w = image->Width, .h = image->Height };
+	SDL_Rect rect = { .x = x, .y = y,
+		.w = image->Width * image->ScaleX,
+		.h = image->Height * image->ScaleY };
 	
 	SDL_RenderCopy(g_App.Renderer, image->Texture, NULL, &rect);
 }

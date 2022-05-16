@@ -25,7 +25,8 @@ void Image_LoadImage(Image* image, const char* filename)
 	
 	static char path[MAX_PATH];
 
-	sprintf_s(path, sizeof(path), "Asset/Image/%s", filename);
+	sprintf_s(path, sizeof(path), "%s/%s", IMAGE_DIRECTORY, filename);
 	image->Texture = IMG_LoadTexture(g_App.Renderer, path);
 	SDL_QueryTexture(image->Texture, NULL, NULL, &image->Width, &image->Height);
+	image->ScaleX = image->ScaleY = 1.0f;
 }

@@ -21,6 +21,8 @@ void init_title(void)
 	x = 100;
 	y = 100;
 	speed = 100.0f;
+	image.ScaleX = 1.5f;
+	image.ScaleY = 1.6f;
 }
 
 void update_title(void)
