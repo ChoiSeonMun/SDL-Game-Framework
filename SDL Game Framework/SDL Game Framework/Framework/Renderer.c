@@ -14,17 +14,11 @@ void Renderer_Cleanup(void)
 	SDL_DestroyRenderer(g_App.Renderer);
 }
 
-void Renderer_Prepare(void)
-{
-	SDL_SetRenderDrawColor(g_App.Renderer, 255, 255, 255, 255);
-	SDL_RenderClear(g_App.Renderer);
-}
-
 void Renderer_Flip(void)
 {
 	SDL_RenderPresent(g_App.Renderer);
-	//SDL_SetRenderDrawColor(s_Renderer, 255, 255, 255, 255);
-	//SDL_RenderClear(s_Renderer);
+	SDL_SetRenderDrawColor(g_App.Renderer, 255, 255, 255, 255);
+	SDL_RenderClear(g_App.Renderer);
 }
 
 void Renderer_DrawImage(const Image* image, int x, int y)
