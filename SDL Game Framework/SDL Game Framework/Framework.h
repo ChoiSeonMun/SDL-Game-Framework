@@ -1,3 +1,4 @@
+// Framework.h : 프레임워크 헤더. 컨텐츠 구현 시 사용한다.
 #pragma once
 
 #include "Framework/Image.h"

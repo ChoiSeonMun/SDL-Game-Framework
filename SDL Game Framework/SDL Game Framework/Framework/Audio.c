@@ -4,6 +4,7 @@
 #define ALL_CHANNEL -1
 
 static float s_MusicVolume = 0.0f;
+static char s_path[MAX_PATH];
 
 bool Audio_Init(void)
 {
@@ -118,10 +119,8 @@ void Audio_LoadMusic(Music* music, const char* filename)
 {
 	LogInfo("Sound Loading... %s", filename);
 
-	static char path[MAX_PATH];
-
-	sprintf_s(path, sizeof(path), "%s/%s", SOUND_DIRECTORY, filename);
-	music->Music = Mix_LoadMUS(path);
+	sprintf_s(s_path, sizeof(s_path), "%s/%s", SOUND_DIRECTORY, filename);
+	music->Music = Mix_LoadMUS(s_path);
 }
 
 void Audio_FreeMusic(Music* music)
@@ -134,10 +133,8 @@ void Audio_LoadSoundEffect(SoundEffect* soundEffect, const char* filename)
 {
 	LogInfo("Sound Effect Loading... %s", filename);
 
-	static char path[MAX_PATH];
-
-	sprintf_s(path, sizeof(path), "%s/%s", SOUND_DIRECTORY, filename);
-	soundEffect->Chunk = Mix_LoadWAV(path);
+	sprintf_s(s_path, sizeof(s_path), "%s/%s", SOUND_DIRECTORY, filename);
+	soundEffect->Chunk = Mix_LoadWAV(s_path);
 	Audio_SetEffectVolume(soundEffect, 1.0f);
 }
 

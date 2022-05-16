@@ -16,16 +16,14 @@ bool App_Init(void)
 		return false;
 	}
 
-	Window_Init();
-	if (NULL == g_App.Window)
+	if (NULL == Window_Init())
 	{
 		LogWithErrorCode("Fail to intialize window", SDL_GetError());
 
 		return false;
 	}
 
-	Renderer_Init();
-	if (NULL == g_App.Renderer)
+	if (NULL == Renderer_Init())
 	{
 		LogWithErrorCode("Fail to initialize renderer", SDL_GetError());
 

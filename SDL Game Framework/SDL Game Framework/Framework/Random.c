@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "Common.h"
 #include "Random.h"
 
 void Random_Init(void)

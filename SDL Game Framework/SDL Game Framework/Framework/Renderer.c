@@ -3,10 +3,17 @@
 #include "Image.h"
 #include "Text.h"
 
-void Renderer_Init(void)
+bool Renderer_Init(void)
 {
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 	g_App.Renderer = SDL_CreateRenderer(g_App.Window, -1, SDL_RENDERER_ACCELERATED);
+
+	if (NULL == g_App.Renderer)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void Renderer_Cleanup(void)
@@ -22,7 +29,7 @@ void Renderer_Flip(void)
 	SDL_RenderClear(g_App.Renderer);
 }
 
-void Renderer_DrawImage(const Image* image, int x, int y)
+void Renderer_DrawImage(const Image* image, int32 x, int32 y)
 {
 	SDL_Rect rect = { .x = x, .y = y,
 		.w = image->Width * image->ScaleX,
@@ -31,7 +38,7 @@ void Renderer_DrawImage(const Image* image, int x, int y)
 	SDL_RenderCopy(g_App.Renderer, image->Texture, NULL, &rect);
 }
 
-void Renderer_DrawTextSolid(const Text* text, int x, int y, SDL_Color color)
+void Renderer_DrawTextSolid(const Text* text, int32 x, int32 y, SDL_Color color)
 {
 	SDL_Surface* surface = TTF_RenderUNICODE_Solid(text->Font, text->String, color);
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(g_App.Renderer, surface);
@@ -42,7 +49,7 @@ void Renderer_DrawTextSolid(const Text* text, int x, int y, SDL_Color color)
 	SDL_FreeSurface(surface);
 }
 
-void Renderer_DrawTextShaded(const Text* text, int x, int y, SDL_Color foreground, SDL_Color background)
+void Renderer_DrawTextShaded(const Text* text, int32 x, int32 y, SDL_Color foreground, SDL_Color background)
 {
 	SDL_Surface* surface = TTF_RenderUNICODE_Shaded(text->Font, text->String, foreground, background);
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(g_App.Renderer, surface);

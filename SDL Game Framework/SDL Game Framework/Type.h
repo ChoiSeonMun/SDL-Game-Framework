@@ -1,3 +1,4 @@
+// Type.h : 공통 타입 헤더 파일
 #pragma once
 
 #include <stdbool.h>

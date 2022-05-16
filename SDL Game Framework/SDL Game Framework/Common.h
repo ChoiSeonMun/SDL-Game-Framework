@@ -1,3 +1,4 @@
+// Common.h : 라이브러리 헤더
 #pragma once
 
 #pragma comment(lib, "SDL2/SDL2.lib")
