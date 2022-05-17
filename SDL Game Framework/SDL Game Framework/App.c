@@ -88,7 +88,7 @@ int32 App_Run(void)
 
 	Timer_Init(FPS);
 
-	Scene_SetNextScene(SCENE_TITLE);
+	Scene_SetNextScene(SCENE_TEMP);
 
 	SDL_Event event;
 	while (true)
@@ -104,7 +104,7 @@ int32 App_Run(void)
 		{
 			if (Scene_IsSetNextScene())
 			{
-				Scene_Change();
+ 				Scene_Change();
 			}
 
 			if (Timer_Update())
