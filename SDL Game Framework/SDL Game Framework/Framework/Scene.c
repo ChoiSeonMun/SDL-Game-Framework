@@ -449,12 +449,15 @@ typedef struct tagMainScene {
 	bool        isEndScene;
 	int32		CurrentOptionNumber;
 	int32		CurrentTextNumber;
+	Image		BlackOutImage;
+	int32		BlackOutAlpha;
 } MainScene;
 
 bool isSceneChanging = false;
 bool showOptions = false;
 Text* ShowText;
 int32 s_CurrentScene = 0;
+SDL_Color color = { 0,0,0,0 };
 void init_temp(void)
 {
 	g_Scene.Data = malloc(sizeof(MainScene));
@@ -466,6 +469,9 @@ void init_temp(void)
 	data->isEndScene = false;
 	data->CurrentOptionNumber = 0;
 	data->CurrentTextNumber = 0;
+	data->BlackOutAlpha = 255;
+	Image_LoadImage(&data->BlackOutImage, "black.png");
+	Image_SetAlphaValue(&data->BlackOutImage, data->BlackOutAlpha);
 	Audio_PlayFadeIn(&data->Scene->BGM, INFINITY_LOOP, 3000);
 
 	isSceneChanging = false;
@@ -479,11 +485,17 @@ void update_temp(void)
 
 	//보통 씬일 경우
 	if (!isSceneChanging) {
+		if (data->BlackOutAlpha > 0) {
+			data->BlackOutAlpha -= 5;
+		}
 
 		//텍스트 표시가 필요한 경우
 		if (data->CurrentTextNumber < data->Scene->DialogCount) {
 			int32 i = 0;
 			ShowText = data->Scene->DialogList[data->CurrentTextNumber];
+			if (color.a < 255) {
+				color.a += 5;
+			}
 		}
 		//옵션이 나와야하는 경우
 		else {
@@ -555,8 +567,6 @@ void update_temp(void)
 			//선택지 선택
 			if (Input_GetKeyDown(VK_RETURN)) {
 				isSceneChanging = true;
-				s_CurrentScene = data->Scene->NextSceneNumberList[data->CurrentOptionNumber];
-				Scene_SetNextScene(SCENE_TEMP);
 			}
 		}
 
@@ -565,9 +575,22 @@ void update_temp(void)
 			if (data->CurrentTextNumber < data->Scene->DialogCount) {
 				ShowText = &data->Scene->DialogList[data->CurrentTextNumber];
 				data->CurrentTextNumber++;
+				color.a = 0;
 			}
 		}
 	}
+
+	else {
+		if (data->BlackOutAlpha < 255) {
+			data->BlackOutAlpha += 5;
+		}
+		else {
+			isSceneChanging = false;
+			s_CurrentScene = data->Scene->NextSceneNumberList[data->CurrentOptionNumber];
+			Scene_SetNextScene(SCENE_TEMP);
+		}
+	}
+	Image_SetAlphaValue(&data->BlackOutImage, data->BlackOutAlpha);
 }
 
 void render_temp(void)
@@ -579,7 +602,6 @@ void render_temp(void)
 	//Renderer_DrawImage(&TextBGImage, 30, 30);
 	
 	//텍스트 출력
-	SDL_Color color = { 0,0,0,255 };
 	int32 i = 0;
 	while (ShowText[i].Length != 0) {
 		Renderer_DrawTextSolid(&ShowText[i], 400, 300 + i * 80, color);
@@ -599,6 +621,9 @@ void render_temp(void)
 			}
 		}
 	}
+
+	//페이드 인 페이드 아웃 효과를 위한 검은색 배경
+	Renderer_DrawImage(&data->BlackOutImage, 0, 0);
 }
 
 void release_temp(void)
