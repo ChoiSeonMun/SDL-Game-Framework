@@ -24,9 +24,6 @@ typedef struct tagScene {
 	Image        OptionImagesList[6];        //옵션 이미지 배열
 	int32        NextSceneNumberList[6];        //옵션 선택시 넘어가는 씬 넘버
 	int32        NextEndingSceneNumberList[6];//다음 씬이 엔딩씬일 경우
-
-	int32		CurrentOptionNumber;
-	int32		CurrentTextNumber;
 } SceneStruct;
 
 #define SCENE_COUNT	2
@@ -220,8 +217,8 @@ void setScenes(void) {
 	Scenes[0].Number = 0;
 	Scenes[0].Name = L"1-1";
 	Image_LoadImage(&Scenes[0].BGImage, "bg.jpg");
-	Scenes[0].BGImage.ScaleY -= 0.07f;
-	Scenes[0].BGImage.ScaleX -= 0.07f;
+	Scenes[0].BGImage.ScaleY -= 0.065f;
+	Scenes[0].BGImage.ScaleX -= 0.065f;
 	Audio_LoadMusic(&Scenes[0].BGM, "powerful.mp3");
 	Image_LoadImage(&Scenes[0].AdditionImage, "NULL");
 	Scenes[0].AddImage_X = 0;
@@ -248,17 +245,14 @@ void setScenes(void) {
 	}
 
 	for (int i = 0; i < Scenes[0].OptionCount; i++) {
-		Scenes[0].NextSceneNumberList[i] = 0;
+		Scenes[0].NextSceneNumberList[i] = 1;
 	}
-
-	Scenes[0].CurrentOptionNumber = 0;
-	Scenes[0].CurrentTextNumber = 0;
 
 	Scenes[1].Number = 1;
 	Scenes[1].Name = L"1-2";
 	Image_LoadImage(&Scenes[1].BGImage, "bg.jpg");
-	Scenes[1].BGImage.ScaleY -= 0.07f;
-	Scenes[1].BGImage.ScaleX -= 0.07f;
+	Scenes[1].BGImage.ScaleY -= 0.065f;
+	Scenes[1].BGImage.ScaleX -= 0.065f;
 	Audio_LoadMusic(&Scenes[1].BGM, "powerful.mp3");
 	Image_LoadImage(&Scenes[1].AdditionImage, "NULL");
 	Scenes[1].AddImage_X = 0;
@@ -276,20 +270,17 @@ void setScenes(void) {
 	Text_CreateText(&Scenes[1].DialogList[2][1], "d2coding.ttf", 50, L"", wcslen(L""));
 	Scenes[1].DialogSpeed = 3.0f;
 
-	Scenes[1].OptionCount = 4;
-	for (int i = 0; i < Scenes[0].OptionCount;i++) {
-		Image_LoadImage(&Scenes[0].OptionImagesList[i], "option.png");
-		Scenes[0].OptionImagesList[i].ScaleY -= 0.45f;
-		Scenes[0].OptionImagesList[i].ScaleX -= 0.45f;
-		Image_SetAlphaValue(&Scenes[0].OptionImagesList[i], 125);
+	Scenes[1].OptionCount = 2;
+	for (int i = 0; i < Scenes[1].OptionCount;i++) {
+		Image_LoadImage(&Scenes[1].OptionImagesList[i], "option.png");
+		Scenes[1].OptionImagesList[i].ScaleY -= 0.45f;
+		Scenes[1].OptionImagesList[i].ScaleX -= 0.45f;
+		Image_SetAlphaValue(&Scenes[1].OptionImagesList[i], 125);
 	}
 
-	for (int i = 0; i < Scenes[0].OptionCount; i++) {
-		Scenes[0].NextSceneNumberList[i] = 0;
+	for (int i = 0; i < Scenes[1].OptionCount; i++) {
+		Scenes[1].NextSceneNumberList[i] = 0;
 	}
-
-	Scenes[0].CurrentOptionNumber = 0;
-	Scenes[0].CurrentTextNumber = 0;
 }
 
 void init_main(void)
@@ -454,8 +445,10 @@ void release_main(void)
 
 #pragma region TempScene
 typedef struct tagMainScene {
-	SceneStruct   Scene;
+	SceneStruct*   Scene;
 	bool        isEndScene;
+	int32		CurrentOptionNumber;
+	int32		CurrentTextNumber;
 } MainScene;
 
 bool isSceneChanging = false;
@@ -469,8 +462,15 @@ void init_temp(void)
 
 	MainScene* data = (MainScene*)g_Scene.Data;
 
+	data->Scene = &Scenes[s_CurrentScene];
+	data->isEndScene = false;
+	data->CurrentOptionNumber = 0;
+	data->CurrentTextNumber = 0;
+	Audio_PlayFadeIn(&data->Scene->BGM, INFINITY_LOOP, 3000);
+
 	isSceneChanging = false;
 	showOptions = false;
+	ShowText = NULL;
 }
 
 void update_temp(void)
@@ -481,94 +481,93 @@ void update_temp(void)
 	if (!isSceneChanging) {
 
 		//텍스트 표시가 필요한 경우
-		if (data->Scene.CurrentTextNumber < data->Scene.DialogCount) {
+		if (data->CurrentTextNumber < data->Scene->DialogCount) {
 			int32 i = 0;
-			ShowText = data->Scene.DialogList[data->Scene.CurrentTextNumber];
+			ShowText = data->Scene->DialogList[data->CurrentTextNumber];
 		}
 		//옵션이 나와야하는 경우
 		else {
 			showOptions = true;
 
 			//선택지 선택
-			int32 optionCount = data->Scene.OptionCount;
+			int32 optionCount = data->Scene->OptionCount;
 
-			Image_SetAlphaValue(&data->Scene.OptionImagesList[data->Scene.CurrentOptionNumber], 125);
+			Image_SetAlphaValue(&data->Scene->OptionImagesList[data->CurrentOptionNumber], 125);
 			if (Input_GetKeyDown('1')) {
 				if (optionCount >= 1) {
-					data->Scene.CurrentOptionNumber = 0;
+					data->CurrentOptionNumber = 0;
 				}
 			}
 			if (Input_GetKeyDown('2')) {
 				if (optionCount >= 2) {
-					data->Scene.CurrentOptionNumber = 1;
+					data->CurrentOptionNumber = 1;
 				}
 			}
 			if (Input_GetKeyDown('3')) {
 				if (optionCount >= 3) {
-					data->Scene.CurrentOptionNumber = 2;
+					data->CurrentOptionNumber = 2;
 				}
 			}
 			if (Input_GetKeyDown('4')) {
 				if (optionCount >= 4) {
-					data->Scene.CurrentOptionNumber = 3;
+					data->CurrentOptionNumber = 3;
 				}
 			}
 
 			//좌우키로 설정
 			if (Input_GetKeyDown(VK_LEFT)) {
-				if (data->Scene.CurrentOptionNumber > 0) {
-					data->Scene.CurrentOptionNumber--;
+				if (data->CurrentOptionNumber > 0) {
+					data->CurrentOptionNumber--;
 				}
 				else {
-					data->Scene.CurrentOptionNumber = data->Scene.OptionCount - 1;
+					data->CurrentOptionNumber = data->Scene->OptionCount - 1;
 				}
 			}
 
 			if (Input_GetKeyDown(VK_RIGHT)) {
-				if (data->Scene.CurrentOptionNumber < data->Scene.OptionCount - 1) {
-					data->Scene.CurrentOptionNumber++;
+				if (data->CurrentOptionNumber < data->Scene->OptionCount - 1) {
+					data->CurrentOptionNumber++;
 				}
 				else {
-					data->Scene.CurrentOptionNumber = 0;
+					data->CurrentOptionNumber = 0;
 				}
 			}
 
-			//위 아래 키로(dksehlasdu)glglglg
+			//위 아래 키로
 			if (Input_GetKeyDown(VK_UP)) {
-				if (data->Scene.OptionCount >= 3) {
-					if (data->Scene.CurrentOptionNumber >= data->Scene.OptionCount / 2) {
-						data->Scene.CurrentOptionNumber -= 2;
+				if (data->Scene->OptionCount >= 3) {
+					if (data->CurrentOptionNumber >= 2) {
+						data->CurrentOptionNumber -= 2;
 					}
 				}
 			}
 
 			if (Input_GetKeyDown(VK_DOWN)) {
-				if (data->Scene.OptionCount >= 3) {
-					if (data->Scene.CurrentOptionNumber < data->Scene.OptionCount / 2) {
-						data->Scene.CurrentOptionNumber += 2;
+				if (data->Scene->OptionCount >= 3) {
+					if (data->CurrentOptionNumber < data->Scene->OptionCount / 2) {
+						data->CurrentOptionNumber += 2;
 					}
 				}
 			}
 
-			Image_SetAlphaValue(&data->Scene.OptionImagesList[data->Scene.CurrentOptionNumber], 255);
+			Image_SetAlphaValue(&data->Scene->OptionImagesList[data->CurrentOptionNumber], 255);
 
 			//선택지 선택
 			if (Input_GetKeyDown(VK_RETURN)) {
 				isSceneChanging = true;
-				s_CurrentScene = data->Scene.NextSceneNumberList[data->Scene.CurrentOptionNumber];
+				s_CurrentScene = data->Scene->NextSceneNumberList[data->CurrentOptionNumber];
 				Scene_SetNextScene(SCENE_TEMP);
 			}
 		}
 
 		//키보드 값 입력
 		if (Input_GetKeyDown(VK_SPACE)) {
-			if (data->Scene.CurrentTextNumber < data->Scene.DialogCount) {
-				ShowText = &data->Scene.DialogList[data->Scene.CurrentTextNumber];
-				data->Scene.CurrentTextNumber++;
+			if (data->CurrentTextNumber < data->Scene->DialogCount) {
+				ShowText = &data->Scene->DialogList[data->CurrentTextNumber];
+				data->CurrentTextNumber++;
 			}
 		}
 	}
-	
 }
 
 void render_temp(void)
@@ -576,21 +575,28 @@ void render_temp(void)
 	MainScene* data = (MainScene*)g_Scene.Data;
 
 	//배경 이미지 출력
-	Renderer_DrawImage(&data->Scene.BGImage, 0, 0);
+	Renderer_DrawImage(&data->Scene->BGImage, 0, 0);
 	//Renderer_DrawImage(&TextBGImage, 30, 30);
 	
 	//텍스트 출력
 	SDL_Color color = { 0,0,0,255 };
 	int32 i = 0;
 	while (ShowText[i].Length != 0) {
-		Renderer_DrawTextSolid(&ShowText[i], 400, 300 + i * 100, color);
+		Renderer_DrawTextSolid(&ShowText[i], 400, 300 + i * 80, color);
 		i++;
 	}
 
 	//선택지 출력
 	if (showOptions) {
-		for (int i = 0; i < data->Scene.OptionCount;i++) {
-			Renderer_DrawImage(&data->Scene.OptionImagesList[i], 250 + i % 2 * 700, 600 + (i/2) * 200);
+		if (data->Scene->OptionCount > 2) {
+			for (int i = 0; i < data->Scene->OptionCount; i++) {
+				Renderer_DrawImage(&data->Scene->OptionImagesList[i], 250 + i % 2 * 700, 600 + (i / 2) * 200);
+			}
+		}
+		else {
+			for (int i = 0; i < data->Scene->OptionCount; i++) {
+				Renderer_DrawImage(&data->Scene->OptionImagesList[i], 250 + i % 2 * 700, 700 + (i / 2) * 200);
+			}
 		}
 	}
 }
@@ -598,12 +604,6 @@ void render_temp(void)
 void release_temp(void)
 {
 	MainScene* data = (MainScene*)g_Scene.Data;
-
-	Audio_FreeMusic(&data->Scene.BGM);
-	Audio_FreeMusic(&data->Scene.EffectSound);
-	for (int32 i = 0; i < data->Scene.DialogCount;i++) {
-		Text_FreeText(&data->Scene.DialogList[i]);
-	}
 
 	SafeFree(g_Scene.Data);
 }
