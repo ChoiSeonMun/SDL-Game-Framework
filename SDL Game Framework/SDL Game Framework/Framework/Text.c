@@ -63,3 +63,25 @@ EFontStyle Text_GetFontStyle(const Text* text)
 {
 	return (EFontStyle)TTF_GetFontStyle(text->Font);
 }
+
+
+
+void Text_LoadText(Text* text, const char* filename)
+{
+	
+	LogInfo("Text Loading... %s", filename);
+
+	static char path[MAX_PATH];
+
+	sprintf_s(path, sizeof(path), "%s/%s", TEXT_DIRECTORY, filename);
+	
+	FILE* p_file = NULL;
+	wchar_t str[256];
+	if (0 == fopen_s(&p_file, path, "r,ccs=UTF-8"))
+	{
+		fgetws(str, 256, p_file);
+		Text_CreateText(text, "d2coding.ttf", 16, str, wcslen(str)-1);
+	}
+}
+
+

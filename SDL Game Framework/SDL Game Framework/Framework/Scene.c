@@ -6,6 +6,9 @@
 Scene g_Scene;
 
 static ESceneType s_nextScene = SCENE_NULL;
+#define _MAX_SINEN_NUM 100
+#include "LoadCSV.h"
+
 
 #pragma region TitleScene
 
@@ -35,10 +38,14 @@ typedef struct TitleSceneData
 	Image	TestImage;
 } TitleSceneData;
 
+static SceneData scenedata[_MAX_SINEN_NUM];
+
 void init_title(void)
 {
 	g_Scene.Data = malloc(sizeof(TitleSceneData));
 	memset(g_Scene.Data, 0, sizeof(TitleSceneData));
+
+	CSVInit("∞‘¿”∫œ CSV - Ω√∆Æ1.csv", scenedata);
 
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
 	for (int32 i = 0; i < 10; ++i)
@@ -114,7 +121,7 @@ void render_title(void)
 		SDL_Color color = { .a = 255 };
 		Renderer_DrawTextSolid(&data->GuideLine[i], 10, 20 * i, color);
 	}
-	
+
 	switch (data->RenderMode)
 	{
 	case SOLID:
@@ -168,18 +175,21 @@ const wchar_t* str2[] = {
 
 #define GUIDELINE_COUNT 8
 
-typedef struct MainSceneData
-{
-	Text		GuideLine[GUIDELINE_COUNT];
-	Music		BGM;
-	float		Volume;
-	SoundEffect Effect;
-	Image		BackGround;
-	float		Speed;
-	int32		X;
-	int32		Y;
-	int32		Alpha;
-} MainSceneData;
+//typedef struct MainSceneData
+//{
+//	Text		GuideLine[GUIDELINE_COUNT];
+//	Music		BGM;
+//	float		Volume;
+//	SoundEffect Effect;
+//	Image		BackGround;
+//	float		Speed;
+//	int32		X;
+//	int32		Y;
+//	int32		Alpha;
+//} MainSceneData;
+
+
+
 
 void logOnFinished(void)
 {
@@ -190,44 +200,93 @@ void log2OnFinished(int32 channel)
 {
 	LogInfo("You can show this log on stopped the effect");
 }
+typedef struct MainSceneData
+{
+	int32		index;
+	Music		BGM;
+	float		Volume;
+	Image		BackGround;
+	int32		BackGroundX;
+	int32		BackGroundY;
+	int32		imageEffect;
+	int32		textTime;
+	int32		temp;
+	int32		text1X;
+	int32		text1Y;
+	Text		text1;
+	int32		text2X;
+	int32		text2Y;
+	Text		text2;
+	int32		text3X;
+	int32		text3Y;
+	Text		text3;
+	Text		select1;
+	int32		select1Value;
+	Text		select2;
+	int32		select2Value;
+	Text		select3;
+	int32		select3Value;
+
+} MainSceneData;
+
+static int32 num = 0;
 
 void init_main(void)
 {
 	g_Scene.Data = malloc(sizeof(MainSceneData));
-	memset(g_Scene.Data, 0, sizeof(MainSceneData));
-
+	memset(g_Scene.Data, 0, (sizeof(MainSceneData)));
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
 
-	for (int32 i = 0; i < GUIDELINE_COUNT; ++i)
-	{
-		Text_CreateText(&data->GuideLine[i], "d2coding.ttf", 16, str2[i], wcslen(str2[i]));
-	}
-	
-	Image_LoadImage(&data->BackGround, "background.jfif");
-
-	Audio_LoadMusic(&data->BGM, "powerful.mp3");
+	data->index = scenedata[num].index;
+	Audio_LoadMusic(&data->BGM, scenedata[num].BGMFileName);
 	Audio_HookMusicFinished(logOnFinished);
-	Audio_LoadSoundEffect(&data->Effect, "effect2.wav");
-	Audio_HookSoundEffectFinished(log2OnFinished);
 	Audio_PlayFadeIn(&data->BGM, INFINITY_LOOP, 3000);
+	Image_LoadImage(&data->BackGround, scenedata[num].BackGroundFileName);
+	Text_LoadText(&data->text1, scenedata[num].textFileName1);
+	Text_LoadText(&data->text2, scenedata[num].textFileName2);
+	Text_LoadText(&data->text3, scenedata[num].textFileName3);
+	data->select1Value = scenedata[num].select1Value;
 
+
+
+
+
+	//for (int32 i = 0; i < GUIDELINE_COUNT; ++i)
+	//{
+	//	Text_CreateText(&data->GuideLine[i], "d2coding.ttf", 16, str2[i], wcslen(str2[i]));
+	//}
+	//
+	//Image_LoadImage(&data->BackGround, "background.jfif");
+	//
+	//Audio_LoadMusic(&data->BGM, "powerful.mp3");
+	//Audio_HookMusicFinished(logOnFinished);
+	//Audio_LoadSoundEffect(&data->Effect, "effect2.wav");
+	//Audio_HookSoundEffectFinished(log2OnFinished);
+	//Audio_PlayFadeIn(&data->BGM, INFINITY_LOOP, 3000);
+	//
 	data->Volume = 1.0f;
-
-	data->Speed = 400.0f;
-	data->X = 400;
-	data->Y = 400;
-	data->Alpha = 255;
+	//
+	//data->Speed = 400.0f;
+	data->BackGroundX = 0;
+	data->BackGroundY = 0;
+	data->text1X = 0;
+	data->text1Y = 0;
+	data->text2X = 0;
+	data->text2Y = 5;
+	data->text3X = 0;
+	data->text3Y = 10;
+	//data->Alpha = 255;
 }
 
 void update_main(void)
 {
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
-
-	if (Input_GetKeyDown('E'))
-	{
-		Audio_PlaySoundEffect(&data->Effect, 1);
-	}
-
+	//
+	//if (Input_GetKeyDown('E'))
+	//{
+	//	Audio_PlaySoundEffect(&data->Effect, 1);
+	//}
+	//
 	if (Input_GetKeyDown('M'))
 	{
 		if (Audio_IsMusicPlaying())
@@ -251,95 +310,100 @@ void update_main(void)
 			Audio_Pause();
 		}
 	}
-
+	//
 	if (Input_GetKey('1'))
 	{
-		data->Volume -= 0.01f;
-		Audio_SetVolume(data->Volume);
+		num = data->select1Value;
+		Sleep(1000);
+		Scene_SetNextScene(SCENE_MAIN);
 	}
 
 	if (Input_GetKey('2'))
 	{
-		data->Volume += 0.01f;
-		Audio_SetVolume(data->Volume);
+		num = data->select2Value;
+		Sleep(1000);
+		Scene_SetNextScene(SCENE_MAIN);
 	}
-
-	if (Input_GetKey(VK_DOWN))
-	{
-		data->Y += data->Speed * Timer_GetDeltaTime();
-	}
-
-	if (Input_GetKey(VK_UP))
-	{
-		data->Y -= data->Speed * Timer_GetDeltaTime();
-	}
-
-	if (Input_GetKey(VK_LEFT))
-	{
-		data->X -= data->Speed * Timer_GetDeltaTime();
-	}
-
-	if (Input_GetKey(VK_RIGHT))
-	{
-		data->X += data->Speed * Timer_GetDeltaTime();
-	}
-
-	if (Input_GetKey('W'))
-	{
-		data->BackGround.ScaleY -= 0.05f;
-	}
-
-	if (Input_GetKey('S'))
-	{
-		data->BackGround.ScaleY += 0.05f;
-	}
-
-	if (Input_GetKey('A'))
-	{
-		data->BackGround.ScaleX -= 0.05f;
-	}
-
-	if (Input_GetKey('D'))
-	{
-		data->BackGround.ScaleX += 0.05f;
-	}
-
-	if (Input_GetKey('K'))
-	{
-		data->Alpha = Clamp(0, data->Alpha - 1, 255);
-		Image_SetAlphaValue(&data->BackGround, data->Alpha);
-	}
-
-	if (Input_GetKey('L'))
-	{
-		data->Alpha = Clamp(0, data->Alpha + 1, 255);
-		Image_SetAlphaValue(&data->BackGround, data->Alpha);
-	}
+	//
+	//if (Input_GetKey(VK_DOWN))
+	//{
+	//	data->Y += data->Speed * Timer_GetDeltaTime();
+	//}
+	//
+	//if (Input_GetKey(VK_UP))
+	//{
+	//	data->Y -= data->Speed * Timer_GetDeltaTime();
+	//}
+	//
+	//if (Input_GetKey(VK_LEFT))
+	//{
+	//	data->X -= data->Speed * Timer_GetDeltaTime();
+	//}
+	//
+	//if (Input_GetKey(VK_RIGHT))
+	//{
+	//	data->X += data->Speed * Timer_GetDeltaTime();
+	//}
+	//
+	//if (Input_GetKey('W'))
+	//{
+	//	data->BackGround.ScaleY -= 0.05f;
+	//}
+	//
+	//if (Input_GetKey('S'))
+	//{
+	//	data->BackGround.ScaleY += 0.05f;
+	//}
+	//
+	//if (Input_GetKey('A'))
+	//{
+	//	data->BackGround.ScaleX -= 0.05f;
+	//}
+	//
+	//if (Input_GetKey('D'))
+	//{
+	//	data->BackGround.ScaleX += 0.05f;
+	//}
+	//
+	//if (Input_GetKey('K'))
+	//{
+	//	data->Alpha = Clamp(0, data->Alpha - 1, 255);
+	//	Image_SetAlphaValue(&data->BackGround, data->Alpha);
+	//}
+	//
+	//if (Input_GetKey('L'))
+	//{
+	//	data->Alpha = Clamp(0, data->Alpha + 1, 255);
+	//	Image_SetAlphaValue(&data->BackGround, data->Alpha);
+	//}
 }
 
 void render_main(void)
 {
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
 
-	for (int32 i = 0; i < GUIDELINE_COUNT; ++i)
-	{
-		SDL_Color color = { .a = 255 };
-		Renderer_DrawTextSolid(&data->GuideLine[i], 10, 20 * i, color);
-	}
+	Renderer_DrawImage(&data->BackGround, data->BackGroundX, data->BackGroundY);
 
-	Renderer_DrawImage(&data->BackGround, data->X, data->Y);
+	SDL_Color color = { .r = 255, .g = 255, .b = 255, .a = 255 };
+	Renderer_DrawTextSolid(&data->text1, 0, 0, color);
+	Renderer_DrawTextSolid(&data->text2, 0, 15, color);
+	Renderer_DrawTextSolid(&data->text3, 0, 30, color);
+
 }
 
 void release_main(void)
 {
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
-
-	for (int32 i = 0; i < 10; ++i)
-	{
-		Text_FreeText(&data->GuideLine[i]);
-	}
+	//
+	//for (int32 i = 0; i < 10; ++i)
+	//{
+	//	Text_FreeText(&data->GuideLine[i]);
+	//}
+	Text_FreeText(&data->text1); 
+	Text_FreeText(&data->text2);
+	Text_FreeText(&data->text3);
 	Audio_FreeMusic(&data->BGM);
-	Audio_FreeSoundEffect(&data->Effect);
+	//Audio_FreeSoundEffect(&data->Effect);
 
 	SafeFree(g_Scene.Data);
 }

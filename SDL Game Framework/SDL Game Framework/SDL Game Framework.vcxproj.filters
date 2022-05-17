@@ -43,6 +43,9 @@
     <ClCompile Include="Framework\Text.c">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Framework\LoadCSV.c">
+      <Filter>Framework</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -77,6 +80,9 @@
       <Filter>Framework</Filter>
     </ClInclude>
     <ClInclude Include="Framework\Text.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Framework\LoadCSV.h">
       <Filter>Framework</Filter>
     </ClInclude>
   </ItemGroup>
