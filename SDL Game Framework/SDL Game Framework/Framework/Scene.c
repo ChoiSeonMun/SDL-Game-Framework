@@ -329,7 +329,7 @@ void render_main(void)
 
 	for (int32 i = 0; i < GUIDELINE_COUNT; ++i)
 	{
-		SDL_Color color = { .a = 255 };
+		SDL_Color color = { .a = 0 };
 		Renderer_DrawTextSolid(&data->GuideLine[i], 10, 20 * i, color);
 	}
 
@@ -352,15 +352,12 @@ void release_main(void)
 #pragma endregion
 
 #pragma region StartScene
-const wchar_t* starttext1[] = {
+const wchar_t* starttext[] = {
 	L"「오늘도 수고했어.」",
 	L"히나노, 여자친구의 목소리다-",
 	L"또 승진 못한 남자친구를 두고 무슨 이야기인지.",
 	L"재무성 관료가 된지 어연 10년, 말이 관료지 그냥 말단 공무원이다.",
-	L"만년 계장이 무슨 관료인가, 입 아픈 이야기다."
-};
-
-const wchar_t* starttext2[] = {
+	L"만년 계장이 무슨 관료인가, 입 아픈 이야기다.",
 	L"\"오늘은 아무것도 하기싫네.\"",
 	L"「언제는 뭘 하고 싶었고?」",
 	L"\"내일은 뭘 하고 싶을 수도..\"",
@@ -371,10 +368,8 @@ const wchar_t* starttext2[] = {
 
 typedef struct StartSceneData
 {
-	Text	GuideLine1[5];
-	Text	GuideLine2[6];
+	Text	GuideLine[11];
 	Image	BackGround;
-	bool	NextText;
 	int32	check;
 } StartSceneData;
 
@@ -384,16 +379,11 @@ void init_Start(void)
 	memset(g_Scene.Data, 0, sizeof(StartSceneData));
 	StartSceneData* data = (StartSceneData*)g_Scene.Data;
 
-	for (int32 i = 0; i < 5; ++i)
+	for (int32 i = 0; i < 11; ++i)
 	{
-		Text_CreateText(&data->GuideLine1[i], "GmarketSansTTFLight.ttf", 18, starttext1[i], wcslen(starttext1[i]));
-	}
-	for (int32 i = 0; i < 6; ++i)
-	{
-		Text_CreateText(&data->GuideLine2[i], "GmarketSansTTFLight.ttf", 18, starttext2[i], wcslen(starttext2[i]));
+		Text_CreateText(&data->GuideLine[i], "GmarketSansTTFLight.ttf", 18, starttext[i], wcslen(starttext[i]));
 	}
 	Image_LoadImage(&data->BackGround, "S_01.png");
-	data->NextText = false;
 	data->check = 0;
 }
 
@@ -404,43 +394,16 @@ void update_Start(void)
 	static float elapsedTime;
 	elapsedTime += Timer_GetDeltaTime();
 
-	if (Input_GetKey(VK_RIGHT))
-	{
-		if (!(data->NextText))
-		{
-			data->check = 0;
-			data->NextText = true;
-		}
-	}
-
-	if (Input_GetKey(VK_LEFT))
-	{
-		if ((data->NextText))
-		{
-			data->check = 0;
-			data->NextText = false;
-		}
-	}
-
 	if (Input_GetKeyDown(VK_SPACE))
 	{
 		Scene_SetNextScene(SCENE_SCENEONE);
 	}
+
 	if (elapsedTime >= 0.85f)
 	{
-		if (!(data->NextText))
+		if (data->check < 11)
 		{
-			if (data->check < 5)
-			{
-				data->check++;
-			}
-		}
-		else
-		{
-			if (data->check < 6)
-			{
-				data->check++;
-			}
+			data->check++;
 		}
 		elapsedTime = 0;
 	}
@@ -451,22 +414,10 @@ void render_Start(void)
 	StartSceneData* data = (StartSceneData*)g_Scene.Data;
 	Renderer_DrawImage(&data->BackGround, 0, 0);
 
-	if (!(data->NextText))
+	for (int32 i = 0; i < data->check; i++)
 	{
-		for (int32 i = 0; i < data->check; i++)
-		{
-			SDL_Color color = { .a = 255 };
-			Renderer_DrawTextSolid(&data->GuideLine1[i], 10, 690 + (42 * i), color);
-		}
-	}
-
-	if (data->NextText)
-	{
-		for (int32 i = 0; i < data->check; i++)
-		{
-			SDL_Color color = { .a = 255 };
-			Renderer_DrawTextSolid(&data->GuideLine2[i], 10, 690 + (42 * i), color);
-		}
+		SDL_Color color = { .r = 255,.b = 255,.g = 255 };
+		Renderer_DrawTextSolid(&data->GuideLine[i], 725, 15 + (42 * i), color);
 	}
 }
 
@@ -474,30 +425,23 @@ void release_Start(void)
 {
 	StartSceneData* data = (StartSceneData*)g_Scene.Data;
 
-	for (int32 i = 0; i < 5; ++i)
+	for (int32 i = 0; i < 11; ++i)
 	{
-		Text_FreeText(&data->GuideLine1[i]);
-	}
-	for (int32 i = 0; i < 6; ++i)
-	{
-		Text_FreeText(&data->GuideLine2[i]);
+		Text_FreeText(&data->GuideLine[i]);
 	}
 	SafeFree(g_Scene.Data);
 }
 #pragma endregion
 
 #pragma region SceneOne
-const wchar_t* onetext1[] = {
+const wchar_t* onetext[] = {
 	L"『수도하이퍼루프 닛포리선, 2번 리니어 승강장에 진입합니다.』",
 	L"띠링띠링띠링띠링-",
 	L"\"내일부터 며칠간 못 볼 수도 있으니까 오늘 많이 봐둬\"",
 	L"졸려하는 히나노를 툭툭 건들며 얼굴을 들이댄다.",
 	L"「금융청에 무슨 일이길래.」",
 	L"\"요즘 미즈호 은행의 움직임이 수상해서 말이야. 당분간은 못들어갈 거 같아.\"",
-	L"「검찰은 뭐하고?」"
-};
-
-const wchar_t* onetext2[] = {
+	L"「검찰은 뭐하고?」",
 	L"\"그 놈들은 믿을게 못 돼. 이미 은행과 짜고 치고 했을 수도 있겠지.\"",
 	L"「그렇구나...」",
 	L"\"열차 떠나겠다. 이만 가볼게. 나 없이 잘 지낼 수 있지?\"",
@@ -509,10 +453,9 @@ const wchar_t* onetext2[] = {
 
 typedef struct SceneOneData
 {
-	Text	GuideLine1[7];
-	Text	GuideLine2[7];
+	Text	GuideLine[14];
 	Image	BackGround;
-	bool	NextText;
+	int32	check;
 } SceneOneData;
 void init_SceneOne(void)
 {
@@ -520,41 +463,32 @@ void init_SceneOne(void)
 	memset(g_Scene.Data, 0, sizeof(SceneOneData));
 	SceneOneData* data = (SceneOneData*)g_Scene.Data;
 
-	for (int32 i = 0; i < 7; ++i)
+	for (int32 i = 0; i < 14; ++i)
 	{
-		Text_CreateText(&data->GuideLine1[i], "GmarketSansTTFLight.ttf", 18, onetext1[i], wcslen(onetext1[i]));
-	}
-	for (int32 i = 0; i < 6; ++i)
-	{
-		Text_CreateText(&data->GuideLine2[i], "GmarketSansTTFLight.ttf", 18, onetext2[i], wcslen(onetext2[i]));
+		Text_CreateText(&data->GuideLine[i], "GmarketSansTTFLight.ttf", 18, onetext[i], wcslen(onetext[i]));
 	}
 	Image_LoadImage(&data->BackGround, "S_02.png");
-	data->NextText = false;
 }
 
 void update_SceneOne(void)
 {
 	SceneOneData* data = (SceneOneData*)g_Scene.Data;
 
-	if (Input_GetKey(VK_RIGHT))
-	{
-		if (!(data->NextText))
-		{
-			data->NextText = true;
-		}
-	}
-
-	if (Input_GetKey(VK_LEFT))
-	{
-		if ((data->NextText))
-		{
-			data->NextText = false;
-		}
-	}
+	static float elapsedTime;
+	elapsedTime += Timer_GetDeltaTime();
 
 	if (Input_GetKeyDown(VK_SPACE))
 	{
 		Scene_SetNextScene(SCENE_SCENETWO);
+	}
+
+	if (elapsedTime >= 0.85f)
+	{
+		if (data->check < 14)
+		{
+			data->check++;
+		}
+		elapsedTime = 0;
 	}
 }
 
@@ -562,22 +496,10 @@ void render_SceneOne(void)
 {
 	SceneOneData* data = (SceneOneData*)g_Scene.Data;
 	Renderer_DrawImage(&data->BackGround, 0, 0);
-
-	if (!(data->NextText))
+	SDL_Color color = { .r = 255,.b = 255,.g = 255 };
+	for (int32 i = 0; i < data->check; i++)
 	{
-		for (int32 i = 0; i < 7; i++)
-		{
-			SDL_Color color = { .a = 255 };
-			Renderer_DrawTextSolid(&data->GuideLine1[i], 10, 690 + (42 * i), color);
-		}
-	}
-	else
-	{
-		for (int32 i = 0; i < 7; i++)
-		{
-			SDL_Color color = { .a = 255 };
-			Renderer_DrawTextSolid(&data->GuideLine2[i], 10, 690 + (42 * i), color);
-		}
+		Renderer_DrawTextSolid(&data->GuideLine[i], 725, 15 + (42 * i), color);
 	}
 }
 
@@ -585,29 +507,23 @@ void release_SceneOne(void)
 {
 	SceneOneData* data = (SceneOneData*)g_Scene.Data;
 
-	for (int32 i = 0; i < 7; ++i)
+	for (int32 i = 0; i < 14; ++i)
 	{
-		Text_FreeText(&data->GuideLine1[i]);
-	}
-	for (int32 i = 0; i < 7; ++i)
-	{
-		Text_FreeText(&data->GuideLine2[i]);
+		Text_FreeText(&data->GuideLine[i]);
 	}
 	SafeFree(g_Scene.Data);
 }
 #pragma endregion
 
 #pragma region SceneTwo
-const wchar_t* twotext1[] = {
+const wchar_t* twotext[] = {
 	L"『똑똑똑.』",
 	L"\"하아... 들어와라\"",
-	L"여유롭게 따뜻한 커피를 마시려고 했건만, 부하인 사카이 사무로가 눈치도 없이 상황보고를 시작했다.",
+	L"여유롭게 따뜻한 커피를 마시려고 했건만,",
+	L"부하인 사카이 사무로가 눈치도 없이 상황보고를 시작했다.",
 	L"「미즈호 은행에서 비자금을 유통하는 정황이 포착되었습니다.」",
 	L"그 놈의 비자금.",
-	L"난 이미 10년 넘도록 지긋지긋하게 반복해온 일에 진절머리가 날 지경이였다."
-};
-
-const wchar_t* twotext2[] = {
+	L"난 이미 10년 넘도록 지긋지긋하게 반복해온 일에 진절머리가 날 지경이였다.",
 	L"기업의 비리는 어디서나 있었고 늘 내가 해결해왔지만 끝끝내 내게 떨어진 콩고물은 없었다.",
 	L"\"비자금이라.. 규모는 얼마정도지?\"",
 	L"「현재 추정으론 50억엔 정도입니다.」",
@@ -624,15 +540,14 @@ const wchar_t* twochoicement2 = L"\"수령인은 포착 되었고?\"<";
 
 typedef struct SceneTwoData
 {
-	Text	GuideLine1[6];
-	Text	GuideLine2[6];
+	Text	GuideLine[13];
 	Text	Choice1;
 	Text	Choice2;
 	Image	BackGround;
-	bool	NextText;
 	bool	isChoice1;
 	int32	selectNum;
 	bool	canShow;
+	int32	check;
 } SceneTwoData;
 
 void init_SceneTwo(void)
@@ -641,18 +556,13 @@ void init_SceneTwo(void)
 	memset(g_Scene.Data, 0, sizeof(SceneTwoData));
 	SceneTwoData* data = (SceneTwoData*)g_Scene.Data;
 
-	for (int32 i = 0; i < 6; ++i)
+	for (int32 i = 0; i < 13; ++i)
 	{
-		Text_CreateText(&data->GuideLine1[i], "GmarketSansTTFLight.ttf", 18, twotext1[i], wcslen(twotext1[i]));
-	}
-	for (int32 i = 0; i < 6; ++i)
-	{
-		Text_CreateText(&data->GuideLine2[i], "GmarketSansTTFLight.ttf", 18, twotext2[i], wcslen(twotext2[i]));
+		Text_CreateText(&data->GuideLine[i], "GmarketSansTTFLight.ttf", 18, twotext[i], wcslen(twotext[i]));
 	}
 	Text_CreateText(&data->Choice1, "GmarketSansTTFLight.ttf", 24, twochoicement1, wcslen(twochoicement1));
 	Text_CreateText(&data->Choice2, "GmarketSansTTFLight.ttf", 24, twoment2, wcslen(twoment2));
 	Image_LoadImage(&data->BackGround, "S_03.png");
-	data->NextText = false;
 	data->isChoice1 = true;
 	data->canShow = false;
 	data->selectNum = 0;
@@ -665,25 +575,17 @@ void update_SceneTwo(void)
 	static float elapsedTime;
 	elapsedTime += Timer_GetDeltaTime();
 
-	if (elapsedTime >= 3.0f)
+	if (elapsedTime >= 0.85f)
 	{
-		data->canShow = true;
-	}
-
-	if (Input_GetKey(VK_RIGHT))
-	{
-		if (!(data->NextText))
+		if (data->check < 13)
 		{
-			data->NextText = true;
+			data->check++;
 		}
-	}
-
-	if (Input_GetKey(VK_LEFT))
-	{
-		if ((data->NextText))
+		if (data->check == 13)
 		{
-			data->NextText = false;
+			data->canShow = true;
 		}
+		elapsedTime = 0;
 	}
 
 	if (Input_GetKey(VK_UP))
@@ -732,40 +634,29 @@ void render_SceneTwo(void)
 	SceneTwoData* data = (SceneTwoData*)g_Scene.Data;
 	Renderer_DrawImage(&data->BackGround, 0, 0);
 
-	if (!(data->NextText))
+
+	for (int32 i = 0; i < data->check; i++)
 	{
-		for (int32 i = 0; i < 6; i++)
-		{
-			SDL_Color color = { .a = 255 };
-			Renderer_DrawTextSolid(&data->GuideLine1[i], 5, 690 + (42 * i), color);
-		}
+		SDL_Color color = { .r = 255,.b = 255,.g = 255 };
+		Renderer_DrawTextSolid(&data->GuideLine[i], 725, 15 + (42 * i), color);
 	}
-	else
+
+	if (data->canShow)
 	{
-		SDL_Color color = { .a = 255 };
-		for (int32 i = 0; i < 6; i++)
-		{
-			Renderer_DrawTextSolid(&data->GuideLine2[i], 5, 690 + (42 * i), color);
-		}
-		if (data->canShow)
-		{
-			Renderer_DrawTextSolid(&data->Choice1, 920, 780, color);
-			Renderer_DrawTextSolid(&data->Choice2, 920, 860, color);
-		}
+		SDL_Color color = { .r = 255,.b = 255,.g = 255 };
+		Renderer_DrawTextSolid(&data->Choice1, 5, 580, color);
+		Renderer_DrawTextSolid(&data->Choice2, 5, 640, color);
 	}
+		
 }
 
 void release_SceneTwo(void)
 {
 	SceneTwoData* data = (SceneTwoData*)g_Scene.Data;
 
-	for (int32 i = 0; i < 6; ++i)
+	for (int32 i = 0; i < 13; ++i)
 	{
-		Text_FreeText(&data->GuideLine1[i]);
-	}
-	for (int32 i = 0; i < 6; ++i)
-	{
-		Text_FreeText(&data->GuideLine2[i]);
+		Text_FreeText(&data->GuideLine[i]);
 	}
 	Text_FreeText(&data->Choice1);
 	Text_FreeText(&data->Choice2);
@@ -776,7 +667,8 @@ void release_SceneTwo(void)
 #pragma region SceneThree
 const wchar_t* threetext[] = {
 	L"\"그런 거물이 어디서 꼬리가 잡혔길래?\"",
-	L"「며칠 전 미즈호의 대규모 구조조정으로 생계를 잃은 자가 앙심을 품고 관련 지출 전표를 브로커에게 보냈다고 합니다.」",
+	L"「며칠 전 미즈호의 대규모 구조조정으로 생계를 잃은 자가 앙심을 품고",
+	L"관련 지출 전표를 브로커에게 보냈다고 합니다.」",
 	L"\"멍청한 자식들이 결국 제 발등을 찍었군.. 그래 수령인도 알아냈고?\"",
 	L"「네. 정치인 타이라 켄타로에게 건넸다고 합니다.」",
 	L"「미즈호 은행이 수출 대금 50억엔을 수표로 바꿔 자체적으로 돈세탁 과정을 거쳤습니다.」.",
@@ -787,11 +679,11 @@ const wchar_t* threeforechoicement = L"\"방금 타이라 켄타로 라고 했나?\"<";
 
 typedef struct SceneThreeData
 {
-	Text	GuideLine[6];
+	Text	GuideLine[7];
 	Text	Choice1;
 	Image	BackGround;
-	bool	NextText;
 	bool	canShow;
+	int32	check;
 } SceneThreeData;
 
 void init_SceneThree(void)
@@ -800,14 +692,14 @@ void init_SceneThree(void)
 	memset(g_Scene.Data, 0, sizeof(SceneThreeData));
 	SceneThreeData* data = (SceneThreeData*)g_Scene.Data;
 
-	for (int32 i = 0; i < 6; ++i)
+	for (int32 i = 0; i < 7; ++i)
 	{
 		Text_CreateText(&data->GuideLine[i], "GmarketSansTTFLight.ttf", 18, threetext[i], wcslen(threetext[i]));
 	}
 	Text_CreateText(&data->Choice1, "GmarketSansTTFLight.ttf", 24, threeforechoicement, wcslen(threeforechoicement));
 	Image_LoadImage(&data->BackGround, "S_03.png");
-	data->NextText = false;
 	data->canShow = false;
+	data->check = 0;
 }
 
 void update_SceneThree(void)
@@ -817,30 +709,22 @@ void update_SceneThree(void)
 	static float elapsedTime;
 	elapsedTime += Timer_GetDeltaTime();
 
-	if (elapsedTime >= 3.0f)
+	if (elapsedTime >= 0.85f)
 	{
-		data->canShow = true;
-	}
-
-	if (Input_GetKey(VK_RIGHT))
-	{
-		if (!(data->NextText))
+		if (data->check < 7)
 		{
-			data->NextText = true;
+			data->check++;
 		}
-	}
-
-	if (Input_GetKey(VK_LEFT))
-	{
-		if ((data->NextText))
+		if (data->check == 7)
 		{
-			data->NextText = false;
+			data->canShow = true;
 		}
+		elapsedTime = 0;
 	}
 
 	if (Input_GetKeyDown(VK_RETURN))
 	{
-		Scene_SetNextScene(SCENE_SCENEFORE);
+		Scene_SetNextScene(SCENE_SCENEFIVE);
 	}
 }
 
@@ -848,15 +732,15 @@ void render_SceneThree(void)
 {
 	SceneThreeData* data = (SceneThreeData*)g_Scene.Data;
 	Renderer_DrawImage(&data->BackGround, 0, 0);
-	for (int32 i = 0; i < 6; i++)
+	for (int32 i = 0; i < data->check; i++)
 	{
-		SDL_Color color = { .a = 255 };
-		Renderer_DrawTextSolid(&data->GuideLine[i], 5, 690 + (42 * i), color);
+		SDL_Color color = { .r = 255,.b = 255,.g = 255 };
+		Renderer_DrawTextSolid(&data->GuideLine[i], 725, 15 + (42 * i), color);
 	}
 	if (data->canShow)
 	{
-		SDL_Color color = { .a = 255 };
-		Renderer_DrawTextSolid(&data->Choice1, 920, 850, color);
+		SDL_Color color = { .r = 255,.b = 255,.g = 255 };
+		Renderer_DrawTextSolid(&data->Choice1, 5, 610, color);
 	}
 }
 
@@ -864,7 +748,7 @@ void release_SceneThree(void)
 {
 	SceneThreeData* data = (SceneThreeData*)g_Scene.Data;
 
-	for (int32 i = 0; i < 6; ++i)
+	for (int32 i = 0; i < 7; ++i)
 	{
 		Text_FreeText(&data->GuideLine[i]);
 	}
@@ -886,7 +770,7 @@ typedef struct SceneForeData
 	Text	GuideLine[4];
 	Text	Choice1;
 	Image	BackGround;
-	bool	NextText;
+	int32	check;
 	bool	canShow;
 } SceneForeData;
 
@@ -902,8 +786,8 @@ void init_SceneFore(void)
 	}
 	Text_CreateText(&data->Choice1, "GmarketSansTTFLight.ttf", 24, threeforechoicement, wcslen(threeforechoicement));
 	Image_LoadImage(&data->BackGround, "S_03.png");
-	data->NextText = false;
 	data->canShow = false;
+	data->check = 0;
 }
 
 void update_SceneFore(void)
@@ -913,30 +797,22 @@ void update_SceneFore(void)
 	static float elapsedTime;
 	elapsedTime += Timer_GetDeltaTime();
 
-	if (elapsedTime >= 3.0f)
+	if (elapsedTime >= 0.85f)
 	{
-		data->canShow = true;
-	}
-
-	if (Input_GetKey(VK_RIGHT))
-	{
-		if (!(data->NextText))
+		if (data->check < 4)
 		{
-			data->NextText = true;
+			data->check++;
 		}
-	}
-
-	if (Input_GetKey(VK_LEFT))
-	{
-		if ((data->NextText))
+		if (data->check == 4)
 		{
-			data->NextText = false;
+			data->canShow = true;
 		}
+		elapsedTime = 0;
 	}
 
 	if (Input_GetKeyDown(VK_RETURN))
 	{
-		Scene_SetNextScene(SCENE_SCENEFORE);
+		Scene_SetNextScene(SCENE_SCENEFIVE);
 	}
 }
 
@@ -944,15 +820,15 @@ void render_SceneFore(void)
 {
 	SceneForeData* data = (SceneForeData*)g_Scene.Data;
 	Renderer_DrawImage(&data->BackGround, 0, 0);
-	for (int32 i = 0; i < 4; i++)
+	for (int32 i = 0; i < data->check; i++)
 	{
-		SDL_Color color = { .a = 255 };
-		Renderer_DrawTextSolid(&data->GuideLine[i], 5, 690 + (42 * i), color);
+		SDL_Color color = { .r = 255,.b = 255,.g = 255 };
+		Renderer_DrawTextSolid(&data->GuideLine[i], 725, 15 + (42 * i), color);
 	}
 	if (data->canShow)
 	{
-		SDL_Color color = { .a = 255 };
-		Renderer_DrawTextSolid(&data->Choice1, 920, 850, color);
+		SDL_Color color = { .r = 255,.b = 255,.g = 255 };
+		Renderer_DrawTextSolid(&data->Choice1, 5, 610, color);
 	}
 }
 
@@ -965,6 +841,84 @@ void release_SceneFore(void)
 		Text_FreeText(&data->GuideLine[i]);
 	}
 	Text_FreeText(&data->Choice1);
+	SafeFree(g_Scene.Data);
+}
+#pragma endregion
+
+#pragma region SceneFive
+const wchar_t* fivetext[] = {
+	L"\"방금 타이라 켄타로라고 했나?\"",
+	L"「네. 틀림 없습니다.」",
+	L"중의원 타이라 켄타로. 일본 차기 총리로 지목되는 유력 후보다.",
+	L"총재선거 지지율이 압도적으로 높은 정치계의 거물.",
+	L" ",
+	L"그런 타이라 켄타로가 미즈호 은행과 결탁이라니...",
+	L"이들을 이 손으로 일망타진 할 수 있는 일생일대의 기회 아니겠는가!",
+	L"잘만 진행된다면 분명 이전 잡일과는 비교도 안될만큼 큰 공로를 세울 수 있을 것이다."
+};
+
+typedef struct SceneFiveData
+{
+	Text	GuideLine[8];
+	Image	BackGround;
+	int32	check;
+} SceneFiveData;
+
+void init_SceneFive(void)
+{
+	g_Scene.Data = malloc(sizeof(SceneFiveData));
+	memset(g_Scene.Data, 0, sizeof(SceneFiveData));
+	SceneFiveData* data = (SceneFiveData*)g_Scene.Data;
+
+	for (int32 i = 0; i < 8; ++i)
+	{
+		Text_CreateText(&data->GuideLine[i], "GmarketSansTTFLight.ttf", 18, fivetext[i], wcslen(fivetext[i]));
+	}
+	Image_LoadImage(&data->BackGround, "S_03.png");
+	data->check = 0;
+}
+
+void update_SceneFive(void)
+{
+	SceneFiveData* data = (SceneFiveData*)g_Scene.Data;
+
+	static float elapsedTime;
+	elapsedTime += Timer_GetDeltaTime();
+
+	if (elapsedTime >= 0.85f)
+	{
+		if (data->check < 8)
+		{
+			data->check++;
+		}
+		elapsedTime = 0;
+	}
+
+	if (Input_GetKeyDown(VK_SPACE))
+	{
+		Scene_SetNextScene(SCENE_SCENESIX);
+	}
+}
+
+void render_SceneFive(void)
+{
+	SceneFiveData* data = (SceneFiveData*)g_Scene.Data;
+	Renderer_DrawImage(&data->BackGround, 0, 0);
+	for (int32 i = 0; i < data->check; i++)
+	{
+		SDL_Color color = { .r = 255,.b = 255,.g = 255 };
+		Renderer_DrawTextSolid(&data->GuideLine[i], 725, 15 + (42 * i), color);
+	}
+}
+
+void release_SceneFive(void)
+{
+	SceneFiveData* data = (SceneFiveData*)g_Scene.Data;
+
+	for (int32 i = 0; i < 8; ++i)
+	{
+		Text_FreeText(&data->GuideLine[i]);
+	}
 	SafeFree(g_Scene.Data);
 }
 #pragma endregion
@@ -1041,6 +995,12 @@ void Scene_Change(void)
 		g_Scene.Update = update_SceneFore;
 		g_Scene.Render = render_SceneFore;
 		g_Scene.Release = release_SceneFore;
+		break;
+	case SCENE_SCENEFIVE:
+		g_Scene.Init = init_SceneFive;
+		g_Scene.Update = update_SceneFive;
+		g_Scene.Render = render_SceneFive;
+		g_Scene.Release = release_SceneFive;
 		break;
 	}
 
