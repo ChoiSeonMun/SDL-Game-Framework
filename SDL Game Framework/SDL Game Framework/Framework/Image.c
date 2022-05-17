@@ -28,7 +28,8 @@ void Image_LoadImage(Image* image, const char* filename)
 	sprintf_s(path, sizeof(path), "%s/%s", IMAGE_DIRECTORY, filename);
 	image->Texture = IMG_LoadTexture(g_App.Renderer, path);
 	SDL_QueryTexture(image->Texture, NULL, NULL, &image->Width, &image->Height);
-	image->ScaleX = image->ScaleY = 1.0f;
+	image->ScaleX = 1.0f;
+	image->ScaleY = 0.75f;
 
 	SDL_SetTextureBlendMode(image->Texture, SDL_BLENDMODE_BLEND);
 }

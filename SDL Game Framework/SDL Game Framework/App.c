@@ -93,6 +93,10 @@ int32 App_Run(void)
 	SDL_Event event;
 	while (true)
 	{
+		if (Input_GetKey(VK_ESCAPE)) // ESC키 눌렀을때 게임 강제 종료
+		{
+			return 0;
+		}
 		if (SDL_PollEvent(&event))
 		{
 			if (event.type == SDL_QUIT)
