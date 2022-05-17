@@ -472,7 +472,7 @@ void init_temp(void)
 	data->BlackOutAlpha = 255;
 	Image_LoadImage(&data->BlackOutImage, "black.png");
 	Image_SetAlphaValue(&data->BlackOutImage, data->BlackOutAlpha);
-	Audio_PlayFadeIn(&data->Scene->BGM, INFINITY_LOOP, 3000);
+	Audio_PlayFadeIn(&data->Scene->BGM, INFINITY_LOOP, 2000);
 
 	isSceneChanging = false;
 	showOptions = false;
@@ -567,6 +567,7 @@ void update_temp(void)
 			//선택지 선택
 			if (Input_GetKeyDown(VK_RETURN)) {
 				isSceneChanging = true;
+				Audio_FadeOut(1800);
 			}
 		}
 
