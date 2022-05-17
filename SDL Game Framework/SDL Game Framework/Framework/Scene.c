@@ -6,7 +6,7 @@
 Scene g_Scene;
 
 static ESceneType s_nextScene = SCENE_NULL;
-
+/*
 #pragma region TitleScene
 
 #define SOLID 0
@@ -350,7 +350,7 @@ void release_main(void)
 	SafeFree(g_Scene.Data);
 }
 #pragma endregion
-
+*/
 #pragma region StartScene
 const wchar_t* starttext[] = {
 	L"「오늘도 수고했어.」",
@@ -954,6 +954,7 @@ void Scene_Change(void)
 
 	switch (s_nextScene)
 	{
+		/*
 	case SCENE_TITLE:
 		g_Scene.Init = init_title;
 		g_Scene.Update = update_title;
@@ -966,6 +967,7 @@ void Scene_Change(void)
 		g_Scene.Render = render_main;
 		g_Scene.Release = release_main;
 		break;
+		*/
 	case SCENE_START:
 		g_Scene.Init = init_Start;
 		g_Scene.Update = update_Start;
