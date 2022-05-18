@@ -19,7 +19,7 @@ void csvParser(void)
 	// App_Init()에 아래 구문 추가
 	setlocale(LC_ALL, "kr_KR.utf8");
 
-
+	//
 	for (int r = 0; r < csvFile.RowCount; ++r)
 	{
 		for (int c = 0; c < csvFile.ColumnCount; ++c)

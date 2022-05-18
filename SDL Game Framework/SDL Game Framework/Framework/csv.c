@@ -18,7 +18,7 @@ void readFileToBuffer(const char* filename)
 	{
 		return;
 	}
-
+	//
 	fseek(fp, 0, SEEK_END);
 	long fileSize = ftell(fp);
 
