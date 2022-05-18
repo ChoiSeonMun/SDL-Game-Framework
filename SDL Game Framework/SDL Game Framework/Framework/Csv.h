@@ -37,6 +37,7 @@ struct Parsing_Data {
 
 };
 
+//
 
 typedef struct Parsing {
     struct Parsing_Data sceneData[200]; //200은 데이터 200줄 받음

@@ -59,6 +59,7 @@ void CreateCsvFile(CsvFile* csvFile, const char* filename)
 		csvFile->Items[i] = (CsvItem*)malloc(sizeof(CsvItem) * csvFile->ColumnCount);
 	}
 
+	//
 	s_BufferPointer = s_Buffer;
 	while (*s_BufferPointer != '\0')
 	{
