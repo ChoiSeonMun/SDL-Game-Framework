@@ -351,6 +351,191 @@ void release_main(void)
 }
 #pragma endregion
 */
+
+#pragma region MainScreen
+typedef struct MainScreenData
+{
+	Text	RoadingText[3];
+	Text	Recording;
+	Text	Date;
+	Text	Rocation;
+	Text	Infomation;
+	Text	RoadConform[4];
+	Text	BioLink[3];
+	Text	BrainLink;
+	int32	RoadingCheck;
+	int32	ConformCheck;
+	int32	BioLinkCheck;
+	int32	NextText;
+	bool	isNext;
+} MainScreenData;
+
+void init_MainScreen(void)
+{
+	g_Scene.Data = malloc(sizeof(MainScreenData));
+	memset(g_Scene.Data, 0, sizeof(MainScreenData));
+	MainScreenData* data = (MainScreenData*)g_Scene.Data;
+
+	Text_CreateText(&data->RoadingText[0], "12LotteMartHappyLight.ttf", 18, L"바이오 칩셋 로딩중.", wcslen(L"바이오 칩셋 로딩중."));
+	Text_CreateText(&data->RoadingText[1], "12LotteMartHappyLight.ttf", 18, L"바이오 칩셋 로딩중..", wcslen(L"바이오 칩셋 로딩중.."));
+	Text_CreateText(&data->RoadingText[2], "12LotteMartHappyLight.ttf", 18, L"바이오 칩셋 로딩중...", wcslen(L"바이오 칩셋 로딩중..."));
+	Text_CreateText(&data->Recording, "12LotteMartHappyLight.ttf", 18, L"기록자 - [타카네 준]", wcslen(L"기록자 - [타카네 준]"));
+	Text_CreateText(&data->Date, "12LotteMartHappyLight.ttf", 18, L"2067년 8 월 12 일", wcslen(L"2067년 8 월 12 일"));
+	Text_CreateText(&data->Rocation, "12LotteMartHappyLight.ttf", 18, L"위치 좌표 - [東京 , 日本]", wcslen(L"위치 좌표 - [동경 , 일본]"));
+	Text_CreateText(&data->Infomation, "12LotteMartHappyLight.ttf", 18, L"본 칩셋은 내각관방 직할 내각정보조사실 존치기록물 입니다-", wcslen(L"본 칩셋은 내각관방 직할 내각정보조사실 존치기록물 입니다-"));
+	Text_CreateText(&data->RoadConform[0], "12LotteMartHappyLight.ttf", 18, L"로드 컨펌중 -", wcslen(L"로드 컨펌중 -"));
+	Text_CreateText(&data->RoadConform[1], "12LotteMartHappyLight.ttf", 18, L"로드 컨펌중 --", wcslen(L"로드 컨펌중 --"));
+	Text_CreateText(&data->RoadConform[2], "12LotteMartHappyLight.ttf", 18, L"로드 컨펌중 ---", wcslen(L"로드 컨펌중 ---"));
+	Text_CreateText(&data->RoadConform[3], "12LotteMartHappyLight.ttf", 18, L"로드 컨펌중 ----", wcslen(L"로드 컨펌중 ----"));
+	Text_CreateText(&data->BioLink[0], "12LotteMartHappyLight.ttf", 18, L"바이오 링크 완료.", wcslen(L"바이오 링크 완료."));
+	Text_CreateText(&data->BioLink[1], "12LotteMartHappyLight.ttf", 18, L"바이오 링크 완료..", wcslen(L"바이오 링크 완료.."));
+	Text_CreateText(&data->BioLink[2], "12LotteMartHappyLight.ttf", 18, L"바이오 링크 완료...", wcslen(L"바이오 링크 완료..."));
+	Text_CreateText(&data->BrainLink, "12LotteMartHappyLight.ttf", 18, L"대뇌 감정 링크 확인", wcslen(L"대뇌 감정 링크 확인"));
+	data->BioLinkCheck = 0;
+	data->ConformCheck = 1;
+	data->RoadingCheck = 1;
+	data->NextText = 0;
+	data->isNext = false;
+}
+
+void update_MainScreen(void)
+{
+	MainScreenData* data = (MainScreenData*)g_Scene.Data;
+
+	static float elapsedTime;
+	static float gotoNextScene;
+	elapsedTime += Timer_GetDeltaTime();
+
+	if (elapsedTime >= 0.65f)
+	{
+		if (data->RoadingCheck < 3)
+		{
+			data->RoadingCheck++;
+		}
+		else if (data->NextText == 5 && data->RoadingCheck == 3 && data->ConformCheck < 4)
+		{
+			data->ConformCheck++;
+		}
+		else if (data->NextText == 6 && data->ConformCheck == 4 && data->BioLinkCheck < 3)
+		{
+			data->BioLinkCheck++;
+		}
+		if (data->isNext)
+		{
+			data->NextText++;
+			data->isNext = false;
+		}
+		elapsedTime = 0;
+	}
+	if (data->NextText == 8)
+	{
+		gotoNextScene += Timer_GetDeltaTime();
+		if (gotoNextScene >= 3.0f)
+		{
+			Scene_SetNextScene(SCENE_START);
+		}
+	}
+}
+
+void render_MainScreen(void)
+{
+	SDL_Color color = { .r = 255,.b = 255,.g = 255 };
+	MainScreenData* data = (MainScreenData*)g_Scene.Data;
+	for (int32 i = 0; i < data->RoadingCheck; i++)
+	{
+		Renderer_DrawTextSolid(&data->RoadingText[i], 30, 30, color);
+	}
+	if (data->RoadingCheck == 3)
+	{
+		data->isNext = true;
+	}
+	if (data->NextText > 0)
+	{
+		Renderer_DrawTextSolid(&data->Recording, 30, 70, color);
+		if (data->NextText == 1)
+		{
+			data->isNext = true;
+		}
+	}
+	if (data->NextText > 1)
+	{
+		Renderer_DrawTextSolid(&data->Date, 700, 340, color);
+		if (data->NextText == 2)
+		{
+			data->isNext = true;
+		}
+	}
+	if (data->NextText > 2)
+	{
+		Renderer_DrawTextSolid(&data->Rocation, 660, 370, color);
+		if (data->NextText == 3)
+		{
+			data->isNext = true;
+		}
+	}
+	if (data->NextText > 3)
+	{
+		Renderer_DrawTextSolid(&data->Infomation, 50, 400, color);
+		if (data->NextText == 4)
+		{
+			data->isNext = true;
+		}
+	}
+	if (data->NextText > 4)
+	{
+		for (int32 i = 0; i < data->ConformCheck; i++)
+		{
+			Renderer_DrawTextSolid(&data->RoadConform[i], 60, 520, color);
+			
+		}
+		if (data->NextText == 5 && data->ConformCheck == 4)
+		{
+			data->isNext = true;
+		}
+	}
+	if (data->NextText > 5)
+	{
+		for (int32 i = 0; i < data->BioLinkCheck; i++)
+		{
+			Renderer_DrawTextSolid(&data->BioLink[i], 800, 600, color);
+		}
+		if (data->NextText == 6 && data->ConformCheck == 3)
+		{
+			data->isNext = true;
+		}
+	}
+	if (data->NextText > 6)
+	{
+		Renderer_DrawTextSolid(&data->BrainLink, 1020, 600, color);
+		if (data->NextText == 7)
+		{
+			data->isNext = true;
+		}
+	}
+}
+
+void release_MainScreen(void)
+{
+	MainScreenData* data = (MainScreenData*)g_Scene.Data;
+
+	for (int32 i = 0; i < 3; i++)
+	{
+		Text_FreeText(&data->RoadingText[i]);
+		Text_FreeText(&data->BioLink[i]);
+		Text_FreeText(&data->RoadConform[i]);
+	}
+	Text_FreeText(&data->RoadConform[3]);
+	Text_FreeText(&data->Recording);
+	Text_FreeText(&data->Date);
+	Text_FreeText(&data->Rocation);
+	Text_FreeText(&data->Infomation);
+	Text_FreeText(&data->BrainLink);
+
+	SafeFree(g_Scene.Data);
+}
+
+#pragma endregion
+
 #pragma region StartScene
 const wchar_t* starttext[] = {
 	L"「오늘도 수고했어.」",
@@ -368,9 +553,9 @@ const wchar_t* starttext[] = {
 
 typedef struct StartSceneData
 {
-	Text	GuideLine[11];
-	Image	BackGround;
-	int32	check;
+	Text		GuideLine[11];
+	Image		BackGround;
+	int32		check;
 } StartSceneData;
 
 void init_Start(void)
@@ -968,6 +1153,12 @@ void Scene_Change(void)
 		g_Scene.Release = release_main;
 		break;
 		*/
+	case SCENE_MAINSCREEN:
+		g_Scene.Init = init_MainScreen;
+		g_Scene.Update = update_MainScreen;
+		g_Scene.Render = render_MainScreen;
+		g_Scene.Release = release_MainScreen;
+		break;
 	case SCENE_START:
 		g_Scene.Init = init_Start;
 		g_Scene.Update = update_Start;
