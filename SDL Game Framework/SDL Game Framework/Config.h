@@ -1,11 +1,11 @@
-// Config.h : °¢Á¾ ¼³Á¤ ¸ÅÅ©·Î
+// Config.h : ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½
 #pragma once
 
-// Ã¢ÀÇ Å©±â
-#define WINDOW_WIDTH	1600
-#define WINDOW_HEIGHT	1010
+// Ã¢ï¿½ï¿½ Å©ï¿½ï¿½
+#define WINDOW_WIDTH	1711
+#define WINDOW_HEIGHT	1080
 
-// ¾Ö¼Â °æ·Î
+// ï¿½Ö¼ï¿½ ï¿½ï¿½ï¿½
 #define IMAGE_DIRECTORY	"Asset/Image"
 #define SOUND_DIRECTORY	"Asset/Sound"
 #define FONT_DIRECTORY "Asset/Font"
@@ -14,7 +14,7 @@
 // FPS
 #define FPS				60
 
-// Back Buffer Å¬¸®¾îÇÒ ¶§ »ö±ò
+// Back Buffer Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 #define CLEAR_COLOR_R	0
 #define CLEAR_COLOR_G	0
 #define CLEAR_COLOR_B	0

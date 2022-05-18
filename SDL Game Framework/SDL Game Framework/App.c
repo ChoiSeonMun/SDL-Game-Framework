@@ -112,6 +112,10 @@ int32 App_Run(void)
 				processInput();
 				update();
 				render();
+				if (Input_GetKeyDown(VK_ESCAPE))
+				{
+					return false;
+				}
 			}
 		}
 	}

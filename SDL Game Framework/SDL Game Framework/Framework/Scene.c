@@ -8,22 +8,22 @@ Scene g_Scene;
 static ESceneType s_nextScene = SCENE_NULL;
 
 typedef struct tagScene {
-	int32			Number;							//¾À ³Ñ¹ö
-	const wchar_t*	Name;							//¾À ÀÌ¸§
-	Image			BGImage;						//¹è°æÈ­¸é
-	Music			BGM;							//¹è°æ À½¾Ç
-	Image			AdditionImage;					//Ãß°¡ ÀÌ¹ÌÁö
-	int32			AddImage_X;						//Ãß°¡ ÀÌ¹ÌÁö À§Ä¡
-	int32			AddImage_Y;						//Ãß°¡ ÀÌ¹ÌÁö À§Ä¡
-	SoundEffect		EffectSound;					//È¿°úÀ½
-	int32			EffectSoundTiming;				//È¿°úÀ½ Ç¥Çö Å¸ÀÌ¹Ö
-	int32			DialogCount;					//ÅØ½ºÆ® °¹¼ö
-	Text			DialogList[10][10];				//ÅØ½ºÆ® ¹è¿­
-	int32			OptionCount;					//¿É¼Ç °¹¼ö
-	Image			OptionImagesList[6];			//¿É¼Ç ÀÌ¹ÌÁö ¹è¿­
-	int32			NextSceneNumberList[6];			//¿É¼Ç ¼±ÅÃ½Ã ³Ñ¾î°¡´Â ¾À ³Ñ¹ö
-	int32			NextEndingSceneNumberList[6];	//´ÙÀ½ ¾ÀÀÌ ¿£µù¾ÀÀÏ °æ¿ì
-	bool			isEndingScene;					//¿£µùÀÎÁö
+	int32			Number;							//ï¿½ï¿½ ï¿½Ñ¹ï¿½
+	const wchar_t*	Name;							//ï¿½ï¿½ ï¿½Ì¸ï¿½
+	Image			BGImage;						//ï¿½ï¿½ï¿½È­ï¿½ï¿½
+	Music			BGM;							//ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	Image			AdditionImage;					//ï¿½ß°ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½
+	int32			AddImage_X;						//ï¿½ß°ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
+	int32			AddImage_Y;						//ï¿½ß°ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡
+	SoundEffect		EffectSound;					//È¿ï¿½ï¿½ï¿½ï¿½
+	int32			EffectSoundTiming;				//È¿ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½ Å¸ï¿½Ì¹ï¿½
+	int32			DialogCount;					//ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+	Text			DialogList[10][10];				//ï¿½Ø½ï¿½Æ® ï¿½è¿­
+	int32			OptionCount;					//ï¿½É¼ï¿½ ï¿½ï¿½ï¿½ï¿½
+	Image			OptionImagesList[6];			//ï¿½É¼ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½è¿­
+	int32			NextSceneNumberList[6];			//ï¿½É¼ï¿½ ï¿½ï¿½ï¿½Ã½ï¿½ ï¿½Ñ¾î°¡ï¿½ï¿½ ï¿½ï¿½ ï¿½Ñ¹ï¿½
+	int32			NextEndingSceneNumberList[6];	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+	bool			isEndingScene;					//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 } SceneStruct;
 
 #define SCENE_COUNT	118
@@ -35,26 +35,33 @@ SceneStruct Scenes[SCENE_COUNT];
 #define SHADED 1
 #define BLENDED 2
 
-const wchar_t* str[] = {
-	L"¿©±â´Â Å¸ÀÌÆ²¾ÀÀÔ´Ï´Ù. ÅØ½ºÆ®¿Í °ü·ÃµÈ ¿©·¯°¡Áö¸¦ Å×½ºÆ®ÇØº¾½Ã´Ù.",
-	L"BÅ°¸¦ ´©¸£¸é ÆùÆ®°¡ ±½°Ô º¯ÇÕ´Ï´Ù.",
-	L"IÅ°¸¦ ´©¸£¸é ÆùÆ®°¡ ÀÌÅÅ¸¯Ã¼·Î º¯ÇÕ´Ï´Ù.",
-	L"UÅ°¸¦ ´©¸£¸é ÅØ½ºÆ®¿¡ ¹ØÁÙÀÌ »ý±é´Ï´Ù.",
-	L"SÅ°¸¦ ´©¸£¸é ÅØ½ºÆ®¿¡ Ãë¼Ò¼±ÀÌ »ý±é´Ï´Ù.",
-	L"NÅ°¸¦ ´©¸£¸é ´Ù½Ã ¿ø·¡´ë·Î µ¹¾Æ¿É´Ï´Ù.",
-	L"CÅ°¸¦ ´©¸£¸é ·»´õ ¸ðµå°¡ ¹Ù²ò´Ï´Ù. (Solid -> Shaded -> Blended)",
-	L"1Å°¸¦ ´©¸£¸é ÅØ½ºÆ®°¡ ÀÛ¾ÆÁý´Ï´Ù.",
-	L"2Å°¸¦ ´©¸£¸é ÅØ½ºÆ®°¡ Ä¿Áý´Ï´Ù.",
-	L"½ºÆäÀÌ½º Å°¸¦ ´©¸£¸é ´ÙÀ½ ¾ÀÀ¸·Î ³Ñ¾î°©´Ï´Ù."
-};
+//const wchar_t* str[] = {
+//	L"PRESS THE ENTER",
+//	//L"BÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Õ´Ï´ï¿½.",
+//	//L"IÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Å¸ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½Õ´Ï´ï¿½.",
+//	//L"UÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.",
+//	//L"SÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½Ò¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.",
+//	//L"NÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ¿É´Ï´ï¿½.",
+//	//L"CÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½å°¡ ï¿½Ù²ï¿½Ï´ï¿½. (Solid -> Shaded -> Blended)",
+//	//L"1Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ ï¿½Û¾ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.",
+//	//L"2Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ø½ï¿½Æ®ï¿½ï¿½ Ä¿ï¿½ï¿½ï¿½Ï´ï¿½.",
+//	//L"ï¿½ï¿½ï¿½ï¿½ï¿½Ì½ï¿½ Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ñ¾î°©ï¿½Ï´ï¿½."
+//};
 
 typedef struct TitleSceneData
 {
-	Text	GuideLine[10];
-	Text	TestText;
+	Text	GuideLine[1];
+	Music	TitleBGM;
+	float	Volume;
+	Text	EnterText;
 	int32	FontSize;
 	int32	RenderMode;
-	Image	TestImage;
+	Image	TitleImage;
+	int32	X;
+	int32	Y;
+	Image	StartImage;
+	int32	SX;
+	int32	SY;
 } TitleSceneData;
 
 void init_title(void)
@@ -63,129 +70,438 @@ void init_title(void)
 	memset(g_Scene.Data, 0, sizeof(TitleSceneData));
 
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
-	for (int32 i = 0; i < 10; ++i)
-	{
-		Text_CreateText(&data->GuideLine[i], "d2coding.ttf", 16, str[i], wcslen(str[i]));
-	}
+	//for (int32 i = 0; i < 1; ++i)
+	//{
+	//	Text_CreateText(&data->GuideLine[i], "d2coding.ttf", 16, str[i], wcslen(str[i]));
+	//}
 
-	data->FontSize = 24;
-	Text_CreateText(&data->TestText, "d2coding.ttf", data->FontSize, L"ÀÌ ÅØ½ºÆ®°¡ º¯ÇÕ´Ï´Ù.", 13);
+	data->FontSize = 48;
+	Text_CreateText(&data->EnterText, "chosun.ttf", data->FontSize, L"--- PRESS THE ENTER ---", 24);
 
 	data->RenderMode = SOLID;
 
-	Image_LoadImage(&data->TestImage, "Background.jfif");
+	Image_LoadImage(&data->TitleImage, "title_2.jpg");
+	data->X = 0;
+	data->Y = 0;
+	Image_LoadImage(&data->StartImage, "start.png");
+	data->SX = (WINDOW_WIDTH / 2) - (data->StartImage.Width / 2);
+	data->SY = 650;
+
+	Audio_LoadMusic(&data->TitleBGM, "title.mp3");
+	
+	Audio_PlayFadeIn(&data->TitleBGM, INFINITY_LOOP, 3000);
+
+	data->Volume = 1.0f;
 }
 
 void update_title(void)
 {
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
 
-	if (Input_GetKeyDown('B'))
+	if (Input_GetKeyDown(VK_RETURN))
 	{
-		Text_SetFontStyle(&data->TestText, FS_BOLD);
-	}
-
-	if (Input_GetKeyDown('I'))
-	{
-		Text_SetFontStyle(&data->TestText, FS_ITALIC);
-	}
-
-	if (Input_GetKeyDown('U'))
-	{
-		Text_SetFontStyle(&data->TestText, FS_UNDERLINE);
-	}
-
-	if (Input_GetKeyDown('S'))
-	{
-		Text_SetFontStyle(&data->TestText, FS_STRIKETHROUGH);
-	}
-
-	if (Input_GetKeyDown('N'))
-	{
-		Text_SetFontStyle(&data->TestText, FS_NORMAL);
-	}
-
-	if (Input_GetKeyDown('C'))
-	{
-		data->RenderMode = (data->RenderMode + 1) % 3;
-	}
-
-	if (Input_GetKey('1'))
-	{
-		--data->FontSize;
-		Text_SetFont(&data->TestText, "d2coding.ttf", data->FontSize);
-	}
-
-	if (Input_GetKey('2'))
-	{
-		++data->FontSize;
-		Text_SetFont(&data->TestText, "d2coding.ttf", data->FontSize);
-	}
-
-	if (Input_GetKeyDown(VK_SPACE))
-	{
-		Scene_SetNextScene(SCENE_MAIN);
+		Scene_SetNextScene(SCENE_CREDIT);
 	}
 }
 
 void render_title(void)
 {
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
-	for (int32 i = 0; i < 10; ++i)
-	{
-		SDL_Color color = { .a = 255 };
-		Renderer_DrawTextSolid(&data->GuideLine[i], 10, 20 * i, color);
-	}
+	//for (int32 i = 0; i < 10; ++i)
+	//{
+	//	SDL_Color color = { .a = 255 };
+	//	Renderer_DrawTextSolid(&data->GuideLine[i], 10, 20 * i, color);
+	//}
+	
+	//switch (data->RenderMode)
+	//{
+	//case SOLID:
+	//{
+	//	SDL_Color color = { .a = 255 };
+	//	Renderer_DrawTextSolid(&data->EnterText, 400, 400, color);
+	//}
+	//break;
+	//case SHADED:
+	//{
+	//	SDL_Color bg = { .a = 255 };
+	//	SDL_Color fg = { .r = 255, .g = 255, .a = 255 };
+	//	Renderer_DrawTextShaded(&data->EnterText, 400, 400, fg, bg);
+	//}
+	//break;
+	//case BLENDED:
+	//{
+	//	Renderer_DrawImage(&data->TestImage, 400, 400);
+	//	SDL_Color color = { .r = 255, .g = 255, .b = 255, .a = 255 };
+	//	Renderer_DrawTextBlended(&data->EnterText, 400, 400, color);
+	//}
+	//break;
+	//}
+	Renderer_DrawImage(&data->TitleImage, data->X, data->Y);
+	static float elapsedTime = 0;
 
-	switch (data->RenderMode)
-	{
-	case SOLID:
+	static bool isShow = true;
+	elapsedTime += Timer_GetDeltaTime();
+	if (elapsedTime >= 1.0f)
 	{
 		SDL_Color color = { .a = 255 };
-		Renderer_DrawTextSolid(&data->TestText, 400, 400, color);
+		Renderer_DrawImage(&data->StartImage, data->SX, data->SY);
+		Renderer_DrawTextSolid(&data->EnterText, WINDOW_WIDTH / 2 - (data->EnterText.Length * data->FontSize) / 4, 950, color);
+		
+		if (elapsedTime >= 1.5f)
+		{ 
+			elapsedTime = 0.0f;
+		}
 	}
-	break;
-	case SHADED:
-	{
-		SDL_Color bg = { .a = 255 };
-		SDL_Color fg = { .r = 255, .g = 255, .a = 255 };
-		Renderer_DrawTextShaded(&data->TestText, 400, 400, fg, bg);
-	}
-	break;
-	case BLENDED:
-	{
-		Renderer_DrawImage(&data->TestImage, 400, 400);
-		SDL_Color color = { .r = 255, .g = 255, .b = 255, .a = 255 };
-		Renderer_DrawTextBlended(&data->TestText, 400, 400, color);
-	}
-	break;
-	}
+	
+	
+	
 }
 
 void release_title(void)
 {
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
 
+	//for (int32 i = 0; i < 10; ++i)
+	//{
+	//	Text_FreeText(&data->GuideLine[i]);
+	//}
+	Text_FreeText(&data->EnterText);
+	SafeFree(g_Scene.Data);
+}
+#pragma endregion
+
+
+#pragma region CreditScene
+typedef struct CreditSceneData
+{
+	Text	EnterText;
+	int32	FontSize;
+	int32	RenderMode;
+	TitleSceneData TitleBGM;
+	Image	CreditImage;
+	int32	X;
+	int32	Y;
+} CreditSceneData;
+
+void init_credit(void)
+{
+	g_Scene.Data = malloc(sizeof(CreditSceneData));
+	memset(g_Scene.Data, 0, sizeof(CreditSceneData));
+
+	CreditSceneData* data = (CreditSceneData*)g_Scene.Data;
+
+	data->FontSize = 48;
+	Text_CreateText(&data->EnterText, "chosun.ttf", data->FontSize, L"--- PRESS THE ENTER ---", 24);
+
+	data->RenderMode = SOLID;
+
+	Image_LoadImage(&data->CreditImage, "credit.jpg");
+	data->X = 0;
+	data->Y = 0;
+
+}
+
+
+void update_credit(void)
+{
+	CreditSceneData* data = (CreditSceneData*)g_Scene.Data;
+
+	if (Input_GetKeyDown(VK_RETURN))
+	{
+		Scene_SetNextScene(SCENE_INTRO);
+		Audio_Stop();
+	}
+}
+
+void render_credit(void)
+{
+	CreditSceneData* data = (CreditSceneData*)g_Scene.Data;
+	Renderer_DrawImage(&data->CreditImage, data->X, data->Y);
+	static float elapsedTime = 0;
+
+	static bool isShow = true;
+	elapsedTime += Timer_GetDeltaTime();
+	if (elapsedTime >= 1.0f)
+	{
+		SDL_Color color = { .a = 255 };
+		Renderer_DrawTextSolid(&data->EnterText, WINDOW_WIDTH / 2 - (data->EnterText.Length * data->FontSize) / 4, 900, color);
+
+		if (elapsedTime >= 2.0f)
+		{
+			elapsedTime = 0.0f;
+		}
+	}
+
+}
+
+void release_credit(void)
+{
+	CreditSceneData* data = (CreditSceneData*)g_Scene.Data;
+
+	Text_FreeText(&data->EnterText);
+	Audio_FreeMusic(&data->TitleBGM);
+
+	
+	SafeFree(g_Scene.Data);
+}
+#pragma endregion
+
+#pragma region Intro
+
+const wchar_t* intro1str[] = {
+	L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 'ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½'ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ¹Î±ï¿½ï¿½ï¿½, ",
+	L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 'ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½'ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½.",
+	L" ",
+	L"ï¿½ï¿½ ï¿½Ì»ï¿½ï¿½ï¿½ 'ï¿½ï¿½ï¿½ï¿½'ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+	L" ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ TFï¿½ï¿½ <ï¿½àº¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½> ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½.",
+};
+const wchar_t* intro2str[] = {
+	L"ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ TFï¿½ï¿½ <ï¿½àº¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½> ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ",
+	L"ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½àº¹ï¿½ï¿½ ï¿½Èºï¿½ï¿½ï¿½ Ã¥ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.",
+	L" ",
+	L"ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½ ï¿½Ç°ï¿½ï¿½ï¿½ ï¿½àº¹ï¿½ï¿½",
+	L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñµå¸®ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½",
+	L" ",
+	L"<ï¿½àº¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½> ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Æ·ï¿½ ï¿½ï¿½Ã·ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½",
+	L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.",
+};
+const wchar_t* intro3str[] = {
+	L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ <ï¿½àº¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½> ï¿½ï¿½",
+	L"<ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½ë·® ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½,  ",
+	L"ï¿½Å±â¼­ ï¿½ï¿½ï¿½Ð°è¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ ",
+	L"ï¿½Ì¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï°ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½. ï¿½ï¿½ï¿½ï¿½, ï¿½Øºï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½.",
+	L" ",
+	L"ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ ",
+	L"ï¿½ï¿½Ã·ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï¿ï¿½ ",
+	L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½. ",
+};
+const wchar_t* intro4str[] = {
+	L"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ÈµÇ´ï¿½ ï¿½ï¿½ï¿½Î´ï¿½, \"ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½\" ï¿½ï¿½ï¿½  ",
+	L"ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ 000 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Çºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½È´ï¿½.",
+	L" ",
+	L"<ï¿½àº¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½>ï¿½ï¿½ 'ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Ç½ï¿½ï¿½ï¿½'ï¿½ï¿½ ï¿½Å°ï¿½ï¿½Ï¸ï¿½,",
+	L"ï¿½ï¿½ï¿½ï¿½Ýµï¿½ ï¿½Ö±ï¿½ï¿½ ï¿½Ï¿ï¿½ï¿½ï¿½. ",
+	L"'ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Ç½ï¿½ï¿½ï¿½'ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ ",
+	L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ",
+	L"<ï¿½àº¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½>ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä¡ï¿½á¸¦ ï¿½Ï¸ï¿½",
+	L"'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î°ï¿½È­'ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï¿ï¿½ï¿½ï¿½.",
+	L" ",
+	L"ï¿½×·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ã¹Îµï¿½ï¿½ï¿½ \"ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½\"  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+	L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Å°ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¾Ò´ï¿½.",
+};
+const wchar_t* intro5str[] = {
+	L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 'ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Ç½ï¿½ï¿½ï¿½' ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ",
+	L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä« ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ê¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì·ï¿½ï¿½ß´ï¿½.",
+	L" ",
+	L"1) 'ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Ç½ï¿½ï¿½ï¿½' ï¿½ï¿½ï¿½ï¿½",
+	L"<ï¿½àº¹ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½>ï¿½ï¿½ ï¿½ï¿½î°¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½. ",
+	L"2) ï¿½ï¿½ï¿½ï¿½ 'ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Ç½ï¿½ï¿½ï¿½'ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î´ï¿½.",
+	L"3) ï¿½ï¿½ï¿½ï¿½ï¿½é¿¡ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß¼ï¿½ ï¿½ï¿½ ï¿½Ý¾ï¿½ï¿½ï¿½ ï¿½Ù½ï¿½ È¸ï¿½ï¿½ï¿½Ñ´Ù´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+	L"ï¿½ï¿½ ï¿½Ê¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ý¾ï¿½ï¿½ï¿½ ï¿½Ö¸çµ¿ï¿½Ç¼ï¿½ï¿½ï¿½ ï¿½Þ¾Æ°ï¿½ï¿½ï¿½.",
+	L" ",
+	L"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½.",
+};
+const wchar_t* intro6str[] = {
+	L"ï¿½ï¿½ 'ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½'ï¿½ï¿½ Å« ï¿½ï¿½ï¿½Û¿ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½Âµï¿½,",
+	L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 'ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½' ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ",
+	L" ",
+	L"ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ï¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç¿ï¿½ ",
+	L"K-POP ï¿½ë·¡ï¿½ï¿½ ï¿½ï¿½ï¿½ Æ²ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß°ï¿½,",
+	L"ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ 'ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½'ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+	L"K-POP ï¿½ë·¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß´ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½.",
+	L" ",
+	L"ï¿½ï¿½ ï¿½ã¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½",
+	L"ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½å±¸ï¿½ï¿½ ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½É¼ï¿½ï¿½ï¿½ ï¿½Ö´Ù°ï¿½ ï¿½Ñ´ï¿½.",
+};
+
+
+typedef struct IntroSceneData
+{
+	Text	Inro1Line[5];
+	Text	Inro2Line[8];
+	Text	Inro3Line[8];
+	Text	Inro4Line[12];
+	Text	Inro5Line[10];
+	Text	Inro6Line[10];
+	int32	FontSize;
+	int32	RenderMode;
+	Image	Intro1Image;
+	int32	X;
+	int32	Y;
+	Image	Intro2Image;
+	Music	IntroBGM;
+	float   Volume;
+
+} IntroSceneData;
+#define TextFont "GmarketSansTTFBold.ttf"
+void init_intro(void)
+{
+	g_Scene.Data = malloc(sizeof(IntroSceneData));
+	memset(g_Scene.Data, 0, sizeof(IntroSceneData));
+
+	IntroSceneData* data = (IntroSceneData*)g_Scene.Data;
+	
+	for (int32 i = 0; i < 5; ++i)
+	{
+		
+		Text_CreateText(&data->Inro1Line[i], TextFont, 25, intro1str[i], wcslen(intro1str[i]));
+	}
+	for (int32 i = 0; i < 8; ++i)
+	{
+		Text_CreateText(&data->Inro2Line[i], TextFont, 25, intro2str[i], wcslen(intro2str[i]));
+	}
+	for (int32 i = 0; i < 8; ++i)
+	{
+		Text_CreateText(&data->Inro3Line[i], TextFont, 25, intro3str[i], wcslen(intro3str[i]));
+	}
+	for (int32 i = 0; i < 12; ++i)
+	{
+		Text_CreateText(&data->Inro4Line[i], TextFont, 25, intro4str[i], wcslen(intro4str[i]));
+	}
 	for (int32 i = 0; i < 10; ++i)
 	{
-		Text_FreeText(&data->GuideLine[i]);
+		Text_CreateText(&data->Inro5Line[i], TextFont, 25, intro5str[i], wcslen(intro5str[i]));
 	}
-	Text_FreeText(&data->TestText);
+	for (int32 i = 0; i < 10; ++i)
+	{
+		Text_CreateText(&data->Inro6Line[i], TextFont, 25, intro6str[i], wcslen(intro6str[i]));
+	}
+	
+	
+	data->RenderMode = SOLID;
 
+	Image_LoadImage(&data->Intro1Image, "Intro-1.jpg");
+	Image_LoadImage(&data->Intro2Image, "Intro-2.jpg");
+	data->X = 0;
+	data->Y = 0;
+
+	Audio_LoadMusic(&data->IntroBGM, "HappyLab.mp3");
+
+	Audio_PlayFadeIn(&data->IntroBGM, INFINITY_LOOP, 3000);
+
+	data->Volume = 1.0f;
+
+}
+int count = 1;
+void update_intro(void)
+{
+	if (Input_GetKeyDown(VK_RETURN))
+	{
+		count++;
+		if (count == 7)
+		{
+			Scene_SetNextScene(SCENE_MAIN);
+		}
+	}
+	
+}
+#define INTRO_X 430
+void render_intro(void)
+{
+	IntroSceneData* data = (IntroSceneData*)g_Scene.Data;
+	Renderer_DrawImage(&data->Intro1Image, data->X, data->Y);
+	if (count >= 4)
+	{
+		Renderer_DrawImage(&data->Intro2Image, data->X, data->Y);
+	}
+	SDL_Color color = { .r = 255, .g = 255, .b = 255, .a = 255 };
+	
+	if (count == 1)
+	{
+		for (int32 i = 0; i < 5; ++i)
+		{
+			//Text_SetFontStyle(&data->Inro1Line[i], FS_BOLD);
+			Renderer_DrawTextSolid(&data->Inro1Line[i], INTRO_X, 220 + (50 * i), color);
+		}
+	}
+	if (count == 2)
+	{
+		for (int32 i = 0; i < 8; ++i)
+		{
+			//Text_SetFontStyle(&data->Inro2Line[i], FS_BOLD);
+			Renderer_DrawTextSolid(&data->Inro2Line[i], INTRO_X, 220 + (50 * i), color);
+		}
+	}
+	if (count == 3)
+	{
+		for (int32 i = 0; i < 8; ++i)
+		{
+			//Text_SetFontStyle(&data->Inro3Line[i], FS_BOLD);
+			Renderer_DrawTextSolid(&data->Inro3Line[i], INTRO_X, 220 + (50 * i), color);
+		}
+	}
+	if (count == 4)
+	{
+		for (int32 i = 0; i < 12; ++i)
+		{
+			//Text_SetFontStyle(&data->Inro4Line[i], FS_BOLD);
+			Renderer_DrawTextSolid(&data->Inro4Line[i], INTRO_X, 220 + (50 * i), color);
+		}
+	}
+	if (count == 5)
+	{
+		for (int32 i = 0; i < 10; ++i)
+		{
+			//Text_SetFontStyle(&data->Inro5Line[i], FS_BOLD);
+			Renderer_DrawTextSolid(&data->Inro5Line[i], INTRO_X, 220 + (50 * i), color);
+		}
+	}
+	if (count == 6)
+	{
+		for (int32 i = 0; i < 10; ++i)
+		{
+			//Text_SetFontStyle(&data->Inro6Line[i], FS_BOLD);
+			Renderer_DrawTextSolid(&data->Inro6Line[i], INTRO_X, 220 + (50 * i), color);
+		}
+	}
+
+
+	
+}
+
+void release_intro(void)
+{
+	IntroSceneData* data = (IntroSceneData*)g_Scene.Data;
+	for (int32 i = 0; i < 5; ++i)
+	{
+		Text_FreeText(&data->Inro1Line[i]);
+	}
+	for (int32 i = 0; i < 8; ++i)
+	{
+		Text_FreeText(&data->Inro2Line[i]);
+	}
+	for (int32 i = 0; i < 8; ++i)
+	{
+		Text_FreeText(&data->Inro3Line[i]);
+	}
+	for (int32 i = 0; i < 12; ++i)
+	{
+		Text_FreeText(&data->Inro4Line[i]);
+	}
+	for (int32 i = 0; i < 10; ++i)
+	{
+		Text_FreeText(&data->Inro5Line[i]);
+	}
+	for (int32 i = 0; i < 10; ++i)
+	{
+		Text_FreeText(&data->Inro6Line[i]);
+	}
+
+	Audio_FreeMusic(&data->IntroBGM);
 	SafeFree(g_Scene.Data);
 }
 #pragma endregion
 
 #pragma region MainScene
 const wchar_t* str2[] = {
-	L"¿©±â¼­´Â »ç¿îµå¿Í ÀÌ¹ÌÁö ºí·»µù¿¡ ´ëÇØ¼­ ¾Ë¾Æº¾½Ã´Ù.",
-	L"È­»ìÇ¥Å°·Î ÀÌ¹ÌÁö¸¦ ÀÌµ¿½ÃÅ³ ¼ö ÀÖ½À´Ï´Ù.",
-	L"EÅ°¸¦ ´©¸£¸é ÀÌÆåÆ®¸¦ Àç»ý½ÃÅ³ ¼ö ÀÖ½À´Ï´Ù. ÀÌÆåÆ® ¼Ò¸®°¡ ÀÛÀ¸´Ï º¼·ýÀ» ³·Ãá ÈÄ ÁøÇàÇÏ¼¼¿ä.",
-	L"MÅ°·Î À½¾ÇÀ» ²ô°Å³ª ÄÓ ¼ö ÀÖ½À´Ï´Ù.",
-	L"PÅ°·Î À½¾ÇÀ» ¸ØÃß°Å³ª Àç°³ÇÒ ¼ö ÀÖ½À´Ï´Ù.",
-	L"1¹ø°ú 2¹øÀ¸·Î º¼·ýÀ» Á¶ÀýÇÒ ¼ö ÀÖ½À´Ï´Ù.",
-	L"WASD·Î ÀÌ¹ÌÁöÀÇ ½ºÄÉÀÏÀ» Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.",
-	L"KLÅ°·Î ÀÌ¹ÌÁöÀÇ Åõ¸íµµ¸¦ Á¶ÀýÇÒ ¼ö ÀÖ½À´Ï´Ù."
+	L"ï¿½ï¿½ï¿½â¼­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½Ë¾Æºï¿½ï¿½Ã´ï¿½.",
+	L"È­ï¿½ï¿½Ç¥Å°ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½Å³ ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.",
+	L"EÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Å³ ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½. ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ò¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¼ï¿½ï¿½ï¿½.",
+	L"MÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Å³ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.",
+	L"PÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß°Å³ï¿½ ï¿½ç°³ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.",
+	L"1ï¿½ï¿½ï¿½ï¿½ 2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.",
+	L"WASDï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½.",
+	L"KLÅ°ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö½ï¿½ï¿½Ï´ï¿½."
 };
 
 #define GUIDELINE_COUNT 8
@@ -227,7 +543,7 @@ void setScene(int32 indexNum, wchar_t* name, char* bgImageName,
 	Scenes[indexNum - 1].BGImage.ScaleX -= 0.065f;
 	Audio_LoadMusic(&Scenes[indexNum - 1].BGM, musicName);
 	Image_LoadImage(&Scenes[indexNum - 1].AdditionImage, additionImageName);
-	//¼öÁ¤ ÇÊ¿ë
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¿ï¿½
 	Scenes[indexNum - 1].AddImage_X = 0;
 	Scenes[indexNum - 1].AddImage_Y = 0;
 	Audio_LoadMusic(&Scenes[indexNum - 1].EffectSound, effectSoundName);
@@ -241,11 +557,11 @@ void setScene(int32 indexNum, wchar_t* name, char* bgImageName,
 		}
 	}
 	
-	Text_CreateText(&Scenes[indexNum-1].DialogList[0][0], "d2coding.ttf", 50, L"2031³â 5¿ù 13ÀÏ ¿À·£¸¸¿¡ ¿©µ¿»ýÀ» ¸¸³ª ", wcslen(L"2031³â 5¿ù 13ÀÏ ¿À·£¸¸¿¡ ¿©µ¿»ýÀ» ¸¸³ª "));
-	Text_CreateText(&Scenes[indexNum-1].DialogList[0][1], "d2coding.ttf", 50, L"¿ë»ê ¾ÆÀÌÆÄÅ© ¸ô¿¡ ¿Ô´Ù.", wcslen(L"¿ë»ê ¾ÆÀÌÆÄÅ© ¸ô¿¡ ¿Ô´Ù."));
+	Text_CreateText(&Scenes[indexNum-1].DialogList[0][0], "d2coding.ttf", 50, L"2031ï¿½ï¿½ 5ï¿½ï¿½ 13ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ", wcslen(L"2031ï¿½ï¿½ 5ï¿½ï¿½ 13ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ "));
+	Text_CreateText(&Scenes[indexNum-1].DialogList[0][1], "d2coding.ttf", 50, L"ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ ï¿½Ô´ï¿½.", wcslen(L"ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ ï¿½Ô´ï¿½."));
 	Text_CreateText(&Scenes[indexNum-1].DialogList[0][2], "d2coding.ttf", 50, L"", wcslen(L""));
-	Text_CreateText(&Scenes[indexNum-1].DialogList[1][0], "d2coding.ttf", 50, L"ÀÌ°÷¿£ ¿©µ¿»ýÀÌ °¡Àå ÁÁ¾ÆÇÏ´Â ", wcslen(L"ÀÌ°÷¿£ ¿©µ¿»ýÀÌ °¡Àå ÁÁ¾ÆÇÏ´Â "));
-	Text_CreateText(&Scenes[indexNum-1].DialogList[1][1], "d2coding.ttf", 50, L"Å°ÁîÄ«Æä°¡ ÀÖ±â ¶§¹®ÀÌ´Ù.", wcslen(L"Å°ÁîÄ«Æä°¡ ÀÖ±â ¶§¹®ÀÌ´Ù."));
+	Text_CreateText(&Scenes[indexNum-1].DialogList[1][0], "d2coding.ttf", 50, L"ï¿½Ì°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ", wcslen(L"ï¿½Ì°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ "));
+	Text_CreateText(&Scenes[indexNum-1].DialogList[1][1], "d2coding.ttf", 50, L"Å°ï¿½ï¿½Ä«ï¿½ä°¡ ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.", wcslen(L"Å°ï¿½ï¿½Ä«ï¿½ä°¡ ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½."));
 	Text_CreateText(&Scenes[indexNum-1].DialogList[1][2], "d2coding.ttf", 50, L"", wcslen(L""));
 
 	Scenes[indexNum-1].OptionCount = 0;
@@ -267,11 +583,11 @@ void setScenes(void) {
 	Scenes[0].EffectSoundTiming = NULL;
 
 	Scenes[0].DialogCount = 2;
-	Text_CreateText(&Scenes[0].DialogList[0][0], "d2coding.ttf", 50, L"2031³â 5¿ù 13ÀÏ ¿À·£¸¸¿¡ ¿©µ¿»ýÀ» ¸¸³ª ", wcslen(L"2031³â 5¿ù 13ÀÏ ¿À·£¸¸¿¡ ¿©µ¿»ýÀ» ¸¸³ª "));
-	Text_CreateText(&Scenes[0].DialogList[0][1], "d2coding.ttf", 50, L"¿ë»ê ¾ÆÀÌÆÄÅ© ¸ô¿¡ ¿Ô´Ù.", wcslen(L"¿ë»ê ¾ÆÀÌÆÄÅ© ¸ô¿¡ ¿Ô´Ù."));
+	Text_CreateText(&Scenes[0].DialogList[0][0], "d2coding.ttf", 50, L"2031ï¿½ï¿½ 5ï¿½ï¿½ 13ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ", wcslen(L"2031ï¿½ï¿½ 5ï¿½ï¿½ 13ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ "));
+	Text_CreateText(&Scenes[0].DialogList[0][1], "d2coding.ttf", 50, L"ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ ï¿½Ô´ï¿½.", wcslen(L"ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å© ï¿½ï¿½ï¿½ï¿½ ï¿½Ô´ï¿½."));
 	Text_CreateText(&Scenes[0].DialogList[0][2], "d2coding.ttf", 50, L"", wcslen(L""));
-	Text_CreateText(&Scenes[0].DialogList[1][0], "d2coding.ttf", 50, L"ÀÌ°÷¿£ ¿©µ¿»ýÀÌ °¡Àå ÁÁ¾ÆÇÏ´Â ", wcslen(L"ÀÌ°÷¿£ ¿©µ¿»ýÀÌ °¡Àå ÁÁ¾ÆÇÏ´Â "));
-	Text_CreateText(&Scenes[0].DialogList[1][1], "d2coding.ttf", 50, L"Å°ÁîÄ«Æä°¡ ÀÖ±â ¶§¹®ÀÌ´Ù.", wcslen(L"Å°ÁîÄ«Æä°¡ ÀÖ±â ¶§¹®ÀÌ´Ù."));
+	Text_CreateText(&Scenes[0].DialogList[1][0], "d2coding.ttf", 50, L"ï¿½Ì°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ", wcslen(L"ï¿½Ì°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ "));
+	Text_CreateText(&Scenes[0].DialogList[1][1], "d2coding.ttf", 50, L"Å°ï¿½ï¿½Ä«ï¿½ä°¡ ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½.", wcslen(L"Å°ï¿½ï¿½Ä«ï¿½ä°¡ ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½."));
 	Text_CreateText(&Scenes[0].DialogList[1][2], "d2coding.ttf", 50, L"", wcslen(L""));
 	
 	Scenes[0].OptionCount = 0;
@@ -292,10 +608,10 @@ void setScenes(void) {
 	Scenes[1].EffectSoundTiming = NULL;
 
 	Scenes[1].DialogCount = 2;
-	Text_CreateText(&Scenes[1].DialogList[0][0], "d2coding.ttf", 50, L"µ¿»ýÀÌ Å°ÁîÄ«Æä¿¡¼­ ¸¸³­ Ä£±¸µé°ú ³ë´Â °ÍÀ» È®ÀÎÇÑ ÈÄ,", wcslen(L"µ¿»ýÀÌ Å°ÁîÄ«Æä¿¡¼­ ¸¸³­ Ä£±¸µé°ú ³ë´Â °ÍÀ» È®ÀÎÇÑ ÈÄ,"));
+	Text_CreateText(&Scenes[1].DialogList[0][0], "d2coding.ttf", 50, L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½Ä«ï¿½ä¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½,", wcslen(L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½Ä«ï¿½ä¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½,"));
 	Text_CreateText(&Scenes[1].DialogList[0][1], "d2coding.ttf", 50, L"", wcslen(L""));
-	Text_CreateText(&Scenes[1].DialogList[1][0], "d2coding.ttf", 50, L"´ã¹è¸¦ ÇÇ·¯", wcslen(L"´ã¹è¸¦ ÇÇ·¯"));
-	Text_CreateText(&Scenes[1].DialogList[1][1], "d2coding.ttf", 50, L"¿ë»ê ¾ÆÀÌÆÄÅ© ¸ô ¿Á»óÀ¸·Î ¿Ã¶ó°¬´Ù.", wcslen(L"¿ë»ê ¾ÆÀÌÆÄÅ© ¸ô ¿Á»óÀ¸·Î ¿Ã¶ó°¬´Ù."));
+	Text_CreateText(&Scenes[1].DialogList[1][0], "d2coding.ttf", 50, L"ï¿½ï¿½è¸¦ ï¿½Ç·ï¿½", wcslen(L"ï¿½ï¿½è¸¦ ï¿½Ç·ï¿½"));
+	Text_CreateText(&Scenes[1].DialogList[1][1], "d2coding.ttf", 50, L"ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å© ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ó°¬´ï¿½.", wcslen(L"ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å© ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ó°¬´ï¿½."));
 	Text_CreateText(&Scenes[1].DialogList[1][2], "d2coding.ttf", 50, L"", wcslen(L""));
 	
 	Scenes[1].OptionCount = 0;
@@ -315,10 +631,10 @@ void setScenes(void) {
 	Scenes[2].EffectSoundTiming = NULL;
 
 	Scenes[2].DialogCount = 6;
-	Text_CreateText(&Scenes[1].DialogList[0][0], "d2coding.ttf", 50, L"µ¿»ýÀÌ Å°ÁîÄ«Æä¿¡¼­ ¸¸³­ Ä£±¸µé°ú ³ë´Â °ÍÀ» È®ÀÎÇÑ ÈÄ,", wcslen(L"µ¿»ýÀÌ Å°ÁîÄ«Æä¿¡¼­ ¸¸³­ Ä£±¸µé°ú ³ë´Â °ÍÀ» È®ÀÎÇÑ ÈÄ,"));
+	Text_CreateText(&Scenes[1].DialogList[0][0], "d2coding.ttf", 50, L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½Ä«ï¿½ä¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½,", wcslen(L"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½Ä«ï¿½ä¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½,"));
 	Text_CreateText(&Scenes[1].DialogList[0][1], "d2coding.ttf", 50, L"", wcslen(L""));
-	Text_CreateText(&Scenes[1].DialogList[1][0], "d2coding.ttf", 50, L"´ã¹è¸¦ ÇÇ·¯", wcslen(L"´ã¹è¸¦ ÇÇ·¯"));
-	Text_CreateText(&Scenes[1].DialogList[1][1], "d2coding.ttf", 50, L"¿ë»ê ¾ÆÀÌÆÄÅ© ¸ô ¿Á»óÀ¸·Î ¿Ã¶ó°¬´Ù.", wcslen(L"¿ë»ê ¾ÆÀÌÆÄÅ© ¸ô ¿Á»óÀ¸·Î ¿Ã¶ó°¬´Ù."));
+	Text_CreateText(&Scenes[1].DialogList[1][0], "d2coding.ttf", 50, L"ï¿½ï¿½è¸¦ ï¿½Ç·ï¿½", wcslen(L"ï¿½ï¿½è¸¦ ï¿½Ç·ï¿½"));
+	Text_CreateText(&Scenes[1].DialogList[1][1], "d2coding.ttf", 50, L"ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å© ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ó°¬´ï¿½.", wcslen(L"ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å© ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¶ó°¬´ï¿½."));
 	Text_CreateText(&Scenes[1].DialogList[1][2], "d2coding.ttf", 50, L"", wcslen(L""));
 	
 	Scenes[2].OptionCount = 0;
@@ -525,13 +841,13 @@ void update_temp(void)
 {
 	MainScene* data = (MainScene*) g_Scene.Data;
 
-	//º¸Åë ¾ÀÀÏ °æ¿ì
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	if (!isSceneChanging) {
 		if (data->BlackOutAlpha > 0) {
 			data->BlackOutAlpha -= 5;
 		}
 		else {
-			//Å°º¸µå °ª ÀÔ·Â
+			//Å°ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ô·ï¿½
 			if (Input_GetKeyDown(VK_SPACE)) {
 
 				if (data->CurrentTextNumber < data->Scene->DialogCount) {
@@ -546,7 +862,7 @@ void update_temp(void)
 			}
 		}
 
-		//ÅØ½ºÆ® Ç¥½Ã°¡ ÇÊ¿äÇÑ °æ¿ì
+		//ï¿½Ø½ï¿½Æ® Ç¥ï¿½Ã°ï¿½ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		if (data->CurrentTextNumber < data->Scene->DialogCount) {
 			int32 i = 0;
 			ShowText = data->Scene->DialogList[data->CurrentTextNumber];
@@ -554,11 +870,11 @@ void update_temp(void)
 				color.a += 5;
 			}
 		}
-		//¿É¼ÇÀÌ ³ª¿Í¾ßÇÏ´Â °æ¿ì
+		//ï¿½É¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Í¾ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½
 		else {
 			showOptions = true;
 
-			//¼±ÅÃÁö ¼±ÅÃ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			int32 optionCount = data->Scene->OptionCount;
 
 			Image_SetAlphaValue(&data->Scene->OptionImagesList[data->CurrentOptionNumber], 125);
@@ -583,7 +899,7 @@ void update_temp(void)
 				}
 			}
 
-			//ÁÂ¿ìÅ°·Î ¼³Á¤
+			//ï¿½Â¿ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			if (Input_GetKeyDown(VK_LEFT)) {
 				if (data->CurrentOptionNumber > 0) {
 					data->CurrentOptionNumber--;
@@ -602,7 +918,7 @@ void update_temp(void)
 				}
 			}
 
-			//À§ ¾Æ·¡ Å°·Î
+			//ï¿½ï¿½ ï¿½Æ·ï¿½ Å°ï¿½ï¿½
 			if (Input_GetKeyDown(VK_UP)) {
 				if (data->Scene->OptionCount >= 3) {
 					if (data->CurrentOptionNumber >= 2) {
@@ -621,7 +937,7 @@ void update_temp(void)
 
 			Image_SetAlphaValue(&data->Scene->OptionImagesList[data->CurrentOptionNumber], 255);
 
-			//¼±ÅÃÁö ¼±ÅÃ
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 			if (Input_GetKeyDown(VK_RETURN)) {
 				isSceneChanging = true;
 				Audio_FadeOut(1800);
@@ -646,18 +962,18 @@ void render_temp(void)
 {
 	MainScene* data = (MainScene*)g_Scene.Data;
 
-	//¹è°æ ÀÌ¹ÌÁö Ãâ·Â
+	//ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	Renderer_DrawImage(&data->Scene->BGImage, 0, 0);
 	//Renderer_DrawImage(&TextBGImage, 30, 30);
 	
-	//ÅØ½ºÆ® Ãâ·Â
+	//ï¿½Ø½ï¿½Æ® ï¿½ï¿½ï¿½
 	int32 i = 0;
 	while (ShowText[i].Length != 0) {
 		Renderer_DrawTextSolid(&ShowText[i], 400, 300 + i * 80, color);
 		i++;
 	}
 
-	//¼±ÅÃÁö Ãâ·Â
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	if (showOptions) {
 		if (data->Scene->OptionCount > 2) {
 			for (int i = 0; i < data->Scene->OptionCount; i++) {
@@ -671,7 +987,7 @@ void render_temp(void)
 		}
 	}
 
-	//ÆäÀÌµå ÀÎ ÆäÀÌµå ¾Æ¿ô È¿°ú¸¦ À§ÇÑ °ËÀº»ö ¹è°æ
+	//ï¿½ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Æ¿ï¿½ È¿ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 	Renderer_DrawImage(&data->BlackOutImage, 0, 0);
 }
 
@@ -722,6 +1038,18 @@ void Scene_Change(void)
 		g_Scene.Render = render_title;
 		g_Scene.Release = release_title;
 		break;
+	case SCENE_CREDIT:
+		g_Scene.Init = init_credit;
+		g_Scene.Update = update_credit;
+		g_Scene.Render = render_credit;
+		g_Scene.Release = release_credit;
+		break;
+	case SCENE_INTRO:
+		g_Scene.Init = init_intro;
+		g_Scene.Update = update_intro;
+		g_Scene.Render = render_intro;
+		g_Scene.Release = release_intro;
+		break;
 	case SCENE_MAIN:
 		g_Scene.Init = init_main;
 		g_Scene.Update = update_main;
@@ -739,4 +1067,8 @@ void Scene_Change(void)
 	g_Scene.Init();
 
 	s_nextScene = SCENE_NULL;
+
+
+
+
 }
