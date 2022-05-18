@@ -633,7 +633,7 @@ void init_main(void)
 	data->CurrentOptionNumber = 0;
 	data->CurrentTextNumber = 0;
 	data->BlackOutAlpha = 255;
-	Image_LoadImage(&data->BlackOutImage, "black.png");
+	Image_LoadImage(&data->BlackOutImage, "black.jpg");
 	Image_SetAlphaValue(&data->BlackOutImage, data->BlackOutAlpha);
 	Audio_PlayFadeIn(&data->Scene->BGM, INFINITY_LOOP, 2000);
 
