@@ -1,0 +1,18 @@
+index,audio,image,image time,image effect,text time,text speed,texet pos,text effect,text1,text2,text3,select1,select1 moving index,select2,select2 moving index,select3,select3 moving index
+1,0,index0.png,0,0,0,0.2,0,0,0,0,0,0,2,0,0,0,0
+2,0,index0.png,0,0,0,0.2,0,0,index1-1.txt,index1-2.txt,0,0,3,0,0,0,0
+3,0,index2.png,0,0,0,0.2,0,0,index2-1.txt,index2-2.txt,0,0,4,0,0,0,0
+4,0,index2.png,0,0,0,0.2,0,0,index3-1.txt,index3-2.txt,0,0,5,0,0,0,0
+5,0,index4.png,0,0,0,0.2,0,0,index4-1.txt,index4-2.txt,0,0,6,0,0,0,0
+6,0,index4.png,0,0,0,0.2,0,0,index5-1.txt,index5-2.txt,0,0,7,0,0,0,0
+7,0,index4.png,0,0,0,0.2,0,0,index6-1.txt,index6-2.txt,0,0,8,0,0,0,0
+8,0,index7.png,0,0,0,0.2,0,0,0,0,0,0,9,0,0,0,0
+9,0,index8.png,0,0,0,0.2,0,0,index8-1.txt,index8-2.txt,0,0,10,0,0,0,0
+10,0,index8.png,0,0,0,0.2,0,0,index9-1.txt,index9-2.txt,0,0,11,0,0,0,0
+11,0,index8.png,0,0,0,0.2,0,0,index10-1.txt,index10-2.txt,0,0,12,0,0,0,0
+12,0,index8.png,0,0,0,0.2,0,0,index11-1.txt,index11-2.txt,0,0,13,0,0,0,0
+13,0,index8.png,0,0,0,0.2,0,0,index12-1.txt,index12-2.txt,0,0,14,0,0,0,0
+14,0,index8.png,0,0,0,0.2,0,0,index13-1.txt,index13-2.txt,0,0,15,0,0,0,0
+15,0,index8.png,0,0,0,0.2,0,0,index14-1.txt,index14-2.txt,0,0,16,0,0,0,0
+16,0,index8.png,0,0,0,0.2,0,0,index15-1.txt,index15-2.txt,0,0,17,0,0,0,0
+17,0,index8.png,0,0,0,0.2,0,0,index16-1.txt,index16-2.txt,0,0,18,0,0,0,0

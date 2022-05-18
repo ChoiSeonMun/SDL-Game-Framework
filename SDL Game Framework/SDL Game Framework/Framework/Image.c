@@ -33,6 +33,12 @@ void Image_LoadImage(Image* image, const char* filename)
 	SDL_SetTextureBlendMode(image->Texture, SDL_BLENDMODE_BLEND);
 }
 
+void Image_FreeImage(Image* image)
+{
+	SDL_DestroyTexture(image->Texture);
+	image->Texture = NULL;
+}
+
 void Image_SetAlphaValue(Image* image, uint8 alpha)
 {
 	SDL_SetTextureAlphaMod(image->Texture, alpha);

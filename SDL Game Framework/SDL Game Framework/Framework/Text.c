@@ -79,8 +79,17 @@ void Text_LoadText(Text* text, const char* filename)
 	wchar_t str[256];
 	if (0 == fopen_s(&p_file, path, "r,ccs=UTF-8"))
 	{
-		fgetws(str, 256, p_file);
-		Text_CreateText(text, "d2coding.ttf", 16, str, wcslen(str)-1);
+
+		while (NULL != fgetws(str, 256, p_file))
+		{
+			int32 strlen = wcslen(str);
+			if(str[strlen-1]=='\n')
+				Text_CreateText(text, "d2coding.ttf", 16, str, strlen-1);
+			else
+				Text_CreateText(text, "d2coding.ttf", 16, str, strlen);
+			++text;
+		}
+		
 	}
 }
 
