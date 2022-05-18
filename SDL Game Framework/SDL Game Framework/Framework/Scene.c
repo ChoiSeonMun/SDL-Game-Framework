@@ -2,6 +2,7 @@
 #include "Scene.h"
 
 #include "Framework.h"
+#include "Csv.h"
 
 Scene g_Scene;
 
@@ -26,10 +27,7 @@ typedef struct tagScene {
 	bool			isEndingScene;						//엔딩인지
 } SceneStruct;
 
-#define SCENE_COUNT	8
-
-SceneStruct Scenes[SCENE_COUNT];
-
+/*
 void setScenes(void) {
 	//Scene 1
 	Scenes[0].Number = 0;
@@ -96,7 +94,7 @@ void setScenes(void) {
 	Scenes[2].OptionCount = 0;
 	Scenes[2].NextSceneNumberList[0] = 2;
 }
-
+*/
 //#define SCENE_COUNT	118
 //SceneStruct Scenes[SCENE_COUNT];
 
@@ -128,12 +126,6 @@ void init_title(void)
 	memset(g_Scene.Data, 0, sizeof(TitleSceneData));
 
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
-	//for (int32 i = 0; i < 1; ++i)
-	//{
-	//	Text_CreateText(&data->GuideLine[i], "d2coding.ttf", 16, str[i], wcslen(str[i]));
-	//}
-
-	setScenes();
 
 	data->FontSize = 48;
 	Text_CreateText(&data->EnterText, "chosun.ttf", data->FontSize, L"--- PRESS THE ENTER ---", 24);
@@ -212,9 +204,6 @@ void render_title(void)
 			elapsedTime = 0.0f;
 		}
 	}
-
-
-
 }
 
 void release_title(void)
@@ -230,6 +219,9 @@ void release_title(void)
 }
 #pragma endregion
 
+#define SCENE_COUNT	6
+
+SceneStruct Scenes[SCENE_COUNT];
 
 #pragma region CreditScene
 typedef struct CreditSceneData
@@ -243,8 +235,43 @@ typedef struct CreditSceneData
 	int32	Y;
 } CreditSceneData;
 
+void GetSceneData(void) {
+	CsvFile csv;
+	memset(&csv, 0, sizeof(CsvFile));
+	CreateCsvFile(&csv, "test.csv");
+
+
+	for (int32 i = 1; i <= SCENE_COUNT;i++) {
+
+		if (csv.Items[i] == NULL) {
+			break;
+		}
+
+		int32 columCount = 0;
+
+		Scenes[i - 1].Number = ParseToInt(csv.Items[i][0]) - 1;
+		Image_LoadImage(&Scenes[i - 1].BGImage, ParseToAscii(csv.Items[i][1]));
+		Audio_LoadMusic(&Scenes[i - 1].BGM, ParseToAscii(csv.Items[i][2]));
+		Scenes[i - 1].DialogCount = ParseToInt(csv.Items[i][3]);
+		//int32 j = 0;
+		//for (j = 0; j < Scenes[i - 1].DialogCount;j++) {
+		//	//수정 바람: 텍스트 최대 갯수 만큼 j 돌리고, if문으로 판단 + 배열 참고
+		//	
+		//}
+		Text_CreateText(&Scenes[i - 1].DialogList[0][0], "chosun.ttf", 30, ParseToUnicode(csv.Items[i][4]), wcslen(ParseToUnicode(csv.Items[i][4])));
+		Text_CreateText(&Scenes[i - 1].DialogList[0][1], "chosun.ttf", 30, "", wcslen(""));
+		Scenes[i - 1].NextSceneNumberList[0] = ParseToInt(csv.Items[i][5]) - 1;
+	}
+
+	FreeCsvFile(&csv);
+
+}
+
 void init_credit(void)
 {
+	//씬 데이터를 미리 받아옴
+	GetSceneData();
+
 	g_Scene.Data = malloc(sizeof(CreditSceneData));
 	memset(g_Scene.Data, 0, sizeof(CreditSceneData));
 

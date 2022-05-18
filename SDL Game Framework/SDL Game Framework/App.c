@@ -9,6 +9,7 @@ App g_App;
 
 bool App_Init(void)
 {
+
 	if (0 != SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
 	{
 		LogWithErrorCode("Fail to initialize SDL", SDL_GetError());
