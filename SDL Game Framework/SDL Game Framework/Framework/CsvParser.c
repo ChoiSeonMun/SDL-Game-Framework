@@ -9,7 +9,7 @@
 
 //
 
-parsing parsing_dt;
+Parsing parsing_dt;
 
 void csvParser(void)
 {
@@ -33,30 +33,90 @@ void csvParser(void)
 				char* strt = ParseToAscii(csvFile.Items[r][c]);
 				wchar_t* str = ParseToUnicode(strt);
 
-
 				switch (c) {
-				case 0: parsing_dt.sceneData[r - 1].ID = atoi(str); break;
-				case 1: parsing_dt.sceneData[r - 1].SENCE_NUMBER = atoi(str); break;
-				case 2: parsing_dt.sceneData[r - 1].SCREEN_SIZE_X = atoi(str); break;
-				case 3: parsing_dt.sceneData[r - 1].SCREEN_SIZE_Y = atoi(str); break;//여기 부터
-				case 4: wcscpy_s(parsing_dt.sceneData[r - 1].IMG_1,sizeof(parsing_dt.sceneData[r - 1].IMG_1), str); break;
-				case 5: wcscpy_s(parsing_dt.sceneData[r - 1].IMG_POSITION,sizeof(parsing_dt.sceneData[r - 1].IMG_POSITION), str); break;
-				case 6: parsing_dt.sceneData[r - 1].IMG_DELAY_TIME = atoi(str); break;
-				case 7: wcscpy_s(parsing_dt.sceneData[r - 1].IMG_OUTPUT_STYLE,sizeof(parsing_dt.sceneData[r - 1].IMG_OUTPUT_STYLE), str); break;
-				case 8: wcscpy_s(parsing_dt.sceneData[r - 1].SOUND_1,sizeof(parsing_dt.sceneData[r - 1].SOUND_1), str); break;
-				case 9: parsing_dt.sceneData[r - 1].SOUND_DELAY_TIME = atoi(str); break;
-				case 10: wcscpy_s(parsing_dt.sceneData[r - 1].TEXT,sizeof(parsing_dt.sceneData[r - 1].TEXT), str); break;
-				case 11: wcscpy_s(parsing_dt.sceneData[r - 1].TEXT_POSITION,sizeof(parsing_dt.sceneData[r - 1].TEXT_POSITION), str); break;
-				case 12: parsing_dt.sceneData[r - 1].TEXT_DELAY_TIME = atoi(str); break;
-				case 13: wcscpy_s(parsing_dt.sceneData[r - 1].TEXT_OUTPUT_STYLE,sizeof(parsing_dt.sceneData[r - 1].TEXT_OUTPUT_STYLE), str); break;
-				case 14: wcscpy_s(parsing_dt.sceneData[r - 1].CHOOSE_POSITION,sizeof(parsing_dt.sceneData[r - 1].CHOOSE_POSITION), str); break;
-				case 15: parsing_dt.sceneData[r - 1].CHOOSE_NUM_1 = atoi(str); break;
-				case 16: parsing_dt.sceneData[r - 1].CHOOSE_NUM_2 = atoi(str); break;
-				case 17: parsing_dt.sceneData[r - 1].CHOOSE_NUM_3 = atoi(str); break;
-				case 18: wcscpy_s(parsing_dt.sceneData[r - 1].CHOOSE_TEXT_1,sizeof(parsing_dt.sceneData[r - 1].CHOOSE_TEXT_1), str); break;
-				case 19: wcscpy_s(parsing_dt.sceneData[r - 1].CHOOSE_TEXT_2,sizeof(parsing_dt.sceneData[r - 1].CHOOSE_TEXT_2), str); break;
-				case 20: wcscpy_s(parsing_dt.sceneData[r - 1].CHOOSE_TEXT_3, sizeof(parsing_dt.sceneData[r - 1].CHOOSE_TEXT_3), str); break;
-				case 21: wcscpy_s(parsing_dt.sceneData[r - 1].CHOOSE_STYLE,sizeof(parsing_dt.sceneData[r - 1].CHOOSE_STYLE), str); break;
+				case 0:
+					if (parsing_dt.sceneData[r - 1].ID != NULL)
+					{
+						parsing_dt.sceneData[r - 1].ID = atoi(str);
+					}
+					break;
+				case 1:
+					if (parsing_dt.sceneData[r - 1].SENCE_NUMBER != NULL)
+					{
+						parsing_dt.sceneData[r - 1].SENCE_NUMBER = atoi(str);
+					}
+					break;
+				case 2:
+					if (parsing_dt.sceneData[r - 1].MAIN_IMAGE != NULL)
+					{
+						strcpy_s(parsing_dt.sceneData[r - 1].MAIN_IMAGE, sizeof(parsing_dt.sceneData[r - 1].MAIN_IMAGE), strt);
+					}
+					break;
+				case 3:
+					if (parsing_dt.sceneData[r - 1].IMG_OUTPUT_STYLE != NULL)
+					{
+						parsing_dt.sceneData[r - 1].IMG_OUTPUT_STYLE = atoi(str);
+					}
+					break;
+				case 4:
+					if (parsing_dt.sceneData[r - 1].SOUND_NAME != NULL)
+					{
+						strcpy_s(parsing_dt.sceneData[r - 1].SOUND_NAME, sizeof(parsing_dt.sceneData[r - 1].SOUND_NAME), strt);
+					}
+					break;
+				case 5:
+					if (parsing_dt.sceneData[r - 1].EFFECT_SOUND_NAME != NULL)
+					{
+						strcpy_s(parsing_dt.sceneData[r - 1].EFFECT_SOUND_NAME, sizeof(parsing_dt.sceneData[r - 1].EFFECT_SOUND_NAME), strt);
+					}
+					break;
+				case 6:
+					if (parsing_dt.sceneData[r - 1].EFFECT_COUNT != NULL)
+					{
+						parsing_dt.sceneData[r - 1].EFFECT_COUNT = atoi(str);
+					}
+					break;
+				case 7:
+					if (parsing_dt.sceneData[r - 1].TEXT != NULL)
+					{
+						wcscpy_s(parsing_dt.sceneData[r - 1].TEXT, sizeof(parsing_dt.sceneData[r - 1].TEXT), str);
+					}
+					break;
+				case 8:
+					if (parsing_dt.sceneData[r - 1].CHOOSE_1_NEXT_SCENE != NULL)
+					{
+						parsing_dt.sceneData[r - 1].CHOOSE_1_NEXT_SCENE = atoi(str);
+					}
+					break;
+				case 9:
+					if (parsing_dt.sceneData[r - 1].CHOOSE_TEXT_1 != NULL)
+					{
+						wcscpy_s(parsing_dt.sceneData[r - 1].CHOOSE_TEXT_1, sizeof(parsing_dt.sceneData[r - 1].CHOOSE_TEXT_1), str);
+					}
+					break;
+				case 10:
+					if (parsing_dt.sceneData[r - 1].CHOOSE_2_NEXT_SCENE != NULL)
+					{
+						parsing_dt.sceneData[r - 1].CHOOSE_2_NEXT_SCENE = atoi(str); break;
+					}
+				case 11:
+					if (parsing_dt.sceneData[r - 1].CHOOSE_TEXT_2 != NULL)
+					{
+						wcscpy_s(parsing_dt.sceneData[r - 1].CHOOSE_TEXT_2, sizeof(parsing_dt.sceneData[r - 1].CHOOSE_TEXT_2), str);
+					}
+					break;
+				case 12:
+					if (parsing_dt.sceneData[r - 1].CHOOSE_3_NEXT_SCENE != NULL)
+					{
+						parsing_dt.sceneData[r - 1].CHOOSE_3_NEXT_SCENE = atoi(str);
+					}
+					break;
+				case 13: 
+					if (parsing_dt.sceneData[r - 1].CHOOSE_TEXT_3 != NULL)
+					{
+						wcscpy_s(parsing_dt.sceneData[r - 1].CHOOSE_TEXT_3, sizeof(parsing_dt.sceneData[r - 1].CHOOSE_TEXT_3), str);
+					}
+					break;
 				}
 			}
 		}

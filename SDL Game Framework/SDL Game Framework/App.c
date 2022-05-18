@@ -4,6 +4,8 @@
 #include "Framework.h"
 #include "Framework/Scene.h"
 #include "Framework/Window.h"
+#include "Framework/Csvparser.h"
+#include "Framework/Csv.h"
 
 App g_App;
 
@@ -38,6 +40,7 @@ bool App_Init(void)
 	}
 
 	Random_Init();
+	csvParser();
 
 	if (false == Audio_Init())
 	{
@@ -88,7 +91,7 @@ int32 App_Run(void)
 
 	Timer_Init(FPS);
 
-	Scene_SetNextScene(SCENE_MAINSCREEN);
+	Scene_SetNextScene(SCENE_EXTRA);
 
 	SDL_Event event;
 	while (true)
