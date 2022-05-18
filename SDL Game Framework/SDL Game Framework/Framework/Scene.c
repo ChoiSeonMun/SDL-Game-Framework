@@ -8,25 +8,25 @@ Scene g_Scene;
 static ESceneType s_nextScene = SCENE_NULL;
 
 typedef struct tagScene {
-	int32        Number;                    //씬 넘버
-	const wchar_t* Name;                    //씬 이름
-	Image        BGImage;                //배경화면
-	Music        BGM;                    //배경 음악
-	Image        AdditionImage;            //추가 이미지
-	int32        AddImage_X;                //추가 이미지 위치
-	int32        AddImage_Y;                //추가 이미지 위치
-	SoundEffect     EffectSound;            //효과음
-	int32        EffectSoundTiming;        //효과음 표현 타이밍
-	int32        DialogCount;            //텍스트 갯수
-	Text		 DialogList[10][10];            //텍스트 배열
-	float		DialogSpeed;
-	int32        OptionCount;            //옵션 갯수
-	Image        OptionImagesList[6];        //옵션 이미지 배열
-	int32        NextSceneNumberList[6];        //옵션 선택시 넘어가는 씬 넘버
-	int32        NextEndingSceneNumberList[6];//다음 씬이 엔딩씬일 경우
+	int32			Number;							//씬 넘버
+	const wchar_t*	Name;							//씬 이름
+	Image			BGImage;						//배경화면
+	Music			BGM;							//배경 음악
+	Image			AdditionImage;					//추가 이미지
+	int32			AddImage_X;						//추가 이미지 위치
+	int32			AddImage_Y;						//추가 이미지 위치
+	SoundEffect		EffectSound;					//효과음
+	int32			EffectSoundTiming;				//효과음 표현 타이밍
+	int32			DialogCount;					//텍스트 갯수
+	Text			DialogList[10][10];				//텍스트 배열
+	int32			OptionCount;					//옵션 갯수
+	Image			OptionImagesList[6];			//옵션 이미지 배열
+	int32			NextSceneNumberList[6];			//옵션 선택시 넘어가는 씬 넘버
+	int32			NextEndingSceneNumberList[6];	//다음 씬이 엔딩씬일 경우
+	bool			isEndingScene;					//엔딩인지
 } SceneStruct;
 
-#define SCENE_COUNT	2
+#define SCENE_COUNT	118
 SceneStruct Scenes[SCENE_COUNT];
 
 #pragma region TitleScene
@@ -213,44 +213,75 @@ void log2OnFinished(int32 channel)
 	LogInfo("You can show this log on stopped the effect");
 }
 
+/*
+void setScene(int32 indexNum, wchar_t* name, char* bgImageName,
+	char* musicName, char* additionImageName, char* additionImagePos, 
+	char* effectSoundName, int32 effectSoundTime, int32 dialogCount,
+	wchar_t** dialog, int32 optionCount, char* optionName,
+	int32* nextSceneNumber, bool isEndingScene) {
+
+	Scenes[indexNum-1].Number = indexNum-1;
+	Scenes[indexNum-1].Name = name;
+	Image_LoadImage(&Scenes[indexNum - 1].BGImage, bgImageName);
+	Scenes[indexNum - 1].BGImage.ScaleY -= 0.065f;
+	Scenes[indexNum - 1].BGImage.ScaleX -= 0.065f;
+	Audio_LoadMusic(&Scenes[indexNum - 1].BGM, musicName);
+	Image_LoadImage(&Scenes[indexNum - 1].AdditionImage, additionImageName);
+	//수정 필용
+	Scenes[indexNum - 1].AddImage_X = 0;
+	Scenes[indexNum - 1].AddImage_Y = 0;
+	Audio_LoadMusic(&Scenes[indexNum - 1].EffectSound, effectSoundName);
+	Scenes[indexNum - 1].EffectSoundTiming = effectSoundTime;
+
+	Scenes[indexNum - 1].DialogCount = dialogCount;
+	int32 i = 0, j = 0;
+	for (int32 i = 0; i < dialogCount;i++) {
+		while (wcslen(&dialog[i][j]) != 0) {
+			Text_CreateText(&Scenes[indexNum-1].DialogList[i][j], )
+		}
+	}
+	
+	Text_CreateText(&Scenes[indexNum-1].DialogList[0][0], "d2coding.ttf", 50, L"2031년 5월 13일 오랜만에 여동생을 만나 ", wcslen(L"2031년 5월 13일 오랜만에 여동생을 만나 "));
+	Text_CreateText(&Scenes[indexNum-1].DialogList[0][1], "d2coding.ttf", 50, L"용산 아이파크 몰에 왔다.", wcslen(L"용산 아이파크 몰에 왔다."));
+	Text_CreateText(&Scenes[indexNum-1].DialogList[0][2], "d2coding.ttf", 50, L"", wcslen(L""));
+	Text_CreateText(&Scenes[indexNum-1].DialogList[1][0], "d2coding.ttf", 50, L"이곳엔 여동생이 가장 좋아하는 ", wcslen(L"이곳엔 여동생이 가장 좋아하는 "));
+	Text_CreateText(&Scenes[indexNum-1].DialogList[1][1], "d2coding.ttf", 50, L"키즈카페가 있기 때문이다.", wcslen(L"키즈카페가 있기 때문이다."));
+	Text_CreateText(&Scenes[indexNum-1].DialogList[1][2], "d2coding.ttf", 50, L"", wcslen(L""));
+
+	Scenes[indexNum-1].OptionCount = 0;
+	Scenes[indexNum-1].NextSceneNumberList[0] = 1;
+}
+*/
 void setScenes(void) {
+	//Scene 1
 	Scenes[0].Number = 0;
-	Scenes[0].Name = L"1-1";
-	Image_LoadImage(&Scenes[0].BGImage, "bg.jpg");
+	Scenes[0].Name = L"";
+	Image_LoadImage(&Scenes[0].BGImage, "csv/roof/S#0.start.jpg");
 	Scenes[0].BGImage.ScaleY -= 0.065f;
 	Scenes[0].BGImage.ScaleX -= 0.065f;
-	Audio_LoadMusic(&Scenes[0].BGM, "powerful.mp3");
+	Audio_LoadMusic(&Scenes[0].BGM, "csv/roof/powerful.mp3");
 	Image_LoadImage(&Scenes[0].AdditionImage, "NULL");
 	Scenes[0].AddImage_X = 0;
 	Scenes[0].AddImage_Y = 0;
 	Audio_LoadMusic(&Scenes[0].EffectSound, "NULL");
 	Scenes[0].EffectSoundTiming = NULL;
 
-	Scenes[0].DialogCount = 3;
-	Text_CreateText(&Scenes[0].DialogList[0][0], "d2coding.ttf", 50, L"나는 할 수 있다!!", wcslen(L"나는 할 수 있다!!"));
-	Text_CreateText(&Scenes[0].DialogList[0][1], "d2coding.ttf", 50, L"아마두...", wcslen(L"아마두..."));
+	Scenes[0].DialogCount = 2;
+	Text_CreateText(&Scenes[0].DialogList[0][0], "d2coding.ttf", 50, L"2031년 5월 13일 오랜만에 여동생을 만나 ", wcslen(L"2031년 5월 13일 오랜만에 여동생을 만나 "));
+	Text_CreateText(&Scenes[0].DialogList[0][1], "d2coding.ttf", 50, L"용산 아이파크 몰에 왔다.", wcslen(L"용산 아이파크 몰에 왔다."));
 	Text_CreateText(&Scenes[0].DialogList[0][2], "d2coding.ttf", 50, L"", wcslen(L""));
-	Text_CreateText(&Scenes[0].DialogList[1][0], "d2coding.ttf", 50, L"엉엉엉...", wcslen(L"엉엉엉..."));
-	Text_CreateText(&Scenes[0].DialogList[1][1], "d2coding.ttf", 50, L"", wcslen(L""));
-	Text_CreateText(&Scenes[0].DialogList[2][0], "d2coding.ttf", 50, L"집에 갈까?", wcslen(L"집에 갈까?"));
-	Text_CreateText(&Scenes[0].DialogList[2][1], "d2coding.ttf", 50, L"", wcslen(L""));
-	Scenes[0].DialogSpeed = 3.0f;
+	Text_CreateText(&Scenes[0].DialogList[1][0], "d2coding.ttf", 50, L"이곳엔 여동생이 가장 좋아하는 ", wcslen(L"이곳엔 여동생이 가장 좋아하는 "));
+	Text_CreateText(&Scenes[0].DialogList[1][1], "d2coding.ttf", 50, L"키즈카페가 있기 때문이다.", wcslen(L"키즈카페가 있기 때문이다."));
+	Text_CreateText(&Scenes[0].DialogList[1][2], "d2coding.ttf", 50, L"", wcslen(L""));
+	
+	Scenes[0].OptionCount = 0;
+	Scenes[0].NextSceneNumberList[0] = 1;
 
-	Scenes[0].OptionCount = 4;
-	for (int i = 0; i < Scenes[0].OptionCount;i++) {
-		Image_LoadImage(&Scenes[0].OptionImagesList[i], "option.png");
-		Scenes[0].OptionImagesList[i].ScaleY -= 0.45f;
-		Scenes[0].OptionImagesList[i].ScaleX -= 0.45f;
-		Image_SetAlphaValue(&Scenes[0].OptionImagesList[i], 125);
-	}
 
-	for (int i = 0; i < Scenes[0].OptionCount; i++) {
-		Scenes[0].NextSceneNumberList[i] = 1;
-	}
-
+	//Scene 2
 	Scenes[1].Number = 1;
-	Scenes[1].Name = L"1-2";
-	Image_LoadImage(&Scenes[1].BGImage, "bg.jpg");
+	Scenes[1].Name = L"";
+	Image_LoadImage(&Scenes[1].BGImage, "csv/roof/S#1.roof.jpg");
 	Scenes[1].BGImage.ScaleY -= 0.065f;
 	Scenes[1].BGImage.ScaleX -= 0.065f;
 	Audio_LoadMusic(&Scenes[1].BGM, "powerful.mp3");
@@ -260,27 +291,38 @@ void setScenes(void) {
 	Audio_LoadMusic(&Scenes[1].EffectSound, "NULL");
 	Scenes[1].EffectSoundTiming = NULL;
 
-	Scenes[1].DialogCount = 3;
-	Text_CreateText(&Scenes[1].DialogList[0][0], "d2coding.ttf", 50, L"이것은 2번째 씬!", wcslen(L"이것은 2번째 씬!"));
-	Text_CreateText(&Scenes[1].DialogList[0][1], "d2coding.ttf", 50, L"아마두...", wcslen(L"아마두..."));
-	Text_CreateText(&Scenes[1].DialogList[0][2], "d2coding.ttf", 50, L"", wcslen(L""));
-	Text_CreateText(&Scenes[1].DialogList[1][0], "d2coding.ttf", 50, L"엉엉엉...", wcslen(L"엉엉엉..."));
-	Text_CreateText(&Scenes[1].DialogList[1][1], "d2coding.ttf", 50, L"", wcslen(L""));
-	Text_CreateText(&Scenes[1].DialogList[2][0], "d2coding.ttf", 50, L"집에 갈까?", wcslen(L"집에 갈까?"));
-	Text_CreateText(&Scenes[1].DialogList[2][1], "d2coding.ttf", 50, L"", wcslen(L""));
-	Scenes[1].DialogSpeed = 3.0f;
+	Scenes[1].DialogCount = 2;
+	Text_CreateText(&Scenes[1].DialogList[0][0], "d2coding.ttf", 50, L"동생이 키즈카페에서 만난 친구들과 노는 것을 확인한 후,", wcslen(L"동생이 키즈카페에서 만난 친구들과 노는 것을 확인한 후,"));
+	Text_CreateText(&Scenes[1].DialogList[0][1], "d2coding.ttf", 50, L"", wcslen(L""));
+	Text_CreateText(&Scenes[1].DialogList[1][0], "d2coding.ttf", 50, L"담배를 피러", wcslen(L"담배를 피러"));
+	Text_CreateText(&Scenes[1].DialogList[1][1], "d2coding.ttf", 50, L"용산 아이파크 몰 옥상으로 올라갔다.", wcslen(L"용산 아이파크 몰 옥상으로 올라갔다."));
+	Text_CreateText(&Scenes[1].DialogList[1][2], "d2coding.ttf", 50, L"", wcslen(L""));
+	
+	Scenes[1].OptionCount = 0;
+	Scenes[1].NextSceneNumberList[0] = 0;
 
-	Scenes[1].OptionCount = 2;
-	for (int i = 0; i < Scenes[1].OptionCount;i++) {
-		Image_LoadImage(&Scenes[1].OptionImagesList[i], "option.png");
-		Scenes[1].OptionImagesList[i].ScaleY -= 0.45f;
-		Scenes[1].OptionImagesList[i].ScaleX -= 0.45f;
-		Image_SetAlphaValue(&Scenes[1].OptionImagesList[i], 125);
-	}
+	//Scene 3
+	Scenes[2].Number = 2;
+	Scenes[2].Name = L"";
+	Image_LoadImage(&Scenes[2].BGImage, "csv/roof/S#1-2.jpg");
+	Scenes[2].BGImage.ScaleY -= 0.065f;
+	Scenes[2].BGImage.ScaleX -= 0.065f;
+	Audio_LoadMusic(&Scenes[2].BGM, "powerful.mp3");
+	Image_LoadImage(&Scenes[2].AdditionImage, "csv/roof/S#2.jpg");
+	Scenes[2].AddImage_X = 800;
+	Scenes[2].AddImage_Y = 600;
+	Audio_LoadMusic(&Scenes[2].EffectSound, "NULL");
+	Scenes[2].EffectSoundTiming = NULL;
 
-	for (int i = 0; i < Scenes[1].OptionCount; i++) {
-		Scenes[1].NextSceneNumberList[i] = 0;
-	}
+	Scenes[2].DialogCount = 6;
+	Text_CreateText(&Scenes[1].DialogList[0][0], "d2coding.ttf", 50, L"동생이 키즈카페에서 만난 친구들과 노는 것을 확인한 후,", wcslen(L"동생이 키즈카페에서 만난 친구들과 노는 것을 확인한 후,"));
+	Text_CreateText(&Scenes[1].DialogList[0][1], "d2coding.ttf", 50, L"", wcslen(L""));
+	Text_CreateText(&Scenes[1].DialogList[1][0], "d2coding.ttf", 50, L"담배를 피러", wcslen(L"담배를 피러"));
+	Text_CreateText(&Scenes[1].DialogList[1][1], "d2coding.ttf", 50, L"용산 아이파크 몰 옥상으로 올라갔다.", wcslen(L"용산 아이파크 몰 옥상으로 올라갔다."));
+	Text_CreateText(&Scenes[1].DialogList[1][2], "d2coding.ttf", 50, L"", wcslen(L""));
+	
+	Scenes[2].OptionCount = 0;
+	Scenes[2].NextSceneNumberList[0] = 2;
 }
 
 void init_main(void)
@@ -488,6 +530,21 @@ void update_temp(void)
 		if (data->BlackOutAlpha > 0) {
 			data->BlackOutAlpha -= 5;
 		}
+		else {
+			//키보드 값 입력
+			if (Input_GetKeyDown(VK_SPACE)) {
+
+				if (data->CurrentTextNumber < data->Scene->DialogCount) {
+					ShowText = &data->Scene->DialogList[data->CurrentTextNumber];
+					data->CurrentTextNumber++;
+					color.a = 0;
+				}
+				else if (data->Scene->OptionCount <= 0) {
+					isSceneChanging = true;
+					Audio_FadeOut(1800);
+				}
+			}
+		}
 
 		//텍스트 표시가 필요한 경우
 		if (data->CurrentTextNumber < data->Scene->DialogCount) {
@@ -505,22 +562,22 @@ void update_temp(void)
 			int32 optionCount = data->Scene->OptionCount;
 
 			Image_SetAlphaValue(&data->Scene->OptionImagesList[data->CurrentOptionNumber], 125);
-			if (Input_GetKeyDown('1')) {
+			if (Input_GetKeyDown('1') || Input_GetKeyDown(VK_NUMPAD1)) {
 				if (optionCount >= 1) {
 					data->CurrentOptionNumber = 0;
 				}
 			}
-			if (Input_GetKeyDown('2')) {
+			if (Input_GetKeyDown('2') || Input_GetKeyDown(VK_NUMPAD2)) {
 				if (optionCount >= 2) {
 					data->CurrentOptionNumber = 1;
 				}
 			}
-			if (Input_GetKeyDown('3')) {
+			if (Input_GetKeyDown('3') || Input_GetKeyDown(VK_NUMPAD3)) {
 				if (optionCount >= 3) {
 					data->CurrentOptionNumber = 2;
 				}
 			}
-			if (Input_GetKeyDown('4')) {
+			if (Input_GetKeyDown('4') || Input_GetKeyDown(VK_NUMPAD4)) {
 				if (optionCount >= 4) {
 					data->CurrentOptionNumber = 3;
 				}
@@ -568,15 +625,6 @@ void update_temp(void)
 			if (Input_GetKeyDown(VK_RETURN)) {
 				isSceneChanging = true;
 				Audio_FadeOut(1800);
-			}
-		}
-
-		//키보드 값 입력
-		if (Input_GetKeyDown(VK_SPACE)) {
-			if (data->CurrentTextNumber < data->Scene->DialogCount) {
-				ShowText = &data->Scene->DialogList[data->CurrentTextNumber];
-				data->CurrentTextNumber++;
-				color.a = 0;
 			}
 		}
 	}
