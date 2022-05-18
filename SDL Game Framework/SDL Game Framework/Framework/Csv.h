@@ -1,51 +1,63 @@
 #pragma once
 
 #include <wchar.h>
+#include <stdint.h>
 
 #define MAXIMUM_ROW 200
 
+//
+struct Parsing_Data {
+    uint8_t ID;
+    uint8_t SENCE_NUMBER;
+    uint8_t SCREEN_SIZE_X;
+    uint8_t SCREEN_SIZE_Y;
+    wchar_t IMG_1[128];
+
+    wchar_t IMG_POSITION[10];
+    uint8_t IMG_DELAY_TIME;
+    wchar_t IMG_OUTPUT_STYLE[128];
+    wchar_t SOUND_1[128];
+    uint8_t SOUND_DELAY_TIME;
+
+    //x줄 y길이
+    wchar_t TEXT[2000];
+    wchar_t TEXT_POSITION[10];
+    uint8_t TEXT_DELAY_TIME;
+    wchar_t TEXT_OUTPUT_STYLE[10];
+    wchar_t CHOOSE_POSITION[10];
+
+    uint8_t CHOOSE_NUM_1;
+    uint8_t CHOOSE_NUM_2;
+    uint8_t CHOOSE_NUM_3;
+    wchar_t CHOOSE_TEXT_1[128];
+    wchar_t CHOOSE_TEXT_2[128];
+
+    wchar_t CHOOSE_TEXT_3[128];
+    wchar_t CHOOSE_STYLE[10];
+
+};
+
+
+typedef struct Parsing {
+    struct Parsing_Data sceneData[200]; //200은 데이터 200줄 받음
+}parsing;
+
+extern parsing parsing_dt;
+
+
 typedef struct CsvItem
 {
-	byte* RawData;
+    char* RawData;
 } CsvItem;
 
 typedef struct CsvFile
 {
-	int32		ColumnCount;
-	int32		RowCount;
-	CsvItem*	Items[MAXIMUM_ROW];
+    int			ColumnCount;
+    int			RowCount;
+    CsvItem* Items[MAXIMUM_ROW];
 } CsvFile;
 
-/// <summary>
-/// CSV 파일을 분석해 CsvFile 객체를 만든다.
-/// </summary>
-/// <param name="csvFile">CsvFile 객체</param>
-/// <param name="filename">파일 이름</param>
-void		CreateCsvFile(CsvFile* csvFile, const char* filename);
-
-/// <summary>
-/// CSV 객체의 자원을 반납한다.
-/// </summary>
-/// <param name="csvFile">CsvFile 객체</param>
-void		FreeCsvFile(CsvFile* csvFile);
-
-/// <summary>
-/// 레코드를 정수로 가져온다.
-/// </summary>
-/// <param name="item">레코드</param>
-/// <returns></returns>
-int32		ParseToInt(const CsvItem item);
-
-/// <summary>
-/// 레코드를 문자열로 가져온다.
-/// </summary>
-/// <param name="item">레코드</param>
-/// <returns></returns>
-char*		ParseToAscii(const CsvItem item);
-
-/// <summary>
-/// 레코드를 유니코드 문자열로 가져온다.
-/// </summary>
-/// <param name="item">레코드</param>
-/// <returns></returns>
-wchar_t*	ParseToUnicode(const CsvItem item);
+void CreateCsvFile(CsvFile* csvFile, const char* filename);
+int			ParseToInt(const CsvItem item);
+char* ParseToAscii(const CsvItem item);
+wchar_t* ParseToUnicode(char* str);
