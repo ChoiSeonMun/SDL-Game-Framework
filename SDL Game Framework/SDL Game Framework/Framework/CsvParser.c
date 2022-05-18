@@ -47,7 +47,11 @@ void csvParser(void)
 				case 4: strcpy_s(parsing_dt.sceneData[r - 1].SOUND_NAME, sizeof(parsing_dt.sceneData[r - 1].SOUND_NAME), strt); break;
 				case 5: strcpy_s(parsing_dt.sceneData[r - 1].EFFECT_SOUND_NAME, sizeof(parsing_dt.sceneData[r - 1].EFFECT_SOUND_NAME), strt); break;
 				case 6: parsing_dt.sceneData[r - 1].EFFECT_COUNT = atoi(str); break;
-				case 7: wcscpy_s(parsing_dt.sceneData[r - 1].TEXT, sizeof(parsing_dt.sceneData[r - 1].TEXT), str); break;
+				case 7: {
+					wcscpy_s(parsing_dt.sceneData[r - 1].TEXT, sizeof(parsing_dt.sceneData[r - 1].TEXT), str); 
+					multiText(parsing_dt.sceneData[r - 1].TEXT, r-1);
+					break;
+				}
 				case 8: parsing_dt.sceneData[r - 1].CHOOSE_1_NEXT_SCENE = atoi(str); break;
 				case 9: wcscpy_s(parsing_dt.sceneData[r - 1].CHOOSE_1_TEXT, sizeof(parsing_dt.sceneData[r - 1].CHOOSE_1_TEXT), str); break;
 				case 10: parsing_dt.sceneData[r - 1].CHOOSE_2_NEXT_SCENE = atoi(str); break;
@@ -65,36 +69,15 @@ void csvParser(void)
 }
 
 
-//void multiLineText(Text GuideLine[], const wchar_t* rawString, const char* fontFile, int32 fontSize) {
-//	
-//	
-//	wchar_t* lineStart = rawString;
-//	wchar_t* lineEnd = lineStart;
-//
-//	int count = 1;
-//	for (int i = 0; rawString[i] != L'\0'; i++)
-//	{
-//		count++;
-//	}
-//
-//	//유니코드에 개행이 있을때 카운트해서 반복문 돌리기
-//	for (int32 i = 0; i < count; ++i)
-//	{
-//		while (true)
-//		{
-//			if (*lineEnd == L'\n' || *lineEnd == L'\0')
-//			{
-//				break;
-//			}
-//
-//			++lineEnd;
-//		}
-//
-//		int32 len = lineEnd - lineStart;
-//		Text_CreateText(&data->GuideLine[i], fontFile, fontSize, lineStart, len);
-//
-//		lineStart = lineEnd + 1;
-//		lineEnd = lineStart;
-//	}
-//
-//}
+void multiText(wchar_t test[], int num) {
+	int textCount = 0;
+	wchar_t input[2000] = test;
+	wchar_t* buffer;
+	wchar_t* token = wcstok(input, L"\n", &buffer); 
+
+	while (token) {
+		wcscpy_s(parsing_dt.sceneData[num].MULTI_TEXT[textCount], 100, token);
+		token = wcstok(NULL, L"\n", &buffer);
+		textCount++;
+	}
+}
