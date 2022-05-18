@@ -5,9 +5,7 @@
 #include "Framework/Scene.h"
 #include "Framework/Window.h"
 
-
 App g_App;
-
 
 bool App_Init(void)
 {
@@ -120,6 +118,7 @@ int32 App_Run(void)
 	}
 
 	g_Scene.Release();
+
 
 	return 0;
 }

@@ -112,6 +112,24 @@ void CreateCsvFile(CsvFile* csvFile, const char* filename)
 
 }
 
+void FreeCsvFile(CsvFile* csvFile)
+{
+	for (int r = 0; r < MAXIMUM_ROW; ++r)
+	{
+		if (r < csvFile->RowCount)
+		{
+			for (int c = 0; c < csvFile->ColumnCount; ++c)
+			{
+				free(csvFile->Items[r][c].RawData);
+				//csvFile->Items[r][c].RawData = NULL;
+			}
+		}
+
+		free(csvFile->Items[r]);
+		csvFile->Items[r] = NULL;
+	}
+}
+
 int ParseToInt(const CsvItem item)
 {
 	char* end;
@@ -123,10 +141,10 @@ char* ParseToAscii(const CsvItem item)
 	int size = strlen(item.RawData);
 	char* result = malloc(size + 1);
 	memset(result, 0, size + 1);
-	if (item.RawData[0] == '"' && item.RawData[1] == '"' && item.RawData[size - 1] == '"' && item.RawData[size - 2] == '"') {
+	if (item.RawData[0] == '\"' && item.RawData[1] == '\"' && item.RawData[size - 1] == '\"' && item.RawData[size - 2] == '\"') {
 		memcpy(result, &item.RawData[2], size - 4);
 	}
-	else if (item.RawData[0] == '"' && item.RawData[size - 1] == '"')
+	else if (item.RawData[0] == '\"' && item.RawData[size - 1] == '\"')
 	{
 		memcpy(result, &item.RawData[1], size - 2);
 	}
