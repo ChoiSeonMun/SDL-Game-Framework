@@ -39,6 +39,7 @@ int countCategory(const char* firstLine)
 		if (*firstLine == '@')
 		{
 			++result;
+
 		}
 
 		++firstLine;
