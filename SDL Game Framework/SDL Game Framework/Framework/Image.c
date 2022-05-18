@@ -22,7 +22,7 @@ void Image_Cleanup(void)
 void Image_LoadImage(Image* image, const char* filename)
 {
 	LogInfo("Image Loading... %s", filename);
-	
+
 	static char path[MAX_PATH];
 
 	sprintf_s(path, sizeof(path), "%s/%s", IMAGE_DIRECTORY, filename);
@@ -31,6 +31,12 @@ void Image_LoadImage(Image* image, const char* filename)
 	image->ScaleX = image->ScaleY = 1.0f;
 
 	SDL_SetTextureBlendMode(image->Texture, SDL_BLENDMODE_BLEND);
+}
+
+void Image_FreeImage(Image* image)
+{
+	SDL_DestroyTexture(image->Texture);
+	image->Texture = NULL;
 }
 
 void Image_SetAlphaValue(Image* image, uint8 alpha)
