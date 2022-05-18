@@ -150,6 +150,8 @@ void release_title(void)
 	}
 	Text_FreeText(&data->TestText);
 
+	Image_FreeImage(&data->TestImage);
+
 	SafeFree(g_Scene.Data);
 }
 #pragma endregion
@@ -346,6 +348,8 @@ void release_main(void)
 	}
 	Audio_FreeMusic(&data->BGM);
 	Audio_FreeSoundEffect(&data->Effect);
+
+	Image_FreeImage(&data->BackGround);
 
 	SafeFree(g_Scene.Data);
 }
