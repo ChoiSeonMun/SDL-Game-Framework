@@ -114,12 +114,13 @@ int32 App_Run(void)
 				render();
 				if (Input_GetKeyDown(VK_ESCAPE))
 				{
+
 					return false;
 				}
 			}
 		}
 	}
-
+	g_Scene.Release();
 
 	return 0;
 }
