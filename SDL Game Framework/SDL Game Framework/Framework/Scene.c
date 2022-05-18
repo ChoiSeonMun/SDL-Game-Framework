@@ -254,39 +254,60 @@ void GetSceneData(void) {
 
 		int32 columCount = 0;
 
-		Scenes[i - 1].Number = ParseToInt(csv.Items[i][columCount++]) - 1;
-		Image_LoadImage(&Scenes[i - 1].BGImage, ParseToAscii(csv.Items[i][columCount++]));
-		Audio_LoadMusic(&Scenes[i - 1].BGM, ParseToAscii(csv.Items[i][columCount++]));
+		int32 sceneNum = ParseToInt(csv.Items[i][columCount++]) - 1;
+
+		Scenes[sceneNum].Number = sceneNum;
+		Scenes[sceneNum].Name = ParseToUnicode(csv.Items[i][columCount++]);
+		Image_LoadImage(&Scenes[sceneNum].BGImage, ParseToAscii(csv.Items[i][columCount++]));
+		Audio_LoadMusic(&Scenes[sceneNum].BGM, ParseToAscii(csv.Items[i][columCount++]));
 
 		//텍스트 데이터 저장
-		Scenes[i - 1].DialogCount = ParseToInt(csv.Items[i][columCount++]);
+		Scenes[sceneNum].DialogCount = ParseToInt(csv.Items[i][columCount++]);
 		for (int32 j = 0; j < MAX_TEXT_SET_COUNT;j++) {
-			if (Scenes[i - 1].DialogCount > j) {
-				wchar_t* temp = ParseToUnicode(csv.Items[i][columCount]);
-				//wchar_t* tempPointer;
-				//wchar_t* line = wcstok_s(*temp, N/A , tempPointer);
-				Text_CreateText(&Scenes[i - 1].DialogList[j][0], "chosun.ttf", 25, temp, wcslen(temp));
-				Text_CreateText(&Scenes[i - 1].DialogList[j][1], "chosun.ttf", 25, "", wcslen(""));
+			if (Scenes[sceneNum].DialogCount > j) {
+				wchar_t* originalData = ParseToUnicode(csv.Items[i][columCount]);
+				wchar_t lineData[2048];
+				int32 originalIndex = 0, lineDataIndex = 0, dialogListIndex = 0;
+
+				//텍스트 줄바꿈 단위로 나눠 저장
+				while (true) {
+					if (*(originalData + originalIndex) != '\n' && *(originalData + originalIndex) != '\0') {
+						lineData[lineDataIndex++] = *(originalData + originalIndex);
+					}
+					else {
+						lineData[lineDataIndex++] = '\0';
+						Text_CreateText(&Scenes[sceneNum].DialogList[j][dialogListIndex], "GmarketSansTTFBold.ttf", 25, lineData, wcslen(lineData));
+						dialogListIndex++;
+						lineDataIndex = 0;
+
+						if (*(originalData + originalIndex) == '\0') {
+							break;
+						}
+					}
+					originalIndex++;
+				}
+
+				Text_CreateText(&Scenes[sceneNum].DialogList[j][dialogListIndex], "GmarketSansTTFBold.ttf", 25, L"", wcslen(L""));
 			}
 			columCount++;
 		}
 
 		//옵션 데이터 저장
-		Scenes[i - 1].OptionCount = ParseToInt(csv.Items[i][columCount++]);
+		Scenes[sceneNum].OptionCount = ParseToInt(csv.Items[i][columCount++]);
 		for (int32 j = 0; j < MAX_Option_COUNT;j++) {
 			if (Scenes[i - 1].OptionCount > j) {
 				char* temp = ParseToAscii(csv.Items[i][columCount]);
 				printf("%s\n", temp);
-				Image_LoadImage(&Scenes[i - 1].OptionImagesList[j], temp);
-				Image_SetAlphaValue(&Scenes[i - 1].OptionImagesList[j], 125);
+				Image_LoadImage(&Scenes[sceneNum].OptionImagesList[j], temp);
+				Image_SetAlphaValue(&Scenes[sceneNum].OptionImagesList[j], 125);
 				columCount++;
-				Scenes[i-1].NextSceneNumberList[j] = ParseToInt(csv.Items[i][columCount]) - 1;
+				Scenes[sceneNum].NextSceneNumberList[j] = ParseToInt(csv.Items[i][columCount]) - 1;
 				columCount++;
 			}
 		}
 		
-		if (Scenes[i - 1].OptionCount <= 0) {
-			Scenes[i - 1].NextSceneNumberList[0] = ParseToInt(csv.Items[i][++columCount]) - 1;
+		if (Scenes[sceneNum].OptionCount <= 0) {
+			Scenes[sceneNum].NextSceneNumberList[0] = ParseToInt(csv.Items[i][++columCount]) - 1;
 		}
 	}
 

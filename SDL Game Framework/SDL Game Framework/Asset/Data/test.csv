@@ -1,9 +1,10 @@
-씬 넘버,배경 이미지,배경 음악,텍스트 개수,텍스트1,텍스트2,옵션 개수,옵1,옵1 다음씬,옵2,옵2 다음씬
-1,csv/roof/S#0.start.jpg,csv/roof/B-play.mp3,1,"2031년 5월 13일 오랜만에 여동생을 만나
+씬 넘버,씬 이름,배경 이미지,배경 음악,텍스트 개수,텍스트1,텍스트2,옵션 개수,옵1,옵1 다음씬,옵2,옵2 다음씬
+1,,csv/roof/S#0.start.jpg,csv/roof/B-play.mp3,1,"2031년 5월 13일 오랜만에 여동생을 만나
 용산 아이파크 몰에 왔다.",,0,,2,,
-2,csv/roof/S#1.roof.jpg,,2,동생이 키즈카페에서 만난 친구들과 노는 것을 확인한 후,담배를 피러 옥상으로 향했다.,0,,3,,
-3,csv/roof/S#1-2.jpg,csv/roof/B-play.mp3,2,"나는 이곳에서 이상한 행동을 하는 쥐를 보게 되었다.
+2,,csv/roof/S#1.roof.jpg,,2,동생이 키즈카페에서 만난 친구들과 노는 것을 확인한 후,담배를 피러 옥상으로 향했다.,0,,3,,
+3,,csv/roof/S#1-2.jpg,csv/roof/B-play.mp3,2,"나는 이곳에서 이상한 행동을 하는 쥐를 보게 되었다.
 ""뭐지 이 쥐? 막 춤추네?.. 꿈..꿈인가..?""",어쩌지??,2,text/3-1.png,4,text/3-2.png,5
-4,csv/roof/S#3.jpg,csv/roof/B-play.mp3,1,나는 쥐의 이상행동을 보고 바로 도망가려 했다. 하지만.. ,,0,,6,,
-5,csv/roof/S#4.jpg,csv/roof/B-play.mp3,1,병원에 도착하자 오른 발목의 상태를 본 의사는.. “좀비에게 물리신 거 같은데요..?”,,0,,6,,
-6,csv/roof/S#5.jpg,csv/roof/B-play.mp3,0,,,1,option.png,-1,,
+4,,csv/roof/S#3.jpg,csv/roof/B-play.mp3,1,나는 쥐의 이상행동을 보고 바로 도망가려 했다. 하지만.. ,,0,,6,,
+5,,csv/roof/S#4.jpg,csv/roof/B-play.mp3,1,"병원에 도착하자 오른 발목의 상태를 본 의사는.. 
+“좀비에게 물리신 거 같은데요..?”",,0,,6,,
+6,game over연구소행,csv/roof/S#5.jpg,csv/roof/B-play.mp3,0,,,1,option.png,-1,,
