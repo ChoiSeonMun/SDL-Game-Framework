@@ -178,7 +178,7 @@ xcopy "$(ProjectDir)Asset\*.*" "$(TargetDir)Asset\" /E /Y</Command>
     <ClInclude Include="Framework.h" />
     <ClInclude Include="Framework\Audio.h" />
     <ClInclude Include="Framework\Csv.h" />
-    <ClInclude Include="Framework\Csvparser.h" />
+    <ClInclude Include="Framework\CsvParser.h" />
     <ClInclude Include="Framework\Image.h" />
     <ClInclude Include="Framework\Input.h" />
     <ClInclude Include="Framework\Random.h" />
