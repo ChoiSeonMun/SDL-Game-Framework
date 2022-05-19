@@ -87,18 +87,21 @@ void setScenes(void) {
 
 typedef struct TitleSceneData
 {
-	Text	GuideLine[1];
-	Music	TitleBGM;
-	float	Volume;
-	Text	EnterText;
-	int32	FontSize;
-	int32	RenderMode;
-	Image	TitleImage;
-	int32	X;
-	int32	Y;
-	Image	StartImage;
-	int32	SX;
-	int32	SY;
+	Text   GuideLine[1];
+	Music   TitleBGM;
+	float   Volume;
+	Text   EnterText;
+	Text   LoadingText;
+	int32   FontSize;
+	int32   RenderMode;
+	Image   TitleImage;
+	int32   X;
+	int32   Y;
+	Image   StartImage;
+	int32   SX;
+	int32   SY;
+	Image    BlackOutImage;
+	int32    BlackOutAlpha;
 } TitleSceneData;
 
 void init_title(void)
@@ -109,7 +112,8 @@ void init_title(void)
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
 
 	data->FontSize = 48;
-	Text_CreateText(&data->EnterText, "chosun.ttf", data->FontSize, L"--- PRESS THE SPACE ---", 24);
+	Text_CreateText(&data->EnterText, "GmarketSansTTFBold.ttf", data->FontSize, L"--- PRESS THE SPACE ---", 24);
+	Text_CreateText(&data->LoadingText, "GmarketSansTTFBold.ttf", data->FontSize, L"----- LOADING -----", 24);
 
 	data->RenderMode = SOLID;
 
@@ -125,66 +129,61 @@ void init_title(void)
 	Audio_PlayFadeIn(&data->TitleBGM, INFINITY_LOOP, 3000);
 
 	data->Volume = 1.0f;
+
+	data->BlackOutAlpha = 255;
+	Image_LoadImage(&data->BlackOutImage, "black.jpg");
+	Image_SetAlphaValue(&data->BlackOutImage, data->BlackOutAlpha);
 }
 
+bool Loading = false;
 void update_title(void)
 {
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
-
-	if (Input_GetKeyDown(VK_SPACE))
+	if (data->BlackOutAlpha > 0)
 	{
-		Scene_SetNextScene(SCENE_CREDIT);
+		data->BlackOutAlpha -= 5;
 	}
+	if (data->BlackOutAlpha <= 0)
+	{
+		if (Input_GetKeyDown(VK_SPACE))
+		{
+			Loading = true;
+			Scene_SetNextScene(SCENE_CREDIT);
+		}
+	}
+	Image_SetAlphaValue(&data->BlackOutImage, data->BlackOutAlpha);
 }
-
 void render_title(void)
 {
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
-	//for (int32 i = 0; i < 10; ++i)
-	//{
-	//	SDL_Color color = { .a = 255 };
-	//	Renderer_DrawTextSolid(&data->GuideLine[i], 10, 20 * i, color);
-	//}
-
-	//switch (data->RenderMode)
-	//{
-	//case SOLID:
-	//{
-	//	SDL_Color color = { .a = 255 };
-	//	Renderer_DrawTextSolid(&data->EnterText, 400, 400, color);
-	//}
-	//break;
-	//case SHADED:
-	//{
-	//	SDL_Color bg = { .a = 255 };
-	//	SDL_Color fg = { .r = 255, .g = 255, .a = 255 };
-	//	Renderer_DrawTextShaded(&data->EnterText, 400, 400, fg, bg);
-	//}
-	//break;
-	//case BLENDED:
-	//{
-	//	Renderer_DrawImage(&data->TestImage, 400, 400);
-	//	SDL_Color color = { .r = 255, .g = 255, .b = 255, .a = 255 };
-	//	Renderer_DrawTextBlended(&data->EnterText, 400, 400, color);
-	//}
-	//break;
-	//}
 	Renderer_DrawImage(&data->TitleImage, data->X, data->Y);
-	static float elapsedTime = 0;
+	static float elapsedTime = 1.0f;
 
+	SDL_Color color = { .a = 255 };
 	static bool isShow = true;
 	elapsedTime += Timer_GetDeltaTime();
-	if (elapsedTime >= 1.0f)
+	if (!Loading)
 	{
-		SDL_Color color = { .a = 255 };
-		Renderer_DrawImage(&data->StartImage, data->SX, data->SY);
-		Renderer_DrawTextSolid(&data->EnterText, WINDOW_WIDTH / 2 - (data->EnterText.Length * data->FontSize) / 4, 950, color);
-
-		if (elapsedTime >= 1.5f)
+		if (elapsedTime >= 1.0f)
 		{
-			elapsedTime = 0.0f;
+			Renderer_DrawImage(&data->StartImage, data->SX, data->SY);
+			Renderer_DrawTextSolid(&data->EnterText, WINDOW_WIDTH / 2 - (data->EnterText.Length * data->FontSize) / 4, 950, color);
+
+			if (elapsedTime >= 1.5f)
+			{
+				elapsedTime = 0.0f;
+			}
 		}
 	}
+	else
+	{
+		color.r = 255;
+		color.g = 255;
+		color.b = 255;
+		isShow = false;
+		Renderer_DrawTextSolid(&data->LoadingText, WINDOW_WIDTH / 2 - (data->LoadingText.Length * data->FontSize) / 4 + 20, 820, color);
+	}
+
 }
 
 void release_title(void)
@@ -193,7 +192,7 @@ void release_title(void)
 
 	//for (int32 i = 0; i < 10; ++i)
 	//{
-	//	Text_FreeText(&data->GuideLine[i]);
+	//   Text_FreeText(&data->GuideLine[i]);
 	//}
 	Text_FreeText(&data->EnterText);
 	SafeFree(g_Scene.Data);
@@ -214,7 +213,7 @@ typedef struct tagScene {
 	Image			BGImage;							//배경화면
 	Music			BGM;							//배경 음악
 	Image			AdditionImage;						//추가 이미지
-	int32			AddImageText;						//추가 이미지 타이밍
+	int32			AddImageTiming;						//추가 이미지 타이밍
 	SoundEffect		EffectSound;						//효과음
 	int32			EffectSoundTiming;						//효과음 표현 타이밍
 	int32			DialogCount;						//텍스트 갯수
@@ -252,26 +251,27 @@ void GetSceneData(void) {
 		Scenes[sceneNum].Name = ParseToUnicode(csv.Items[i][columCount++]);
 		Image_LoadImage(&Scenes[sceneNum].BGImage, ParseToAscii(csv.Items[i][columCount++]));
 		Audio_LoadMusic(&Scenes[sceneNum].BGM, ParseToAscii(csv.Items[i][columCount++]));
+		//Audio_SetVolume(0.1f);
 
 		//배경 전환 이미지
 		int32 additionalImagePoint = ParseToInt(csv.Items[i][columCount + 1]);
-		Scenes[sceneNum].AddImageText = additionalImagePoint;
+		Scenes[sceneNum].AddImageTiming = additionalImagePoint;
 		if (additionalImagePoint > -1) {
-			printf("add: %d\n", additionalImagePoint);
 			Image_LoadImage(&Scenes[sceneNum].AdditionImage, ParseToAscii(csv.Items[i][columCount]));
-			Scenes[sceneNum].AddImageText = additionalImagePoint;
 		}
 		columCount += 2;
 
 		//효과음
 		//char* effectSound = ParseToAscii(csv.Items[i][columCount++]);
-		//if (*effectSound != '\0') {
-		//	Audio_LoadSoundEffect(&Scenes[sceneNum].EffectSound, effectSound);
-		//	Scenes[sceneNum].EffectSoundTiming = ParseToInt(csv.Items[i][columCount]);
-		//}
+		int32 effectSoundPoint = ParseToInt(csv.Items[i][columCount + 1]);
+		Scenes[sceneNum].EffectSoundTiming = effectSoundPoint;
+		if (effectSoundPoint > -1) {
+			printf("effect: %d\n", effectSoundPoint);
+			Audio_LoadSoundEffect(&Scenes[sceneNum].EffectSound, ParseToAscii(csv.Items[i][columCount]));
+		}
+		columCount+=2;
 		//columCount++;
-		columCount++;
-		columCount++;
+		//columCount++;
 
 		//텍스트 데이터 저장
 		int32 dialogCount = ParseToInt(csv.Items[i][columCount++]);
@@ -285,11 +285,14 @@ void GetSceneData(void) {
 
 				//텍스트 줄바꿈 단위로 나눠 저장
 				while (true) {
+					//그냥 입력일 경우
 					if (*(originalData + originalIndex) != '\n' && *(originalData + originalIndex) != '\0') {
+						//"가 아닐 경우 그냥 넣어준다.
 						if (*(originalData + originalIndex) != '\"') {
 							lineData[lineDataIndex++] = *(originalData + originalIndex);
 							preChar = *(originalData + originalIndex);
 						}
+						// "가 연속으로 있을 경우 넣어준다.
 						else {
 							if (preChar == *(originalData + originalIndex)) {
 								lineData[lineDataIndex++] = *(originalData + originalIndex);
@@ -300,6 +303,7 @@ void GetSceneData(void) {
 							}
 						}
 					}
+					//개행이거나 널일 경우 text를 넣어준다.
 					else {
 						lineData[lineDataIndex++] = '\0';
 						Text_CreateText(&Scenes[sceneNum].DialogList[j][dialogListIndex], "GmarketSansTTFBold.ttf", 25, lineData, wcslen(lineData));
@@ -313,7 +317,7 @@ void GetSceneData(void) {
 					originalIndex++;
 				}
 
-				Text_CreateText(&Scenes[sceneNum].DialogList[j][dialogListIndex], "GmarketSansTTFBold.ttf", 25, L"", wcslen(L""));
+				Text_CreateText(&Scenes[sceneNum].DialogList[j][dialogListIndex], "GmarketSansTTFBold.ttf", 30, L"", wcslen(L""));
 			}
 			columCount++;
 		}
@@ -322,13 +326,8 @@ void GetSceneData(void) {
 		Scenes[sceneNum].OptionCount = ParseToInt(csv.Items[i][columCount++]);
 		for (int32 j = 0; j < MAX_OPTION_COUNT;j++) {
 			if (Scenes[i - 1].OptionCount > j) {
-				//char* temp = ParseToAscii(csv.Items[i][columCount]);
-				//printf("%s\n", temp);
-				//Image_LoadImage(&Scenes[sceneNum].OptionImagesList[j], temp);
-				//Image_SetAlphaValue(&Scenes[sceneNum].OptionImagesList[j], 125);
-
 				wchar_t* temp = ParseToUnicode(csv.Items[i][columCount]);
-				Text_CreateText(&Scenes[sceneNum].OptionList[j], "GmarketSansTTFBold.ttf", 25, temp, wcslen(temp));
+				Text_CreateText(&Scenes[sceneNum].OptionList[j], "GmarketSansTTFBold.ttf", 20, temp, wcslen(temp));
 
 				columCount++;
 				Scenes[sceneNum].NextSceneNumberList[j] = ParseToInt(csv.Items[i][columCount]) - 1;
@@ -763,14 +762,18 @@ void init_main(void)
 	Audio_PlayFadeIn(&data->Scene->BGM, INFINITY_LOOP, 2000);
 	Text_CreateText(&NullText, TextFont, 25, L"", 0);
 	Image_LoadImage(&OptionPointImage, "point.png");
-	OptionPointImage.ScaleX = 0.025f;
-	OptionPointImage.ScaleY = 0.025f;
+	OptionPointImage.ScaleX = 0.02f;
+	OptionPointImage.ScaleY = 0.02f;
 
 	for (int32 i = 0; i < data->Scene->OptionCount;i++) {
 		data->OptionColors[i].a = 125;
 		data->OptionColors[i].r = 225;
 		data->OptionColors[i].g = 225;
 		data->OptionColors[i].b = 225;
+	}
+
+	if (data->Scene->EffectSoundTiming > -1) {
+		Audio_PlaySoundEffect(&data->Scene->EffectSound, 1);
 	}
 
 	isSceneChanging = false;
@@ -785,6 +788,7 @@ void update_main(void)
 
 	//보통 씬일 경우
 	if (!isSceneChanging) {
+		// 배경 변경 중일 경우
 		if (isBGChanged) {
 			if (data->BlackOutAlpha < 255) {
 				data->BlackOutAlpha += 5;
@@ -796,9 +800,11 @@ void update_main(void)
 				TextColor.a = 0;
 			}
 		}
+		// 씬 최초 불러오기
 		else if (data->BlackOutAlpha > 0) {
 			data->BlackOutAlpha -= 5;
 		}
+		//이외 입력 정상 받음
 		else {
 			//키보드 값 입력
 			if (Input_GetKeyDown(VK_SPACE)) {
@@ -809,10 +815,17 @@ void update_main(void)
 					data->CurrentTextNumber++;
 
 					//배경 이미지 변경
-					if (data->Scene->AddImageText > -1) {
-						if (data->CurrentTextNumber == data->Scene->AddImageText) {
+					if (data->Scene->AddImageTiming > -1) {
+						if (data->CurrentTextNumber == data->Scene->AddImageTiming) {
 							isBGChanged = true;
 							ShowText = &NullText;
+						}
+					}
+
+					//이펙트 싸운드 적용
+					if (data->Scene->EffectSoundTiming > -1) {
+						if (data->CurrentOptionNumber == data->Scene->EffectSoundTiming) {
+							Audio_PlaySoundEffect(&data->Scene->EffectSound, 1);
 						}
 					}
 
@@ -923,7 +936,7 @@ void render_main(void)
 	if (ShowText != NULL && !isBGChanged) {
 		int32 i = 0;
 		while (ShowText[i].Length != 0) {
-			Renderer_DrawTextSolid(&ShowText[i], 400, 300 + i * 80, TextColor);
+			Renderer_DrawTextSolid(&ShowText[i], 250, 830 + i * 40, TextColor);
 			i++;
 		}
 	}
@@ -931,9 +944,9 @@ void render_main(void)
 	//선택지 출력
 	if (showOptions) {
 		for (int32 i = 0; i < data->Scene->OptionCount;i++) {
-			Renderer_DrawTextSolid(&data->Scene->OptionList[i], 250, 600 + i * 50, data->OptionColors[i]);
+			Renderer_DrawTextSolid(&data->Scene->OptionList[i], 250, 895 + i * 40, data->OptionColors[i]);
 		}
-		Renderer_DrawImage(&OptionPointImage, 200, 600 + data->CurrentOptionNumber * 50);
+		Renderer_DrawImage(&OptionPointImage, 210, 895 + data->CurrentOptionNumber * 40);
 	}
 
 	//페이드 인 페이드 아웃 효과를 위한 검은색 배경
@@ -943,6 +956,11 @@ void render_main(void)
 void release_main(void)
 {
 	MainScene* data = (MainScene*)g_Scene.Data;
+
+	Image_FreeImage(&data->BlackOutImage);
+	Text_FreeText(&NullText);
+	Image_FreeImage(&OptionPointImage);
+	ShowText = 0;
 
 	SafeFree(g_Scene.Data);
 }
