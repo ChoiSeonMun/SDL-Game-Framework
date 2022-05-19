@@ -33,7 +33,7 @@ bool Input_GetKeyDown(uint8 vkey)
 	}
 	else
 	{
-		return false;
+ 		return false;
 	}
 }
 

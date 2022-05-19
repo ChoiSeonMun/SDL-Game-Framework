@@ -20,23 +20,22 @@ struct Parsing_Data {
     wchar_t TEXT[2000];
 
     int16   CHOOSE_1_NEXT_SCENE;
-    wchar_t CHOOSE_1_TEXT[128];
+    wchar_t CHOOSE_TEXT_1[128];
 
     int16   CHOOSE_2_NEXT_SCENE;
-    wchar_t CHOOSE_2_TEXT[128];
+    wchar_t CHOOSE_TEXT_2[128];
 
     int16   CHOOSE_3_NEXT_SCENE;
-    wchar_t CHOOSE_3_TEXT[128];
-
+    wchar_t CHOOSE_TEXT_3[128];
 };
 
 //
 
 typedef struct Parsing {
-    struct Parsing_Data sceneData[200]; //200¿∫ µ•¿Ã≈Õ 200¡Ÿ πﬁ¿Ω
-}parsing;
+    struct Parsing_Data sceneData[200]; //200√Ä¬∫ ¬µ¬•√Ä√å√Ö√ç 200√Å√ô ¬π√û√Ä¬Ω
+}Parsing;
 
-extern parsing parsing_dt;
+extern Parsing parsing_dt;
 
 
 typedef struct CsvItem

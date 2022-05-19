@@ -1,4 +1,4 @@
-// Framework.h : ÇÁ·¹ÀÓ¿öÅ© Çì´õ. ÄÁÅÙÃ÷ ±¸Çö ½Ã »ç¿ëÇÑ´Ù.
+// Framework.h : í”„ë ˆìž„ì›Œí¬ í—¤ë”. ì»¨í…ì¸  êµ¬í˜„ ì‹œ ì‚¬ìš©í•œë‹¤.
 #pragma once
 
 #include "Framework/Image.h"

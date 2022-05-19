@@ -1,12 +1,16 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "Scene.h"
 
 #include "Framework.h"
 
 Scene g_Scene;
+Parsing parsing_dt;
 
 static ESceneType s_nextScene = SCENE_NULL;
+static int32 Index = 0;
 
+// titleScene
+/*
 #pragma region TitleScene
 
 #define SOLID 0
@@ -14,16 +18,16 @@ static ESceneType s_nextScene = SCENE_NULL;
 #define BLENDED 2
 
 const wchar_t* str[] = {
-	L"¿©±â´Â Å¸ÀÌÆ²¾ÀÀÔ´Ï´Ù. ÅØ½ºÆ®¿Í °ü·ÃµÈ ¿©·¯°¡Áö¸¦ Å×½ºÆ®ÇØº¾½Ã´Ù.",
-	L"BÅ°¸¦ ´©¸£¸é ÆùÆ®°¡ ±½°Ô º¯ÇÕ´Ï´Ù.",
-	L"IÅ°¸¦ ´©¸£¸é ÆùÆ®°¡ ÀÌÅÅ¸¯Ã¼·Î º¯ÇÕ´Ï´Ù.",
-	L"UÅ°¸¦ ´©¸£¸é ÅØ½ºÆ®¿¡ ¹ØÁÙÀÌ »ı±é´Ï´Ù.",
-	L"SÅ°¸¦ ´©¸£¸é ÅØ½ºÆ®¿¡ Ãë¼Ò¼±ÀÌ »ı±é´Ï´Ù.",
-	L"NÅ°¸¦ ´©¸£¸é ´Ù½Ã ¿ø·¡´ë·Î µ¹¾Æ¿É´Ï´Ù.",
-	L"CÅ°¸¦ ´©¸£¸é ·»´õ ¸ğµå°¡ ¹Ù²ò´Ï´Ù. (Solid -> Shaded -> Blended)",
-	L"1Å°¸¦ ´©¸£¸é ÅØ½ºÆ®°¡ ÀÛ¾ÆÁı´Ï´Ù.",
-	L"2Å°¸¦ ´©¸£¸é ÅØ½ºÆ®°¡ Ä¿Áı´Ï´Ù.",
-	L"½ºÆäÀÌ½º Å°¸¦ ´©¸£¸é ´ÙÀ½ ¾ÀÀ¸·Î ³Ñ¾î°©´Ï´Ù."
+	L"ì—¬ê¸°ëŠ” íƒ€ì´í‹€ì”¬ì…ë‹ˆë‹¤. í…ìŠ¤íŠ¸ì™€ ê´€ë ¨ëœ ì—¬ëŸ¬ê°€ì§€ë¥¼ í…ŒìŠ¤íŠ¸í•´ë´…ì‹œë‹¤.",
+	L"Bí‚¤ë¥¼ ëˆ„ë¥´ë©´ í°íŠ¸ê°€ êµµê²Œ ë³€í•©ë‹ˆë‹¤.",
+	L"Ií‚¤ë¥¼ ëˆ„ë¥´ë©´ í°íŠ¸ê°€ ì´íƒ¤ë¦­ì²´ë¡œ ë³€í•©ë‹ˆë‹¤.",
+	L"Uí‚¤ë¥¼ ëˆ„ë¥´ë©´ í…ìŠ¤íŠ¸ì— ë°‘ì¤„ì´ ìƒê¹ë‹ˆë‹¤.",
+	L"Sí‚¤ë¥¼ ëˆ„ë¥´ë©´ í…ìŠ¤íŠ¸ì— ì·¨ì†Œì„ ì´ ìƒê¹ë‹ˆë‹¤.",
+	L"Ní‚¤ë¥¼ ëˆ„ë¥´ë©´ ë‹¤ì‹œ ì›ë˜ëŒ€ë¡œ ëŒì•„ì˜µë‹ˆë‹¤.",
+	L"Cí‚¤ë¥¼ ëˆ„ë¥´ë©´ ë Œë” ëª¨ë“œê°€ ë°”ë€ë‹ˆë‹¤. (Solid -> Shaded -> Blended)",
+	L"1í‚¤ë¥¼ ëˆ„ë¥´ë©´ í…ìŠ¤íŠ¸ê°€ ì‘ì•„ì§‘ë‹ˆë‹¤.",
+	L"2í‚¤ë¥¼ ëˆ„ë¥´ë©´ í…ìŠ¤íŠ¸ê°€ ì»¤ì§‘ë‹ˆë‹¤.",
+	L"ìŠ¤í˜ì´ìŠ¤ í‚¤ë¥¼ ëˆ„ë¥´ë©´ ë‹¤ìŒ ì”¬ìœ¼ë¡œ ë„˜ì–´ê°‘ë‹ˆë‹¤.",
 };
 
 typedef struct TitleSceneData
@@ -47,7 +51,7 @@ void init_title(void)
 	}
 
 	data->FontSize = 24;
-	Text_CreateText(&data->TestText, "d2coding.ttf", data->FontSize, L"ÀÌ ÅØ½ºÆ®°¡ º¯ÇÕ´Ï´Ù.", 13);
+	Text_CreateText(&data->TestText, "d2coding.ttf", data->FontSize, L"ì´ í…ìŠ¤íŠ¸ê°€ ë³€í•©ë‹ˆë‹¤.", 13);
 
 	data->RenderMode = SOLID;
 
@@ -150,20 +154,24 @@ void release_title(void)
 	}
 	Text_FreeText(&data->TestText);
 
+	Image_FreeImage(&data->TestImage);
+
 	SafeFree(g_Scene.Data);
 }
 #pragma endregion
-
+*/
+// mainScene
+/*
 #pragma region MainScene
 const wchar_t* str2[] = {
-	L"¿©±â¼­´Â »ç¿îµå¿Í ÀÌ¹ÌÁö ºí·»µù¿¡ ´ëÇØ¼­ ¾Ë¾Æº¾½Ã´Ù.",
-	L"È­»ìÇ¥Å°·Î ÀÌ¹ÌÁö¸¦ ÀÌµ¿½ÃÅ³ ¼ö ÀÖ½À´Ï´Ù.",
-	L"EÅ°¸¦ ´©¸£¸é ÀÌÆåÆ®¸¦ Àç»ı½ÃÅ³ ¼ö ÀÖ½À´Ï´Ù. ÀÌÆåÆ® ¼Ò¸®°¡ ÀÛÀ¸´Ï º¼·ıÀ» ³·Ãá ÈÄ ÁøÇàÇÏ¼¼¿ä.",
-	L"MÅ°·Î À½¾ÇÀ» ²ô°Å³ª ÄÓ ¼ö ÀÖ½À´Ï´Ù.",
-	L"PÅ°·Î À½¾ÇÀ» ¸ØÃß°Å³ª Àç°³ÇÒ ¼ö ÀÖ½À´Ï´Ù.",
-	L"1¹ø°ú 2¹øÀ¸·Î º¼·ıÀ» Á¶ÀıÇÒ ¼ö ÀÖ½À´Ï´Ù.",
-	L"WASD·Î ÀÌ¹ÌÁöÀÇ ½ºÄÉÀÏÀ» Á¶Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.",
-	L"KLÅ°·Î ÀÌ¹ÌÁöÀÇ Åõ¸íµµ¸¦ Á¶ÀıÇÒ ¼ö ÀÖ½À´Ï´Ù."
+	L"ì—¬ê¸°ì„œëŠ” ì‚¬ìš´ë“œì™€ ì´ë¯¸ì§€ ë¸”ë Œë”©ì— ëŒ€í•´ì„œ ì•Œì•„ë´…ì‹œë‹¤.",
+	L"í™”ì‚´í‘œí‚¤ë¡œ ì´ë¯¸ì§€ë¥¼ ì´ë™ì‹œí‚¬ ìˆ˜ ìˆìŠµë‹ˆë‹¤.",
+	L"Eí‚¤ë¥¼ ëˆ„ë¥´ë©´ ì´í™íŠ¸ë¥¼ ì¬ìƒì‹œí‚¬ ìˆ˜ ìˆìŠµë‹ˆë‹¤. ì´í™íŠ¸ ì†Œë¦¬ê°€ ì‘ìœ¼ë‹ˆ ë³¼ë¥¨ì„ ë‚®ì¶˜ í›„ ì§„í–‰í•˜ì„¸ìš”.",
+	L"Mí‚¤ë¡œ ìŒì•…ì„ ë„ê±°ë‚˜ ì¼¤ ìˆ˜ ìˆìŠµë‹ˆë‹¤.",
+	L"Pí‚¤ë¡œ ìŒì•…ì„ ë©ˆì¶”ê±°ë‚˜ ì¬ê°œí•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.",
+	L"1ë²ˆê³¼ 2ë²ˆìœ¼ë¡œ ë³¼ë¥¨ì„ ì¡°ì ˆí•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.",
+	L"WASDë¡œ ì´ë¯¸ì§€ì˜ ìŠ¤ì¼€ì¼ì„ ì¡°ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.",
+	L"KLí‚¤ë¡œ ì´ë¯¸ì§€ì˜ íˆ¬ëª…ë„ë¥¼ ì¡°ì ˆí•  ìˆ˜ ìˆìŠµë‹ˆë‹¤."
 };
 
 #define GUIDELINE_COUNT 8
@@ -202,7 +210,7 @@ void init_main(void)
 	{
 		Text_CreateText(&data->GuideLine[i], "d2coding.ttf", 16, str2[i], wcslen(str2[i]));
 	}
-	
+
 	Image_LoadImage(&data->BackGround, "background.jfif");
 
 	Audio_LoadMusic(&data->BGM, "powerful.mp3");
@@ -315,15 +323,21 @@ void update_main(void)
 		data->Alpha = Clamp(0, data->Alpha + 1, 255);
 		Image_SetAlphaValue(&data->BackGround, data->Alpha);
 	}
+
+	if (Input_GetKeyDown(VK_SPACE))
+	{
+		Scene_SetNextScene(SCENE_START);
+	}
 }
 
 void render_main(void)
 {
+
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
 
 	for (int32 i = 0; i < GUIDELINE_COUNT; ++i)
 	{
-		SDL_Color color = { .a = 255 };
+		SDL_Color color = { .a = 0 };
 		Renderer_DrawTextSolid(&data->GuideLine[i], 10, 20 * i, color);
 	}
 
@@ -334,16 +348,504 @@ void release_main(void)
 {
 	MainSceneData* data = (MainSceneData*)g_Scene.Data;
 
-	for (int32 i = 0; i < 10; ++i)
+	for (int32 i = 0; i < GUIDELINE_COUNT; ++i)
 	{
 		Text_FreeText(&data->GuideLine[i]);
 	}
 	Audio_FreeMusic(&data->BGM);
 	Audio_FreeSoundEffect(&data->Effect);
 
+	Image_FreeImage(&data->BackGround);
+
 	SafeFree(g_Scene.Data);
 }
 #pragma endregion
+*/ 
+
+#pragma region extraScene
+
+typedef struct SceneData
+{
+	int32		nowIndex;
+	int32		ChooseCount;
+	int32		LineCount;
+	int32		delayCount;
+	Image		BackGround;
+	Music		Main_BGM;
+	Text		GuideLine[20];
+	Text		Choose_1;
+	Text		Choose_2;
+	Text		Choose_3;
+	Text		Coursur;
+	bool		isUp;
+	bool		isDown;
+	bool		isSkip;
+} SceneData;
+
+void init_Extra(void)
+{
+	g_Scene.Data = malloc(sizeof(SceneData));
+	memset(g_Scene.Data, 0, sizeof(SceneData));
+	SceneData* data = (SceneData*)g_Scene.Data;
+
+	data->nowIndex = Index;
+	data->ChooseCount = 0;
+	data->LineCount = 1;
+	data->delayCount = 0;
+
+	Text_CreateText(&data->Coursur,"GmarketSansTTFLight.ttf", 24, L" â–¶", wcslen(L" â–¶")); //ì»¤ì„œ ìƒì„±
+	
+	// ê°œí–‰ë¬¸ì ì²˜ë¦¬ë¶€
+	wchar_t* rawString = parsing_dt.sceneData[data->nowIndex].TEXT;
+	wchar_t* lineStart = rawString;
+	wchar_t* lineEnd = lineStart;
+
+	for (int32 i = 0; rawString[i] != L'\0'; i++)
+	{
+		if (rawString[i] == L'\n') {
+			data->LineCount++;
+		}
+	}
+
+	//ìœ ë‹ˆì½”ë“œì— ê°œí–‰ì´ ìˆì„ë•Œ ì¹´ìš´íŠ¸í•´ì„œ ë°˜ë³µë¬¸ ëŒë¦¬ê¸°
+	for (int32 i = 0; i < data->LineCount; ++i)
+	{
+		while (true)
+		{
+			if (*lineEnd == L'\n' || *lineEnd == L'\0')
+			{
+				break;
+			}
+
+			++lineEnd;
+		}
+
+		int32 len = lineEnd - lineStart;
+
+		Text_CreateText(&data->GuideLine[i], "GmarketSansTTFLight.ttf", 18, lineStart, len);
+
+
+		lineStart = lineEnd + 1;
+		lineEnd = lineStart;
+	}
+
+	// ì„ íƒì§€ ì²˜ë¦¬ë¶€
+	if (*(parsing_dt.sceneData[data->nowIndex].CHOOSE_TEXT_1) != L'\0')
+	{
+		Text_CreateText(&data->Choose_1, "GmarketSansTTFBold.ttf", 22, parsing_dt.sceneData[data->nowIndex].CHOOSE_TEXT_1, wcslen(parsing_dt.sceneData[data->nowIndex].CHOOSE_TEXT_1));
+		data->ChooseCount++;
+	}
+	if (*(parsing_dt.sceneData[data->nowIndex].CHOOSE_TEXT_2) != L'\0')
+	{
+		Text_CreateText(&data->Choose_2, "GmarketSansTTFBold.ttf", 22, parsing_dt.sceneData[data->nowIndex].CHOOSE_TEXT_2, wcslen(parsing_dt.sceneData[data->nowIndex].CHOOSE_TEXT_2));
+		data->ChooseCount++;
+	}
+	if (*(parsing_dt.sceneData[data->nowIndex].CHOOSE_TEXT_3) != L'\0')
+	{
+		Text_CreateText(&data->Choose_3, "GmarketSansTTFBold.ttf", 22, parsing_dt.sceneData[data->nowIndex].CHOOSE_TEXT_3, wcslen(parsing_dt.sceneData[data->nowIndex].CHOOSE_TEXT_3));
+		data->ChooseCount++;
+	}
+	// ì´ë¯¸ì§€ ì²˜ë¦¬ë¶€
+	Image_LoadImage(&data->BackGround, parsing_dt.sceneData[data->nowIndex].MAIN_IMAGE);
+	
+	////ì‚¬ìš´ë“œ
+	//Audio_LoadMusic(&data->Main_BGM, parsing_dt.sceneData[data->nowIndex].SOUND_NAME);
+	//float Volume = 1.0f;
+	//Audio_SetVolume(Volume);
+
+	data->isUp = true;
+	data->isDown = false;
+	data->isSkip = false;
+}
+
+void update_Extra(void)
+{
+	SceneData* data = (SceneData*)g_Scene.Data;
+
+	static float elapsedTime;
+	elapsedTime += Timer_GetDeltaTime();
+
+	// í…ìŠ¤íŠ¸ ì—°ì¶œ ì§€ì—°ë¶€
+	if (elapsedTime >= 0.75f)
+	{
+		if (data->delayCount <= data->LineCount)
+		{
+			data->delayCount++;
+		}
+		elapsedTime = 0;
+	}
+
+	if (Input_GetKeyDown(VK_RETURN))
+	{
+		if (!data->isSkip)
+		{
+			data->isSkip = true;
+		}
+	}
+
+	if (Input_GetKeyDown(VK_SPACE))
+	{
+		if (data->ChooseCount == 1)
+		{
+			Index = (parsing_dt.sceneData[data->nowIndex].CHOOSE_1_NEXT_SCENE) - 1;
+			Scene_SetNextScene(SCENE_EXTRA);
+		}
+		if (data->ChooseCount == 2)
+		{
+			if (data->isUp)
+			{
+				Index = (parsing_dt.sceneData[data->nowIndex].CHOOSE_1_NEXT_SCENE) - 1;
+				Scene_SetNextScene(SCENE_EXTRA);
+			}
+			if (!data->isUp)
+			{
+				Index = (parsing_dt.sceneData[data->nowIndex].CHOOSE_2_NEXT_SCENE) - 1;
+				Scene_SetNextScene(SCENE_EXTRA);
+			}
+		}
+		if (data->ChooseCount == 3)
+		{
+			if (data->isUp)
+			{
+				Index = (parsing_dt.sceneData[data->nowIndex].CHOOSE_1_NEXT_SCENE) - 1;
+				Scene_SetNextScene(SCENE_EXTRA);
+			}
+			if (!data->isUp&&!data->isDown)
+			{
+				Index = (parsing_dt.sceneData[data->nowIndex].CHOOSE_2_NEXT_SCENE) - 1;
+				Scene_SetNextScene(SCENE_EXTRA);
+			}
+			if (data->isDown)
+			{
+				Index = (parsing_dt.sceneData[data->nowIndex].CHOOSE_3_NEXT_SCENE) - 1;
+				Scene_SetNextScene(SCENE_EXTRA);
+			}
+		}
+	}
+
+	// ì„ íƒì§€ ìœ„ì•„ë˜ í‚¤ë³´ë“œ ì…ë ¥ ì²˜ë¦¬ë¶€
+	if (Input_GetKeyDown(VK_UP))
+	{
+		if (data->ChooseCount == 2)
+		{
+			if (!data->isUp)
+			{
+				data->isUp = !data->isUp;
+			}
+		}
+		else if(data->ChooseCount == 3)
+		{
+			if (!data->isUp && !data->isDown)
+			{
+				data->isUp = !data->isUp;
+			}
+			else if (!data->isUp && data->isDown)
+			{
+				data->isDown = !data->isDown;
+			}
+		}
+	}
+	if (Input_GetKeyDown(VK_DOWN))
+	{
+		if (data->ChooseCount == 2)
+		{
+			if (data->isUp)
+			{
+				data->isUp = !data->isUp;
+			}
+		}
+		else if (data->ChooseCount == 3)
+		{
+			if (data->isUp && !data->isDown)
+			{
+				data->isUp = !data->isUp;
+			}
+			else if (!data->isUp && !data->isDown)
+			{
+				data->isDown = !data->isDown;
+			}
+		}
+	}
+
+
+}
+
+void render_Extra(void)
+{
+	SceneData* data = (SceneData*)g_Scene.Data;
+	SDL_Color color = { .r = 255,.b = 255,.g = 255 };
+	
+	//ì´ë¯¸ì§€ ì¶œë ¥
+	Renderer_DrawImage(&data->BackGround, 0, 0);
+	
+	//í…ìŠ¤íŠ¸ ì¶œë ¥
+	if (data->isSkip)
+	{
+		for (int32 i = 0; i < data->LineCount; i++)
+		{
+			Renderer_DrawTextSolid(&data->GuideLine[i], 975, 75 + (35 * i), color);
+		}
+	}
+	else
+	{
+		for (int32 i = 0; i < data->delayCount; i++)
+		{
+			Renderer_DrawTextSolid(&data->GuideLine[i], 975, 75 + (35 * i), color);
+		}
+	}
+
+	//ì„ íƒì§€ ì¶œë ¥
+	if (*(parsing_dt.sceneData[data->nowIndex].CHOOSE_TEXT_1) != L"")
+	{
+		Renderer_DrawTextSolid(&data->Choose_1, 995, 790, color);
+	}
+	if (*(parsing_dt.sceneData[data->nowIndex].CHOOSE_TEXT_2) != L"")
+	{
+		Renderer_DrawTextSolid(&data->Choose_2, 995, 820, color);
+	}
+	if (*(parsing_dt.sceneData[data->nowIndex].CHOOSE_TEXT_3) != L"")
+	{
+		Renderer_DrawTextSolid(&data->Choose_3, 995, 850, color);
+	}
+	
+	//ì»¤ì„œ ì¶œë ¥
+	if (data->ChooseCount == 1)
+	{
+		Renderer_DrawTextSolid(&data->Coursur, 965, 790, color);
+	}
+	if (data->ChooseCount == 2)
+	{
+		if (data->isUp)
+		{
+			Renderer_DrawTextSolid(&data->Coursur, 965, 790, color);
+		}
+		else
+		{
+			Renderer_DrawTextSolid(&data->Coursur, 965, 820, color);
+		}
+	}
+	if (data->ChooseCount == 3)
+	{
+		if (data->isUp)
+		{
+			Renderer_DrawTextSolid(&data->Coursur, 965, 790, color);
+		}
+		else if (!data->isUp && !data->isDown)
+		{
+			Renderer_DrawTextSolid(&data->Coursur, 965, 820, color);
+		}
+		else
+		{
+			Renderer_DrawTextSolid(&data->Coursur, 965, 850, color);
+		}
+	}
+}
+
+void release_Extra(void)
+{
+	SceneData* data = (SceneData*)g_Scene.Data;
+	Text_FreeText(&data->Choose_1);
+	Text_FreeText(&data->Choose_2);
+	Text_FreeText(&data->Choose_3);
+	Text_FreeText(&data->Coursur);
+	for (int32 i = 0; i <20; i++)
+	{
+		Text_FreeText(&data->GuideLine[i]);
+	}
+	if (parsing_dt.sceneData[Index].SOUND_NAME != '\0')
+	{
+		Audio_FreeMusic(&data->Main_BGM);
+	}
+	Image_FreeImage(&data->BackGround);
+	SafeFree(g_Scene.Data);
+}
+
+#pragma endregion
+
+#pragma region MainScreen
+typedef struct MainScreenData
+{
+	Text	RoadingText[3];
+	Text	Recording;
+	Text	Date;
+	Text	Rocation;
+	Text	Infomation;
+	Text	RoadConform[4];
+	Text	BioLink[3];
+	Text	BrainLink;
+	int32	RoadingCheck;
+	int32	ConformCheck;
+	int32	BioLinkCheck;
+	int32	NextText;
+	bool	isNext;
+} MainScreenData;
+
+void init_MainScreen(void)
+{
+	g_Scene.Data = malloc(sizeof(MainScreenData));
+	memset(g_Scene.Data, 0, sizeof(MainScreenData));
+	MainScreenData* data = (MainScreenData*)g_Scene.Data;
+
+	Text_CreateText(&data->RoadingText[0], "12LotteMartHappyLight.ttf", 18, L"ë°”ì´ì˜¤ ì¹©ì…‹ ë¡œë”©ì¤‘ .", wcslen(L"ë°”ì´ì˜¤ ì¹©ì…‹ ë¡œë”©ì¤‘ ."));
+	Text_CreateText(&data->RoadingText[1], "12LotteMartHappyLight.ttf", 18, L"ë°”ì´ì˜¤ ì¹©ì…‹ ë¡œë”©ì¤‘ . .", wcslen(L"ë°”ì´ì˜¤ ì¹©ì…‹ ë¡œë”©ì¤‘ . ."));
+	Text_CreateText(&data->RoadingText[2], "12LotteMartHappyLight.ttf", 18, L"ë°”ì´ì˜¤ ì¹©ì…‹ ë¡œë”©ì¤‘ . . .", wcslen(L"ë°”ì´ì˜¤ ì¹©ì…‹ ë¡œë”©ì¤‘ . . ."));
+	Text_CreateText(&data->Recording, "12LotteMartHappyLight.ttf", 18, L"ê¸°ë¡ì - [íƒ€ì¹´ë„¤ ì¤€]", wcslen(L"ê¸°ë¡ì - [íƒ€ì¹´ë„¤ ì¤€]"));
+	Text_CreateText(&data->Date, "12LotteMartHappyLight.ttf", 18, L"2067ë…„ 8 ì›” 12 ì¼", wcslen(L"2067ë…„ 8 ì›” 12 ì¼"));
+	Text_CreateText(&data->Rocation, "12LotteMartHappyLight.ttf", 18, L"ìœ„ì¹˜ ì¢Œí‘œ - [æ±äº¬ , æ—¥æœ¬]", wcslen(L"ìœ„ì¹˜ ì¢Œí‘œ - [æ±äº¬ , æ—¥æœ¬]"));
+	Text_CreateText(&data->Infomation, "12LotteMartHappyLight.ttf", 18, L"ë³¸ ì¹©ì…‹ì€ ë‚´ê°ê´€ë°© ì§í•  ë‚´ê°ì •ë³´ì¡°ì‚¬ì‹¤ ì¡´ì¹˜ê¸°ë¡ë¬¼ ì…ë‹ˆë‹¤â”€", wcslen(L"ë³¸ ì¹©ì…‹ì€ ë‚´ê°ê´€ë°© ì§í•  ë‚´ê°ì •ë³´ì¡°ì‚¬ì‹¤ ì¡´ì¹˜ê¸°ë¡ë¬¼ ì…ë‹ˆë‹¤â”€"));
+	Text_CreateText(&data->RoadConform[0], "12LotteMartHappyLight.ttf", 18, L"ë¡œë“œ ì»¨íŒì¤‘ â”€", wcslen(L"ë¡œë“œ ì»¨íŒì¤‘ â”€"));
+	Text_CreateText(&data->RoadConform[1], "12LotteMartHappyLight.ttf", 18, L"ë¡œë“œ ì»¨íŒì¤‘ â”€ â”€", wcslen(L"ë¡œë“œ ì»¨íŒì¤‘ â”€ â”€"));
+	Text_CreateText(&data->RoadConform[2], "12LotteMartHappyLight.ttf", 18, L"ë¡œë“œ ì»¨íŒì¤‘ â”€ â”€ â”€", wcslen(L"ë¡œë“œ ì»¨íŒì¤‘ â”€ â”€ â”€"));
+	Text_CreateText(&data->RoadConform[3], "12LotteMartHappyLight.ttf", 18, L"ë¡œë“œ ì»¨íŒì¤‘ â”€ â”€ â”€ â”€", wcslen(L"ë¡œë“œ ì»¨íŒì¤‘ â”€ â”€ â”€ â”€"));
+	Text_CreateText(&data->BioLink[0], "12LotteMartHappyLight.ttf", 18, L"ë°”ì´ì˜¤ ë§í¬ ì™„ë£Œ .", wcslen(L"ë°”ì´ì˜¤ ë§í¬ ì™„ë£Œ ."));
+	Text_CreateText(&data->BioLink[1], "12LotteMartHappyLight.ttf", 18, L"ë°”ì´ì˜¤ ë§í¬ ì™„ë£Œ . .", wcslen(L"ë°”ì´ì˜¤ ë§í¬ ì™„ë£Œ . ."));
+	Text_CreateText(&data->BioLink[2], "12LotteMartHappyLight.ttf", 18, L"ë°”ì´ì˜¤ ë§í¬ ì™„ë£Œ . . .", wcslen(L"ë°”ì´ì˜¤ ë§í¬ ì™„ë£Œ . . ."));
+	Text_CreateText(&data->BrainLink, "12LotteMartHappyLight.ttf", 18, L"ëŒ€ë‡Œ ê°ì • ë§í¬ í™•ì¸", wcslen(L"ëŒ€ë‡Œ ê°ì • ë§í¬ í™•ì¸"));
+	data->BioLinkCheck = 0;
+	data->ConformCheck = 1;
+	data->RoadingCheck = 1;
+	data->NextText = 0;
+	data->isNext = false;
+}
+
+void update_MainScreen(void)
+{
+	MainScreenData* data = (MainScreenData*)g_Scene.Data;
+
+	static float elapsedTime;
+	static float gotoNextScene;
+	elapsedTime += Timer_GetDeltaTime();
+
+	if (elapsedTime >= 0.65f)
+	{
+		if (data->RoadingCheck < 3)
+		{
+			data->RoadingCheck++;
+		}
+		else if (data->NextText == 5 && data->ConformCheck < 4)
+		{
+			data->ConformCheck++;
+		}
+		else if (data->NextText == 6 && data->BioLinkCheck < 3)
+		{
+			data->BioLinkCheck++;
+		}
+		if (data->isNext)
+		{
+			data->NextText++;
+			data->isNext = false;
+		}
+		elapsedTime = 0;
+	}
+	if (data->NextText == 8)
+	{
+		gotoNextScene += Timer_GetDeltaTime();
+		if (gotoNextScene >= 4.0f)
+		{
+			Scene_SetNextScene(SCENE_START);
+		}
+	}
+}
+
+void render_MainScreen(void)
+{
+	SDL_Color color = { .r = 255,.b = 255,.g = 255 };
+	MainScreenData* data = (MainScreenData*)g_Scene.Data;
+	for (int32 i = 0; i < data->RoadingCheck; i++)
+	{
+		Renderer_DrawTextSolid(&data->RoadingText[i], 30, 30, color);
+	}
+	if (data->NextText == 0 && data->RoadingCheck == 3)
+	{
+		data->isNext = true;
+	}
+	if (data->NextText > 0)
+	{
+		Renderer_DrawTextSolid(&data->Recording, 30, 70, color);
+		if (data->NextText == 1)
+		{
+			data->isNext = true;
+		}
+	}
+	if (data->NextText > 1)
+	{
+		Renderer_DrawTextSolid(&data->Date, 700, 340, color);
+		if (data->NextText == 2)
+		{
+			data->isNext = true;
+		}
+	}
+	if (data->NextText > 2)
+	{
+		Renderer_DrawTextSolid(&data->Rocation, 660, 370, color);
+		if (data->NextText == 3)
+		{
+			data->isNext = true;
+		}
+	}
+	if (data->NextText > 3)
+	{
+		Renderer_DrawTextSolid(&data->Infomation, 50, 400, color);
+		if (data->NextText == 4)
+		{
+			data->isNext = true;
+		}
+	}
+	if (data->NextText > 4)
+	{
+		for (int32 i = 0; i < data->ConformCheck; i++)
+		{
+			Renderer_DrawTextSolid(&data->RoadConform[i], 60, 520, color);
+			
+		}
+		if (data->NextText == 5 && data->ConformCheck == 4)
+		{
+			data->isNext = true;
+		}
+	}
+	if (data->NextText > 5)
+	{
+		for (int32 i = 0; i < data->BioLinkCheck; i++)
+		{
+			Renderer_DrawTextSolid(&data->BioLink[i], 800, 600, color);
+		}
+		if (data->NextText == 6 && data->BioLinkCheck == 3)
+		{
+			data->isNext = true;
+		}
+	}
+	if (data->NextText > 6)
+	{
+		Renderer_DrawTextSolid(&data->BrainLink, 1020, 600, color);
+		if (data->NextText == 7)
+		{
+			data->isNext = true;
+		}
+	}
+}
+
+void release_MainScreen(void)
+{
+	MainScreenData* data = (MainScreenData*)g_Scene.Data;
+
+	for (int32 i = 0; i < 3; i++)
+	{
+		Text_FreeText(&data->RoadingText[i]);
+		Text_FreeText(&data->BioLink[i]);
+		Text_FreeText(&data->RoadConform[i]);
+	}
+	Text_FreeText(&data->RoadConform[3]);
+	Text_FreeText(&data->Recording);
+	Text_FreeText(&data->Date);
+	Text_FreeText(&data->Rocation);
+	Text_FreeText(&data->Infomation);
+	Text_FreeText(&data->BrainLink);
+
+	SafeFree(g_Scene.Data);
+}
+
+#pragma endregion
+
 
 bool Scene_IsSetNextScene(void)
 {
@@ -376,6 +878,7 @@ void Scene_Change(void)
 
 	switch (s_nextScene)
 	{
+	/*
 	case SCENE_TITLE:
 		g_Scene.Init = init_title;
 		g_Scene.Update = update_title;
@@ -387,6 +890,19 @@ void Scene_Change(void)
 		g_Scene.Update = update_main;
 		g_Scene.Render = render_main;
 		g_Scene.Release = release_main;
+		break;
+	*/
+	case SCENE_EXTRA:
+		g_Scene.Init = init_Extra;
+		g_Scene.Update = update_Extra;
+		g_Scene.Render = render_Extra;
+		g_Scene.Release = release_Extra;
+		break;
+	case SCENE_MAINSCREEN:
+		g_Scene.Init = init_MainScreen;
+		g_Scene.Update = update_MainScreen;
+		g_Scene.Render = render_MainScreen;
+		g_Scene.Release = release_MainScreen;
 		break;
 	}
 
