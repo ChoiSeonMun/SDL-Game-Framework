@@ -49,7 +49,6 @@ void csvParser(void)
 				case 6: parsing_dt.sceneData[r - 1].EFFECT_COUNT = atoi(str); break;
 				case 7: {
 					wcscpy_s(parsing_dt.sceneData[r - 1].TEXT, sizeof(parsing_dt.sceneData[r - 1].TEXT), str); 
-					multiText(parsing_dt.sceneData[r - 1].TEXT, r-1);
 					break;
 				}
 				case 8: parsing_dt.sceneData[r - 1].CHOOSE_1_NEXT_SCENE = atoi(str); break;
@@ -66,18 +65,4 @@ void csvParser(void)
 
 	FreeCsvFile(&csvFile);
 
-}
-
-
-void multiText(wchar_t test[], int num) {
-	int textCount = 0;
-	wchar_t input[2000] = test;
-	wchar_t* buffer;
-	wchar_t* token = wcstok(input, L"\n", &buffer); 
-
-	while (token) {
-		wcscpy_s(parsing_dt.sceneData[num].MULTI_TEXT[textCount], 100, token);
-		token = wcstok(NULL, L"\n", &buffer);
-		textCount++;
-	}
 }
