@@ -16,7 +16,7 @@
 #define FPS				60
 
 // Back Buffer 클리어할 때 색깔
-#define CLEAR_COLOR_R	255
-#define CLEAR_COLOR_G	255
-#define CLEAR_COLOR_B	255
-#define CLEAR_COLOR_A	255
+#define CLEAR_COLOR_R	0
+#define CLEAR_COLOR_G	0
+#define CLEAR_COLOR_B	0
+#define CLEAR_COLOR_A	0

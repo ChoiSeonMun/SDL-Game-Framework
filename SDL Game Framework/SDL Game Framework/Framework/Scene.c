@@ -307,7 +307,10 @@ void update_main(void)
 	{
 		++data->playerSelectValue;
 	}
-	
+	if (Input_GetKeyDown(VK_SPACE))
+	{
+		Scene_SetNextScene(SCENE_CREDIT);
+	}
 }
 
 void render_main(void)
@@ -345,6 +348,118 @@ void release_main(void)
 }
 #pragma endregion
 
+#pragma region creditscene
+const wchar_t* str4[] = {
+	L"메타버스 기획반",
+	L"    강재훈",
+	L"    이혜승",
+	L"    오유정",
+	L"메타버스 개발반",
+	L"    갈민상",
+	L"    용준헌",
+	L"    최선우"
+};
+#define GUIDELINE_COUNT 8
+typedef struct creditscene
+{
+	Text		GuideLine[GUIDELINE_COUNT];
+	Music		BGM;
+	float		Volume;
+	SoundEffect Effect;
+	Image		BackGround1;
+	Image		BackGround2;
+	float		Speed;
+	int32		X;
+	int32		Y;
+	int32		Alpha;
+} creditscene;
+
+void init_credit(void)
+{
+
+	g_Scene.Data = malloc(sizeof(creditscene));
+	memset(g_Scene.Data, 0, sizeof(creditscene));
+
+	creditscene* data = (creditscene*)g_Scene.Data;
+	Image_LoadImage(&data->BackGround1, "credit1.png");
+	Image_LoadImage(&data->BackGround2, "credit2.png");
+
+	for (int32 i = 0; i < GUIDELINE_COUNT; ++i)
+	{
+		Text_CreateText(&data->GuideLine[i], "d2coding.ttf", 20, str4[i], wcslen(str4[i]));
+	}
+
+	/*Audio_LoadMusic(&data->BGM, "index1.mp3");
+	Audio_HookMusicFinished(logOnFinished);
+	Audio_LoadSoundEffect(&data->Effect, "effect2.wav");
+	Audio_HookSoundEffectFinished(log2OnFinished);
+	Audio_PlayFadeIn(&data->BGM, INFINITY_LOOP, 3000);*/
+
+	/*data->Volume = 1.0f;
+	data->Speed = 400.0f;*/
+	data->X = 0;
+	data->Y = 0;
+	data->Alpha = 255; // 색상 
+}
+
+void update_credit(void)
+{
+	creditscene* data = (creditscene*)g_Scene.Data;
+	if (Input_GetKeyDown(VK_SPACE))
+	{
+		Scene_SetNextScene(SCENE_MAX);
+	}
+}
+
+static float elaspedtime = 0.0f;
+void render_credit(void)
+{
+	creditscene* data = (creditscene*)g_Scene.Data;
+	//(&data->BackGround1, data->X, data->Y);
+	//(&data->BackGround2, data->X, data->Y);
+	elaspedtime += Timer_GetDeltaTime();
+
+	if (elaspedtime < 1.0f)
+	{
+
+		Renderer_DrawImage(&data->BackGround1, data->X, data->Y);
+		data->Alpha = Clamp(0, data->Alpha - 1, 220);
+		Image_SetAlphaValue(&data->BackGround1, data->Alpha);
+		//SDL_Color color = { .r = 255, .g = 255, .b = 255, .a = 255 };
+		//Renderer_DrawTextBlended(&data->BackGround1, 400, 400, color);
+
+	}
+
+	if (elaspedtime > 1.0f)
+	{
+		data->Alpha = Clamp(10, data->Alpha, 190);
+		Image_SetAlphaValue(&data->BackGround2, data->Alpha);
+		Renderer_DrawImage(&data->BackGround2, data->X, data->Y);
+
+		for (int32 i = 0; i < GUIDELINE_COUNT; ++i)
+		{
+			SDL_Color color = { .r = 255, .g = 255, .b = 255, .a = 255 };
+			Renderer_DrawTextSolid(&data->GuideLine[i], 900, 40 * i, color);
+		}
+
+	}
+}
+
+void release_credit(void)
+{
+	creditscene* data = (creditscene*)g_Scene.Data;
+
+	for (int32 i = 0; i < GUIDELINE_COUNT; ++i)
+	{
+		Text_FreeText(&data->GuideLine[i]);
+	}
+
+	Image_FreeImage(&data->BackGround1);
+	Image_FreeImage(&data->BackGround2);
+	SafeFree(g_Scene.Data);
+}
+#pragma endregion
+
 bool Scene_IsSetNextScene(void)
 {
 	if (SCENE_NULL == s_nextScene)
@@ -357,7 +472,7 @@ bool Scene_IsSetNextScene(void)
 	}
 }
 
-void Scene_SetNextScene(ESceneType scene)
+void Scene_SetNextScene(ESceneType scene) 
 {
 	assert(s_nextScene == SCENE_NULL);
 	assert(SCENE_NULL < scene&& scene < SCENE_MAX);
@@ -388,6 +503,11 @@ void Scene_Change(void)
 		g_Scene.Render = render_main;
 		g_Scene.Release = release_main;
 		break;
+	case SCENE_CREDIT:
+		g_Scene.Init = init_credit;
+		g_Scene.Update = update_credit;
+		g_Scene.Render = render_credit;
+		g_Scene.Release = release_credit;
 	}
 
 	g_Scene.Init();
