@@ -2,8 +2,8 @@
 #pragma once
 
 // 창의 크기
-#define WINDOW_WIDTH	1500
-#define WINDOW_HEIGHT	750
+#define WINDOW_WIDTH	1600
+#define WINDOW_HEIGHT	900
 
 // 애셋 경로
 #define IMAGE_DIRECTORY	"Asset/Image"
