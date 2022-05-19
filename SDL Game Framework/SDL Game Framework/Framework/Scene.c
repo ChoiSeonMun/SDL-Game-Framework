@@ -104,6 +104,7 @@ typedef struct TitleSceneData
 	int32    BlackOutAlpha;
 } TitleSceneData;
 
+bool Loading = false;
 void init_title(void)
 {
 	g_Scene.Data = malloc(sizeof(TitleSceneData));
@@ -133,9 +134,10 @@ void init_title(void)
 	data->BlackOutAlpha = 255;
 	Image_LoadImage(&data->BlackOutImage, "black.jpg");
 	Image_SetAlphaValue(&data->BlackOutImage, data->BlackOutAlpha);
+
+	Loading = false;
 }
 
-bool Loading = false;
 void update_title(void)
 {
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
