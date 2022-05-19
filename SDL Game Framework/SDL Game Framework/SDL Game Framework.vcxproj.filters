@@ -88,7 +88,7 @@
     <ClInclude Include="Framework\Csv.h">
       <Filter>Framework</Filter>
     </ClInclude>
-    <ClInclude Include="Framework\Csvparser.h">
+    <ClInclude Include="Framework\CsvParser.h">
       <Filter>Framework</Filter>
     </ClInclude>
   </ItemGroup>

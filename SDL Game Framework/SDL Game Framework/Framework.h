@@ -1,4 +1,4 @@
-// Framework.h : ÇÁ·¹ÀÓ¿öÅ© Çì´õ. ÄÁÅÙÃ÷ ±¸Çö ½Ã »ç¿ëÇÑ´Ù.
+// Framework.h : í”„ë ˆì„ì›Œí¬ í—¤ë”. ì»¨í…ì¸  êµ¬í˜„ ì‹œ ì‚¬ìš©í•œë‹¤.
 #pragma once
 
 #include "Framework/Image.h"
@@ -8,5 +8,5 @@
 #include "Framework/Timer.h"
 #include "Framework/Audio.h"
 #include "Framework/Text.h"
-#include "Framework/Csvparser.h"
 #include "Framework/Csv.h"
+#include "Framework/CsvParser.h"
