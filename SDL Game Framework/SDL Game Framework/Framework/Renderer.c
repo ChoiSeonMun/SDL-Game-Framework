@@ -34,7 +34,7 @@ void Renderer_DrawImage(const Image* image, int32 x, int32 y)
 	SDL_Rect rect = { .x = x, .y = y,
 		.w = image->Width * image->ScaleX,
 		.h = image->Height * image->ScaleY };
-	
+
 	SDL_RenderCopy(g_App.Renderer, image->Texture, NULL, &rect);
 }
 

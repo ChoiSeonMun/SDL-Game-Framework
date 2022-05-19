@@ -32,7 +32,7 @@ struct Parsing_Data {
 //
 
 typedef struct Parsing {
-    struct Parsing_Data sceneData[200]; //200Àº µ¥ÀÌÅÍ 200ÁÙ ¹ŞÀ½
+    struct Parsing_Data sceneData[200]; //200Ã€Âº ÂµÂ¥Ã€ÃŒÃ…Ã 200ÃÃ™ Â¹ÃÃ€Â½
 }Parsing;
 
 extern Parsing parsing_dt;

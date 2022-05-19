@@ -1,11 +1,12 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "stdafx.h"
-#include "csv.h"
+#include "Csv.h"
 #include <stdio.h>
 #include <locale.h>
 #include <string.h>
 #include <wchar.h>
-#include "Csvparser.h"
+#include "CsvParser.h"
+#include <crtdbg.h>
 
 //
 
@@ -13,6 +14,9 @@ Parsing parsing_dt;
 
 void csvParser(void)
 {
+
+	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	CsvFile csvFile;
 	memset(&csvFile, 0, sizeof(CsvFile));
 	CreateCsvFile(&csvFile, "obt.csv");
@@ -81,5 +85,6 @@ void csvParser(void)
 		}
 	}
 
+	FreeCsvFile(&csvFile);
 
 }

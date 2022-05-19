@@ -22,7 +22,7 @@ void Image_Cleanup(void)
 void Image_LoadImage(Image* image, const char* filename)
 {
 	LogInfo("Image Loading... %s", filename);
-	
+
 	static char path[MAX_PATH];
 
 	sprintf_s(path, sizeof(path), "%s/%s", IMAGE_DIRECTORY, filename);

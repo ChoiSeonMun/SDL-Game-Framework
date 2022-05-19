@@ -11,6 +11,20 @@
 static char* s_Buffer;
 static char* s_BufferPointer;
 
+void Eliminate(char* str, char ch)
+{
+    int len = strlen(str) + 1;
+    for (; *str != '\0'; str++, len--)//ì¢…ë£Œ ë¬¸ìë¥¼ ë§Œë‚  ë•Œê¹Œì§€ ë°˜ë³µ
+    {
+        if (*str == ch)//chì™€ ê°™ì€ ë¬¸ìì¼ ë•Œ
+        {
+            strcpy_s(str, len, str + 1);
+            str--;
+        }
+    }
+}
+
+
 void readFileToBuffer(const char* filename)
 {
     FILE* fp;
@@ -53,7 +67,7 @@ void CreateCsvFile(CsvFile* csvFile, const char* filename)
 {
     readFileToBuffer(filename);
 
-    //Ä®·³¼ö
+    //ì¹¼ëŸ¼ìˆ˜
     csvFile->ColumnCount = countCategory(s_Buffer);
     for (int i = 0; i < MAXIMUM_ROW; ++i)
     {
@@ -66,7 +80,7 @@ void CreateCsvFile(CsvFile* csvFile, const char* filename)
     {
         int row = csvFile->RowCount;
 
-        // ÇÑ ÁÙÀ» ÀĞ¾îµéÀÎ´Ù.
+        // í•œ ì¤„ì„ ì½ì–´ë“¤ì¸ë‹¤.
         int commaCount = 0;
         int quotesCount = 0;
         const char* lineStart = s_BufferPointer;
@@ -86,19 +100,19 @@ void CreateCsvFile(CsvFile* csvFile, const char* filename)
             ++lineEnd;
         }
 
-        // ÄŞ¸¶ ºĞ·ù
+        // ì½¤ë§ˆ ë¶„ë¥˜
         const char* recordStart = lineStart;
         const char* recordEnd = recordStart;
         for (int i = 0; i < csvFile->ColumnCount; ++i)
         {
-            while (*recordEnd != '@' && recordEnd != lineEnd)//nullÀÌ ¾Æ´Ò¶§ÀÓ
+            while (*recordEnd != '@' && recordEnd != lineEnd)//nullì´ ì•„ë‹ë•Œì„
             {
                 ++recordEnd;
             }
 
             int size = recordEnd - recordStart;
             csvFile->Items[row][i].RawData = (char*)malloc(sizeof(char) * (size + 1));
-            //·¹ÄÚµå »çÀÌÁî º°·Î µ¥ÀÌÅÍ ´ã±â
+            //ë ˆì½”ë“œ ì‚¬ì´ì¦ˆ ë³„ë¡œ ë°ì´í„° ë‹´ê¸°
             memcpy(csvFile->Items[row][i].RawData, recordStart, size);
             csvFile->Items[row][i].RawData[size] = '\0';
 
@@ -154,6 +168,23 @@ char* ParseToAscii(const CsvItem item)
     {
         memcpy(result, item.RawData, size);
     }
+    Eliminate(test, '#');
+    result = test;
+
+
+    //if (item.RawData[0] == '\"' && item.RawData[1] == '\"' && item.RawData[size - 1] == '\"' && item.RawData[size - 2] == '\"') {
+    //   memcpy(result, &item.RawData[2], size - 4); //0 1ìƒëµ
+    //}
+    //else
+
+    //if (item.RawData[0] == '\"' && item.RawData[size - 1] == '\"')
+    //{
+    //   memcpy(result, &item.RawData[1], size - 2); // \"\"
+    //}
+    //else
+    //{
+    //   memcpy(result, item.RawData, size);
+    //}
     return result;
 }
 
