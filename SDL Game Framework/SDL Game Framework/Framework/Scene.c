@@ -742,7 +742,7 @@ void update_MainScreen(void)
 		gotoNextScene += Timer_GetDeltaTime();
 		if (gotoNextScene >= 4.0f)
 		{
-			Scene_SetNextScene(SCENE_START);
+			Scene_SetNextScene(SCENE_EXTRA);
 		}
 	}
 }

@@ -11,20 +11,6 @@
 static char* s_Buffer;
 static char* s_BufferPointer;
 
-void Eliminate(char* str, char ch)
-{
-    int len = strlen(str) + 1;
-    for (; *str != '\0'; str++, len--)//종료 문자를 만날 때까지 반복
-    {
-        if (*str == ch)//ch와 같은 문자일 때
-        {
-            strcpy_s(str, len, str + 1);
-            str--;
-        }
-    }
-}
-
-
 void readFileToBuffer(const char* filename)
 {
     FILE* fp;
@@ -44,6 +30,7 @@ void readFileToBuffer(const char* filename)
 
     fclose(fp);
 }
+
 
 int countCategory(const char* firstLine)
 {
@@ -144,6 +131,7 @@ void FreeCsvFile(CsvFile* csvFile)
     }
 }
 
+
 int ParseToInt(const CsvItem item)
 {
     char* end;
@@ -155,56 +143,17 @@ char* ParseToAscii(const CsvItem item)
     int size = strlen(item.RawData);
     char* result = malloc(size + 1);
     memset(result, 0, size + 1);
-
-
-    char test[2000] = { 0 };
-    strcpy_s(test, sizeof(test), item.RawData);
-
-    int boolcount = 0;
-    for (int i = 0; i < sizeof(test); i++)
+    if (item.RawData[0] == '"' && item.RawData[1] == '"' && item.RawData[size - 1] == '"' && item.RawData[size - 2] == '"') {
+        memcpy(result, &item.RawData[2], size - 4);
+    }
+    else if (item.RawData[0] == '"' && item.RawData[size - 1] == '"')
     {
-
-        if (test[i] == '\"') {
-            boolcount += 1;
-        }
-
-        if (boolcount != 0) {
-            if (test[i - 1] == '#' && test[i] != '\"') {
-                //test[i - 1] = '\"';
-            }
-            else if (test[i - 1] == '\"' && test[i] == '\"') {
-                test[i] = '#';
-            }
-            else if (test[i - 1] == '#' && test[i] == '\"') {
-                test[i] = '#';
-            }
-        }
+        memcpy(result, &item.RawData[1], size - 2);
     }
-
-
-    Eliminate(test, '#');
-    int size2 = strlen(test);
-    if (boolcount != 0) {
-        //test[0] = '#';
-        //test[size2 - 1] = '#';
+    else
+    {
+        memcpy(result, item.RawData, size);
     }
-    Eliminate(test, '#');
-    result = test;
-
-
-    //if (item.RawData[0] == '\"' && item.RawData[1] == '\"' && item.RawData[size - 1] == '\"' && item.RawData[size - 2] == '\"') {
-    //   memcpy(result, &item.RawData[2], size - 4); //0 1생략
-    //}
-    //else
-
-    //if (item.RawData[0] == '\"' && item.RawData[size - 1] == '\"')
-    //{
-    //   memcpy(result, &item.RawData[1], size - 2); // \"\"
-    //}
-    //else
-    //{
-    //   memcpy(result, item.RawData, size);
-    //}
     return result;
 }
 
