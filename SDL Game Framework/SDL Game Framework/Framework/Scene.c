@@ -205,6 +205,8 @@ void release_title(void)
 #define MAX_TEXT_COUNT 20
 #define MAX_OPTION_COUNT 3
 
+#pragma region SceneData
+
 //각 씬의 정보를 담든 structure
 typedef struct tagScene {
 	int32			Number;							//씬 넘버
@@ -225,21 +227,7 @@ typedef struct tagScene {
 	bool			isEndingScene;						//엔딩인지
 } SceneStruct;
 
-
 SceneStruct Scenes[SCENE_COUNT];
-
-
-#pragma region CreditScene
-typedef struct CreditSceneData
-{
-	Text	EnterText;
-	int32	FontSize;
-	int32	RenderMode;
-	TitleSceneData TitleBGM;
-	Image	CreditImage;
-	int32	X;
-	int32	Y;
-} CreditSceneData;
 
 bool isGotData = false;
 void GetSceneData(void) {
@@ -266,14 +254,14 @@ void GetSceneData(void) {
 		Audio_LoadMusic(&Scenes[sceneNum].BGM, ParseToAscii(csv.Items[i][columCount++]));
 
 		//배경 전환 이미지
-		int32 additionalImagePoint = ParseToInt(csv.Items[i][columCount+1]);
+		int32 additionalImagePoint = ParseToInt(csv.Items[i][columCount + 1]);
 		Scenes[sceneNum].AddImageText = additionalImagePoint;
 		if (additionalImagePoint > -1) {
 			printf("add: %d\n", additionalImagePoint);
 			Image_LoadImage(&Scenes[sceneNum].AdditionImage, ParseToAscii(csv.Items[i][columCount]));
 			Scenes[sceneNum].AddImageText = additionalImagePoint;
 		}
-		columCount+=2;
+		columCount += 2;
 
 		//효과음
 		//char* effectSound = ParseToAscii(csv.Items[i][columCount++]);
@@ -293,11 +281,24 @@ void GetSceneData(void) {
 				wchar_t* originalData = ParseToUnicode(csv.Items[i][columCount]);
 				wchar_t lineData[2048];
 				int32 originalIndex = 0, lineDataIndex = 0, dialogListIndex = 0;
+				wchar_t preChar = '\0';
 
 				//텍스트 줄바꿈 단위로 나눠 저장
 				while (true) {
 					if (*(originalData + originalIndex) != '\n' && *(originalData + originalIndex) != '\0') {
-						lineData[lineDataIndex++] = *(originalData + originalIndex);
+						if (*(originalData + originalIndex) != '\"') {
+							lineData[lineDataIndex++] = *(originalData + originalIndex);
+							preChar = *(originalData + originalIndex);
+						}
+						else {
+							if (preChar == *(originalData + originalIndex)) {
+								lineData[lineDataIndex++] = *(originalData + originalIndex);
+								preChar = '\0';
+							}
+							else {
+								preChar = *(originalData + originalIndex);
+							}
+						}
 					}
 					else {
 						lineData[lineDataIndex++] = '\0';
@@ -334,7 +335,7 @@ void GetSceneData(void) {
 				columCount++;
 			}
 		}
-		
+
 		if (Scenes[sceneNum].OptionCount <= 0) {
 			Scenes[sceneNum].NextSceneNumberList[0] = ParseToInt(csv.Items[i][++columCount]) - 1;
 		}
@@ -343,6 +344,20 @@ void GetSceneData(void) {
 	FreeCsvFile(&csv);
 
 }
+
+#pragma endregion
+
+#pragma region CreditScene
+typedef struct CreditSceneData
+{
+	Text	EnterText;
+	int32	FontSize;
+	int32	RenderMode;
+	TitleSceneData TitleBGM;
+	Image	CreditImage;
+	int32	X;
+	int32	Y;
+} CreditSceneData;
 
 void init_credit(void)
 {
@@ -366,7 +381,6 @@ void init_credit(void)
 	data->Y = 0;
 
 }
-
 
 void update_credit(void)
 {
@@ -915,50 +929,12 @@ void render_main(void)
 	}
 
 	//선택지 출력
-	//if (showOptions) {
-	//	if (data->Scene->OptionCount > 2) {
-	//		for (int i = 0; i < data->Scene->OptionCount; i++) {
-	//			Renderer_DrawImage(&data->Scene->OptionImagesList[i], 250 + i % 2 * 700, 600 + (i / 2) * 200);
-	//		}
-	//	}
-	//	else {
-	//		for (int i = 0; i < data->Scene->OptionCount; i++) {
-	//			Renderer_DrawImage(&data->Scene->OptionImagesList[i], 250 + i % 2 * 700, 700 + (i / 2) * 200);
-	//		}
-	//	}
-	//}
-
 	if (showOptions) {
 		for (int32 i = 0; i < data->Scene->OptionCount;i++) {
 			Renderer_DrawTextSolid(&data->Scene->OptionList[i], 250, 600 + i * 50, data->OptionColors[i]);
 		}
 		Renderer_DrawImage(&OptionPointImage, 200, 600 + data->CurrentOptionNumber * 50);
 	}
-
-	//if(showOptions) {
-	//	if (data->Scene->OptionCount > 2) {
-	//		for (int i = 0; i < data->Scene->OptionCount; i++)
-	//		{
-	//			while (ShowOptionText[i].Length != 0)
-	//			{
-	//				Renderer_DrawTextSolid(&ShowOptionText[i], 250 + i % 2 * 700, 600 + (i / 2) * 200, color);
-	//				i++;
-	//			}
-	//		}
-	//	}
-	//	else {
-	//		for (int i = 0; i < data->Scene->OptionCount; i++)
-	//		{
-	//			while (ShowOptionText[i].Length != 0)
-	//			{
-	//				Renderer_DrawTextSolid(&ShowOptionText[i], 250 + i % 2 * 700, 600 + (i / 2) * 200, color);
-	//				i++;
-	//			}
-	//		}
-	//	}
-	//}
-
-
 
 	//페이드 인 페이드 아웃 효과를 위한 검은색 배경
 	Renderer_DrawImage(&data->BlackOutImage, 0, 0);
