@@ -8,24 +8,24 @@
 //
 //
 struct Parsing_Data {
-    int16   ID;
-    int16   SENCE_NUMBER;
+    int64   ID;
+    int64   SENCE_NUMBER;
     char    MAIN_IMAGE[128];
 
-    int16   IMG_OUTPUT_STYLE;
+    int64   IMG_OUTPUT_STYLE;
     char    SOUND_NAME[128];
 
     char    EFFECT_SOUND_NAME[128];
-    int16   EFFECT_COUNT;
+    int64   EFFECT_COUNT;
     wchar_t TEXT[2000];
 
-    int16   CHOOSE_1_NEXT_SCENE;
+    int64   CHOOSE_1_NEXT_SCENE;
     wchar_t CHOOSE_TEXT_1[128];
 
-    int16   CHOOSE_2_NEXT_SCENE;
+    int64   CHOOSE_2_NEXT_SCENE;
     wchar_t CHOOSE_TEXT_2[128];
 
-    int16   CHOOSE_3_NEXT_SCENE;
+    int64   CHOOSE_3_NEXT_SCENE;
     wchar_t CHOOSE_TEXT_3[128];
 };
 
