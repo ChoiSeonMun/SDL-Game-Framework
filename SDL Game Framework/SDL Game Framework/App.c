@@ -9,6 +9,7 @@ App g_App;
 
 bool App_Init(void)
 {
+
 	if (0 != SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
 	{
 		LogWithErrorCode("Fail to initialize SDL", SDL_GetError());
@@ -71,9 +72,14 @@ void processInput(void)
 	Input_Update();
 }
 
+bool isGameClose = false;
 void update(void)
 {
 	g_Scene.Update();
+	if (Input_GetKeyDown(VK_ESCAPE))
+	{
+		isGameClose = true;
+	}
 }
 
 void render(void)
@@ -91,7 +97,7 @@ int32 App_Run(void)
 	Scene_SetNextScene(SCENE_TITLE);
 
 	SDL_Event event;
-	while (true)
+	while (!isGameClose)
 	{
 		if (SDL_PollEvent(&event))
 		{
@@ -112,11 +118,6 @@ int32 App_Run(void)
 				processInput();
 				update();
 				render();
-				if (Input_GetKeyDown(VK_ESCAPE))
-				{
-
-					return false;
-				}
 			}
 		}
 	}

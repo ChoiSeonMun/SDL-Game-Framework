@@ -2,34 +2,13 @@
 #include "Scene.h"
 
 #include "Framework.h"
+#include "Csv.h"
 
 Scene g_Scene;
 
 static ESceneType s_nextScene = SCENE_NULL;
 
-typedef struct tagScene {
-	int32			Number;							//씬 넘버
-	const wchar_t* Name;								//씬 이름
-	Image			BGImage;							//배경화면
-	Music			BGM;							//배경 음악
-	Image			AdditionImage;						//추가 이미지
-	int32			AddImage_X;						//추가 이미지 위치
-	int32			AddImage_Y;						//추가 이미지 위치
-	SoundEffect		EffectSound;						//효과음
-	int32			EffectSoundTiming;						//효과음 표현 타이밍
-	int32			DialogCount;						//텍스트 갯수
-	Text			DialogList[10][10];						//텍스트 배열
-	int32			OptionCount;						//옵션 갯수
-	Image			OptionImagesList[6];					//옵션 이미지 배열
-	int32			NextSceneNumberList[6];					//옵션 선택시 넘어가는 씬 넘버
-	int32			NextEndingSceneNumberList[6];				//다음 씬이 엔딩씬일 경우
-	bool			isEndingScene;						//엔딩인지
-} SceneStruct;
-
-#define SCENE_COUNT	8
-
-SceneStruct Scenes[SCENE_COUNT];
-
+/*
 void setScenes(void) {
 	//Scene 1
 	Scenes[0].Number = 0;
@@ -96,7 +75,7 @@ void setScenes(void) {
 	Scenes[2].OptionCount = 0;
 	Scenes[2].NextSceneNumberList[0] = 2;
 }
-
+*/
 //#define SCENE_COUNT	118
 //SceneStruct Scenes[SCENE_COUNT];
 
@@ -108,35 +87,34 @@ void setScenes(void) {
 
 typedef struct TitleSceneData
 {
-	Text	GuideLine[1];
-	Music	TitleBGM;
-	float	Volume;
-	Text	EnterText;
-	int32	FontSize;
-	int32	RenderMode;
-	Image	TitleImage;
-	int32	X;
-	int32	Y;
-	Image	StartImage;
-	int32	SX;
-	int32	SY;
+	Text   GuideLine[1];
+	Music   TitleBGM;
+	float   Volume;
+	Text   EnterText;
+	Text   LoadingText;
+	int32   FontSize;
+	int32   RenderMode;
+	Image   TitleImage;
+	int32   X;
+	int32   Y;
+	Image   StartImage;
+	int32   SX;
+	int32   SY;
+	Image    BlackOutImage;
+	int32    BlackOutAlpha;
 } TitleSceneData;
 
+bool Loading = false;
 void init_title(void)
 {
 	g_Scene.Data = malloc(sizeof(TitleSceneData));
 	memset(g_Scene.Data, 0, sizeof(TitleSceneData));
 
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
-	//for (int32 i = 0; i < 1; ++i)
-	//{
-	//	Text_CreateText(&data->GuideLine[i], "d2coding.ttf", 16, str[i], wcslen(str[i]));
-	//}
-
-	setScenes();
 
 	data->FontSize = 48;
-	Text_CreateText(&data->EnterText, "chosun.ttf", data->FontSize, L"--- PRESS THE ENTER ---", 24);
+	Text_CreateText(&data->EnterText, "GmarketSansTTFBold.ttf", data->FontSize, L"--- PRESS THE SPACE ---", 24);
+	Text_CreateText(&data->LoadingText, "GmarketSansTTFBold.ttf", data->FontSize, L"----- LOADING -----", 24);
 
 	data->RenderMode = SOLID;
 
@@ -152,68 +130,61 @@ void init_title(void)
 	Audio_PlayFadeIn(&data->TitleBGM, INFINITY_LOOP, 3000);
 
 	data->Volume = 1.0f;
+
+	data->BlackOutAlpha = 255;
+	Image_LoadImage(&data->BlackOutImage, "black.jpg");
+	Image_SetAlphaValue(&data->BlackOutImage, data->BlackOutAlpha);
+
+	Loading = false;
 }
 
 void update_title(void)
 {
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
-
-	if (Input_GetKeyDown(VK_RETURN))
+	if (data->BlackOutAlpha > 0)
 	{
-		Scene_SetNextScene(SCENE_CREDIT);
+		data->BlackOutAlpha -= 5;
 	}
+	if (data->BlackOutAlpha <= 0)
+	{
+		if (Input_GetKeyDown(VK_SPACE))
+		{
+			Loading = true;
+			Scene_SetNextScene(SCENE_CREDIT);
+		}
+	}
+	Image_SetAlphaValue(&data->BlackOutImage, data->BlackOutAlpha);
 }
-
 void render_title(void)
 {
 	TitleSceneData* data = (TitleSceneData*)g_Scene.Data;
-	//for (int32 i = 0; i < 10; ++i)
-	//{
-	//	SDL_Color color = { .a = 255 };
-	//	Renderer_DrawTextSolid(&data->GuideLine[i], 10, 20 * i, color);
-	//}
-
-	//switch (data->RenderMode)
-	//{
-	//case SOLID:
-	//{
-	//	SDL_Color color = { .a = 255 };
-	//	Renderer_DrawTextSolid(&data->EnterText, 400, 400, color);
-	//}
-	//break;
-	//case SHADED:
-	//{
-	//	SDL_Color bg = { .a = 255 };
-	//	SDL_Color fg = { .r = 255, .g = 255, .a = 255 };
-	//	Renderer_DrawTextShaded(&data->EnterText, 400, 400, fg, bg);
-	//}
-	//break;
-	//case BLENDED:
-	//{
-	//	Renderer_DrawImage(&data->TestImage, 400, 400);
-	//	SDL_Color color = { .r = 255, .g = 255, .b = 255, .a = 255 };
-	//	Renderer_DrawTextBlended(&data->EnterText, 400, 400, color);
-	//}
-	//break;
-	//}
 	Renderer_DrawImage(&data->TitleImage, data->X, data->Y);
-	static float elapsedTime = 0;
+	static float elapsedTime = 1.0f;
 
+	SDL_Color color = { .a = 255 };
 	static bool isShow = true;
 	elapsedTime += Timer_GetDeltaTime();
-	if (elapsedTime >= 1.0f)
+	if (!Loading)
 	{
-		SDL_Color color = { .a = 255 };
-		Renderer_DrawImage(&data->StartImage, data->SX, data->SY);
-		Renderer_DrawTextSolid(&data->EnterText, WINDOW_WIDTH / 2 - (data->EnterText.Length * data->FontSize) / 4, 950, color);
-
-		if (elapsedTime >= 1.5f)
+		if (elapsedTime >= 1.0f)
 		{
-			elapsedTime = 0.0f;
+			Renderer_DrawImage(&data->StartImage, data->SX, data->SY);
+			Renderer_DrawTextSolid(&data->EnterText, WINDOW_WIDTH / 2 - (data->EnterText.Length * data->FontSize) / 4, 950, color);
+
+			if (elapsedTime >= 1.5f)
+			{
+				elapsedTime = 0.0f;
+			}
 		}
 	}
-
-
+	else
+	{
+		color.r = 255;
+		color.g = 255;
+		color.b = 255;
+		isShow = false;
+		Renderer_DrawTextSolid(&data->LoadingText, WINDOW_WIDTH / 2 - (data->LoadingText.Length * data->FontSize) / 4 + 20, 820, color);
+	}
 
 }
 
@@ -223,13 +194,159 @@ void release_title(void)
 
 	//for (int32 i = 0; i < 10; ++i)
 	//{
-	//	Text_FreeText(&data->GuideLine[i]);
+	//   Text_FreeText(&data->GuideLine[i]);
 	//}
 	Text_FreeText(&data->EnterText);
 	SafeFree(g_Scene.Data);
 }
 #pragma endregion
 
+#define SCENE_COUNT	150
+#define MAX_TEXT_SET_COUNT 13
+#define MAX_TEXT_COUNT 20
+#define MAX_OPTION_COUNT 3
+
+#pragma region SceneData
+
+//각 씬의 정보를 담든 structure
+typedef struct tagScene {
+	int32			Number;							//씬 넘버
+	const wchar_t* Name;								//씬 이름
+	Image			BGImage;							//배경화면
+	Music			BGM;							//배경 음악
+	Image			AdditionImage;						//추가 이미지
+	int32			AddImageTiming;						//추가 이미지 타이밍
+	SoundEffect		EffectSound;						//효과음
+	int32			EffectSoundTiming;						//효과음 표현 타이밍
+	int32			DialogCount;						//텍스트 갯수
+	Text			DialogList[MAX_TEXT_SET_COUNT][MAX_TEXT_COUNT];						//텍스트 배열
+	int32			OptionCount;						//옵션 갯수
+	//Image			OptionImagesList[MAX_Option_COUNT];					//옵션 이미지 배열
+	Text			OptionList[MAX_OPTION_COUNT];
+	int32			NextSceneNumberList[MAX_OPTION_COUNT];					//옵션 선택시 넘어가는 씬 넘버
+	//int32			NextEndingSceneNumberList[5];				//다음 씬이 엔딩씬일 경우
+	bool			isEndingScene;						//엔딩인지
+} SceneStruct;
+
+SceneStruct Scenes[SCENE_COUNT];
+
+bool isGotData = false;
+void GetSceneData(void) {
+	CsvFile csv;
+	memset(&csv, 0, sizeof(CsvFile));
+	CreateCsvFile(&csv, "temp1.csv");
+
+	isGotData = true;
+
+	for (int32 i = 1; i < csv.RowCount;i++) {
+
+		if (csv.Items[i] == NULL) {
+			break;
+		}
+
+		int32 columCount = 0;
+
+		//씬 번호
+		int32 sceneNum = ParseToInt(csv.Items[i][columCount++]) - 1;
+		printf("%d\n", sceneNum);
+		Scenes[sceneNum].Number = sceneNum;
+		Scenes[sceneNum].Name = ParseToUnicode(csv.Items[i][columCount++]);
+		Image_LoadImage(&Scenes[sceneNum].BGImage, ParseToAscii(csv.Items[i][columCount++]));
+		Audio_LoadMusic(&Scenes[sceneNum].BGM, ParseToAscii(csv.Items[i][columCount++]));
+		//Audio_SetVolume(0.1f);
+
+		//배경 전환 이미지
+		int32 additionalImagePoint = ParseToInt(csv.Items[i][columCount + 1]);
+		Scenes[sceneNum].AddImageTiming = additionalImagePoint;
+		if (additionalImagePoint > -1) {
+			Image_LoadImage(&Scenes[sceneNum].AdditionImage, ParseToAscii(csv.Items[i][columCount]));
+		}
+		columCount += 2;
+
+		//효과음
+		//char* effectSound = ParseToAscii(csv.Items[i][columCount++]);
+		int32 effectSoundPoint = ParseToInt(csv.Items[i][columCount + 1]);
+		Scenes[sceneNum].EffectSoundTiming = effectSoundPoint;
+		if (effectSoundPoint > -1) {
+			printf("effect: %d\n", effectSoundPoint);
+			Audio_LoadSoundEffect(&Scenes[sceneNum].EffectSound, ParseToAscii(csv.Items[i][columCount]));
+		}
+		columCount+=2;
+		//columCount++;
+		//columCount++;
+
+		//텍스트 데이터 저장
+		int32 dialogCount = ParseToInt(csv.Items[i][columCount++]);
+		Scenes[sceneNum].DialogCount = dialogCount;
+		for (int32 j = 0; j < MAX_TEXT_SET_COUNT;j++) {
+			if (dialogCount > j) {
+				wchar_t* originalData = ParseToUnicode(csv.Items[i][columCount]);
+				wchar_t lineData[2048];
+				int32 originalIndex = 0, lineDataIndex = 0, dialogListIndex = 0;
+				wchar_t preChar = '\0';
+
+				//텍스트 줄바꿈 단위로 나눠 저장
+				while (true) {
+					//그냥 입력일 경우
+					if (*(originalData + originalIndex) != '\n' && *(originalData + originalIndex) != '\0') {
+						//"가 아닐 경우 그냥 넣어준다.
+						if (*(originalData + originalIndex) != '\"') {
+							lineData[lineDataIndex++] = *(originalData + originalIndex);
+							preChar = *(originalData + originalIndex);
+						}
+						// "가 연속으로 있을 경우 넣어준다.
+						else {
+							if (preChar == *(originalData + originalIndex)) {
+								lineData[lineDataIndex++] = *(originalData + originalIndex);
+								preChar = '\0';
+							}
+							else {
+								preChar = *(originalData + originalIndex);
+							}
+						}
+					}
+					//개행이거나 널일 경우 text를 넣어준다.
+					else {
+						lineData[lineDataIndex++] = '\0';
+						Text_CreateText(&Scenes[sceneNum].DialogList[j][dialogListIndex], "GmarketSansTTFBold.ttf", 25, lineData, wcslen(lineData));
+						dialogListIndex++;
+						lineDataIndex = 0;
+
+						if (*(originalData + originalIndex) == '\0') {
+							break;
+						}
+					}
+					originalIndex++;
+				}
+
+				Text_CreateText(&Scenes[sceneNum].DialogList[j][dialogListIndex], "GmarketSansTTFBold.ttf", 30, L"", wcslen(L""));
+			}
+			columCount++;
+		}
+
+		//옵션 데이터 저장
+		Scenes[sceneNum].OptionCount = ParseToInt(csv.Items[i][columCount++]);
+		for (int32 j = 0; j < MAX_OPTION_COUNT;j++) {
+			if (Scenes[i - 1].OptionCount > j) {
+				wchar_t* temp = ParseToUnicode(csv.Items[i][columCount]);
+				Text_CreateText(&Scenes[sceneNum].OptionList[j], "GmarketSansTTFBold.ttf", 20, temp, wcslen(temp));
+
+				columCount++;
+				Scenes[sceneNum].NextSceneNumberList[j] = ParseToInt(csv.Items[i][columCount]) - 1;
+				columCount++;
+			}
+		}
+
+		if (Scenes[sceneNum].OptionCount <= 0) {
+			Scenes[sceneNum].NextSceneNumberList[0] = ParseToInt(csv.Items[i][++columCount]) - 1;
+		}
+	}
+
+	FreeCsvFile(&csv);
+
+}
+
+#pragma endregion
 
 #pragma region CreditScene
 typedef struct CreditSceneData
@@ -245,13 +362,18 @@ typedef struct CreditSceneData
 
 void init_credit(void)
 {
+	//씬 데이터를 미리 받아옴
+	if (!isGotData) {
+		GetSceneData();
+	}
+
 	g_Scene.Data = malloc(sizeof(CreditSceneData));
 	memset(g_Scene.Data, 0, sizeof(CreditSceneData));
 
 	CreditSceneData* data = (CreditSceneData*)g_Scene.Data;
 
 	data->FontSize = 48;
-	Text_CreateText(&data->EnterText, "chosun.ttf", data->FontSize, L"--- PRESS THE ENTER ---", 24);
+	Text_CreateText(&data->EnterText, "chosun.ttf", data->FontSize, L"--- PRESS THE SPACE ---", 24);
 
 	data->RenderMode = SOLID;
 
@@ -261,12 +383,11 @@ void init_credit(void)
 
 }
 
-
 void update_credit(void)
 {
 	CreditSceneData* data = (CreditSceneData*)g_Scene.Data;
 
-	if (Input_GetKeyDown(VK_RETURN))
+	if (Input_GetKeyDown(VK_SPACE))
 	{
 		Scene_SetNextScene(SCENE_INTRO);
 		Audio_Stop();
@@ -394,8 +515,10 @@ typedef struct IntroSceneData
 
 } IntroSceneData;
 #define TextFont "GmarketSansTTFBold.ttf"
+int count = 1;
 void init_intro(void)
 {
+	count = 1;
 	g_Scene.Data = malloc(sizeof(IntroSceneData));
 	memset(g_Scene.Data, 0, sizeof(IntroSceneData));
 
@@ -442,10 +565,9 @@ void init_intro(void)
 	data->Volume = 1.0f;
 
 }
-int count = 1;
 void update_intro(void)
 {
-	if (Input_GetKeyDown(VK_RETURN))
+	if (Input_GetKeyDown(VK_SPACE))
 	{
 		count++;
 		if (count == 7)
@@ -552,7 +674,7 @@ void release_intro(void)
 }
 #pragma endregion
 
-#pragma region MainScene
+#pragma region TempScene
 
 void logOnFinished(void)
 {
@@ -606,21 +728,25 @@ void setScene(int32 indexNum, wchar_t* name, char* bgImageName,
 
 #pragma endregion
 
-#pragma region TempScene
+#pragma region MainScene
 typedef struct tagMainScene {
 	SceneStruct* Scene;
 	bool        isEndScene;
 	int32		CurrentOptionNumber;
 	int32		CurrentTextNumber;
+	SDL_Color	OptionColors[MAX_OPTION_COUNT];
 	Image		BlackOutImage;
 	int32		BlackOutAlpha;
 } MainScene;
 
 bool isSceneChanging = false;
 bool showOptions = false;
+bool isBGChanged = false;
 Text* ShowText;
+Text NullText;
 int32 s_CurrentScene = 0;
-SDL_Color color = { 0,0,0,0 };
+SDL_Color TextColor = { 255,255,255,0 };
+Image OptionPointImage;
 void init_main(void)
 {
 	g_Scene.Data = malloc(sizeof(MainScene));
@@ -636,9 +762,25 @@ void init_main(void)
 	Image_LoadImage(&data->BlackOutImage, "black.jpg");
 	Image_SetAlphaValue(&data->BlackOutImage, data->BlackOutAlpha);
 	Audio_PlayFadeIn(&data->Scene->BGM, INFINITY_LOOP, 2000);
+	Text_CreateText(&NullText, TextFont, 25, L"", 0);
+	Image_LoadImage(&OptionPointImage, "point.png");
+	OptionPointImage.ScaleX = 0.02f;
+	OptionPointImage.ScaleY = 0.02f;
+
+	for (int32 i = 0; i < data->Scene->OptionCount;i++) {
+		data->OptionColors[i].a = 125;
+		data->OptionColors[i].r = 225;
+		data->OptionColors[i].g = 225;
+		data->OptionColors[i].b = 225;
+	}
+
+	if (data->Scene->EffectSoundTiming > -1) {
+		Audio_PlaySoundEffect(&data->Scene->EffectSound, 1);
+	}
 
 	isSceneChanging = false;
 	showOptions = false;
+	isBGChanged = false;
 	ShowText = NULL;
 }
 
@@ -648,17 +790,48 @@ void update_main(void)
 
 	//보통 씬일 경우
 	if (!isSceneChanging) {
-		if (data->BlackOutAlpha > 0) {
+		// 배경 변경 중일 경우
+		if (isBGChanged) {
+			if (data->BlackOutAlpha < 255) {
+				data->BlackOutAlpha += 5;
+			}
+			else {
+				isBGChanged = false;
+				data->Scene->BGImage = data->Scene->AdditionImage;
+				ShowText = &data->Scene->DialogList[data->CurrentTextNumber-1];
+				TextColor.a = 0;
+			}
+		}
+		// 씬 최초 불러오기
+		else if (data->BlackOutAlpha > 0) {
 			data->BlackOutAlpha -= 5;
 		}
+		//이외 입력 정상 받음
 		else {
 			//키보드 값 입력
 			if (Input_GetKeyDown(VK_SPACE)) {
 
+				//출력 텍스트 조절
 				if (data->CurrentTextNumber < data->Scene->DialogCount) {
 					ShowText = &data->Scene->DialogList[data->CurrentTextNumber];
 					data->CurrentTextNumber++;
-					color.a = 0;
+
+					//배경 이미지 변경
+					if (data->Scene->AddImageTiming > -1) {
+						if (data->CurrentTextNumber == data->Scene->AddImageTiming) {
+							isBGChanged = true;
+							ShowText = &NullText;
+						}
+					}
+
+					//이펙트 싸운드 적용
+					if (data->Scene->EffectSoundTiming > -1) {
+						if (data->CurrentOptionNumber == data->Scene->EffectSoundTiming) {
+							Audio_PlaySoundEffect(&data->Scene->EffectSound, 1);
+						}
+					}
+
+					TextColor.a = 0;
 				}
 				else if (data->Scene->OptionCount <= 0) {
 					isSceneChanging = true;
@@ -671,18 +844,21 @@ void update_main(void)
 		if (data->CurrentTextNumber < data->Scene->DialogCount) {
 			int32 i = 0;
 			ShowText = data->Scene->DialogList[data->CurrentTextNumber];
-			if (color.a < 255) {
-				color.a += 5;
+			if (TextColor.a < 255) {
+				TextColor.a += 5;
 			}
 		}
 		//옵션이 나와야하는 경우
 		else {
-			showOptions = true;
+			if (data->Scene->OptionCount > 0) {
+				showOptions = true;
+			}
 
 			//선택지 선택
 			int32 optionCount = data->Scene->OptionCount;
 
-			Image_SetAlphaValue(&data->Scene->OptionImagesList[data->CurrentOptionNumber], 125);
+			//Image_SetAlphaValue(&data->Scene->OptionImagesList[data->CurrentOptionNumber], 125);
+			data->OptionColors[data->CurrentOptionNumber].a = 125;
 			if (Input_GetKeyDown('1') || Input_GetKeyDown(VK_NUMPAD1)) {
 				if (optionCount >= 1) {
 					data->CurrentOptionNumber = 0;
@@ -704,43 +880,21 @@ void update_main(void)
 				}
 			}
 
-			//좌우키로 설정
-			if (Input_GetKeyDown(VK_LEFT)) {
-				if (data->CurrentOptionNumber > 0) {
-					data->CurrentOptionNumber--;
-				}
-				else {
-					data->CurrentOptionNumber = data->Scene->OptionCount - 1;
-				}
-			}
-
-			if (Input_GetKeyDown(VK_RIGHT)) {
-				if (data->CurrentOptionNumber < data->Scene->OptionCount - 1) {
-					data->CurrentOptionNumber++;
-				}
-				else {
-					data->CurrentOptionNumber = 0;
-				}
-			}
-
 			//위 아래 키로
 			if (Input_GetKeyDown(VK_UP)) {
-				if (data->Scene->OptionCount >= 3) {
-					if (data->CurrentOptionNumber >= 2) {
-						data->CurrentOptionNumber -= 2;
-					}
+				if (data->CurrentOptionNumber > 0) {
+					data->CurrentOptionNumber--;
 				}
 			}
 
 			if (Input_GetKeyDown(VK_DOWN)) {
-				if (data->Scene->OptionCount >= 3) {
-					if (data->CurrentOptionNumber < data->Scene->OptionCount / 2) {
-						data->CurrentOptionNumber += 2;
-					}
+				if (data->CurrentOptionNumber < data->Scene->OptionCount - 1) {
+					data->CurrentOptionNumber++;
 				}
 			}
 
-			Image_SetAlphaValue(&data->Scene->OptionImagesList[data->CurrentOptionNumber], 255);
+			//Image_SetAlphaValue(&data->Scene->OptionImagesList[data->CurrentOptionNumber], 255);
+			data->OptionColors[data->CurrentOptionNumber].a = 255;
 
 			//선택지 선택
 			if (Input_GetKeyDown(VK_RETURN)) {
@@ -757,9 +911,18 @@ void update_main(void)
 		else {
 			isSceneChanging = false;
 			s_CurrentScene = data->Scene->NextSceneNumberList[data->CurrentOptionNumber];
-			Scene_SetNextScene(SCENE_MAIN);
+			//다음 씬이 -1, 즉 엔딩일때는 타이틀로 돌아감. 아니면 다음 씬을 구성
+			if (s_CurrentScene != -2) {
+				Scene_SetNextScene(SCENE_MAIN);
+			}
+			else {
+				s_CurrentScene = 0;
+				Scene_SetNextScene(SCENE_TITLE);
+			}
 		}
 	}
+
+	//암전 효과 적용
 	Image_SetAlphaValue(&data->BlackOutImage, data->BlackOutAlpha);
 }
 
@@ -772,24 +935,20 @@ void render_main(void)
 	//Renderer_DrawImage(&TextBGImage, 30, 30);
 
 	//텍스트 출력
-	int32 i = 0;
-	while (ShowText[i].Length != 0) {
-		Renderer_DrawTextSolid(&ShowText[i], 400, 300 + i * 80, color);
-		i++;
+	if (ShowText != NULL && !isBGChanged) {
+		int32 i = 0;
+		while (ShowText[i].Length != 0) {
+			Renderer_DrawTextSolid(&ShowText[i], 250, 830 + i * 40, TextColor);
+			i++;
+		}
 	}
 
 	//선택지 출력
 	if (showOptions) {
-		if (data->Scene->OptionCount > 2) {
-			for (int i = 0; i < data->Scene->OptionCount; i++) {
-				Renderer_DrawImage(&data->Scene->OptionImagesList[i], 250 + i % 2 * 700, 600 + (i / 2) * 200);
-			}
+		for (int32 i = 0; i < data->Scene->OptionCount;i++) {
+			Renderer_DrawTextSolid(&data->Scene->OptionList[i], 250, 895 + i * 40, data->OptionColors[i]);
 		}
-		else {
-			for (int i = 0; i < data->Scene->OptionCount; i++) {
-				Renderer_DrawImage(&data->Scene->OptionImagesList[i], 250 + i % 2 * 700, 700 + (i / 2) * 200);
-			}
-		}
+		Renderer_DrawImage(&OptionPointImage, 210, 895 + data->CurrentOptionNumber * 40);
 	}
 
 	//페이드 인 페이드 아웃 효과를 위한 검은색 배경
@@ -799,6 +958,11 @@ void render_main(void)
 void release_main(void)
 {
 	MainScene* data = (MainScene*)g_Scene.Data;
+
+	Image_FreeImage(&data->BlackOutImage);
+	Text_FreeText(&NullText);
+	Image_FreeImage(&OptionPointImage);
+	ShowText = 0;
 
 	SafeFree(g_Scene.Data);
 }
@@ -860,12 +1024,6 @@ void Scene_Change(void)
 		g_Scene.Render = render_main;
 		g_Scene.Release = release_main;
 		break;
-		//case SCENE_TEMP:
-		//	g_Scene.Init = init_temp;
-		//	g_Scene.Update = update_temp;
-		//	g_Scene.Render = render_temp;
-		//	g_Scene.Release = release_temp;
-		//	break;
 	}
 
 	g_Scene.Init();
