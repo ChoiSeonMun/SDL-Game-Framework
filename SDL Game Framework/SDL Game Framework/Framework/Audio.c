@@ -149,7 +149,7 @@ void Audio_SetEffectVolume(SoundEffect* soundEffect, float volume)
 	soundEffect->Volume = Clamp(0.0f, volume, 1.0f);
 
 	int32 realVolume = 0 + soundEffect->Volume * MIX_MAX_VOLUME;
-	Mix_VolumeChunk(soundEffect->Chunk, soundEffect->Volume);
+	Mix_VolumeChunk(soundEffect->Chunk, realVolume);
 }
 
 void Audio_PlaySoundEffect(const SoundEffect* soundEffect, int32 loops)
