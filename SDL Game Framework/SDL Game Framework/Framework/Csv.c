@@ -11,20 +11,6 @@
 static char* s_Buffer;
 static char* s_BufferPointer;
 
-void Eliminate(char* str, char ch)
-{
-    int len = strlen(str) + 1;
-    for (; *str != '\0'; str++, len--)//종료 문자를 만날 때까지 반복
-    {
-        if (*str == ch)//ch와 같은 문자일 때
-        {
-            strcpy_s(str, len, str + 1);
-            str--;
-        }
-    }
-}
-
-
 void readFileToBuffer(const char* filename)
 {
     FILE* fp;
@@ -168,23 +154,6 @@ char* ParseToAscii(const CsvItem item)
     {
         memcpy(result, item.RawData, size);
     }
-    Eliminate(test, '#');
-    result = test;
-
-
-    //if (item.RawData[0] == '\"' && item.RawData[1] == '\"' && item.RawData[size - 1] == '\"' && item.RawData[size - 2] == '\"') {
-    //   memcpy(result, &item.RawData[2], size - 4); //0 1생략
-    //}
-    //else
-
-    //if (item.RawData[0] == '\"' && item.RawData[size - 1] == '\"')
-    //{
-    //   memcpy(result, &item.RawData[1], size - 2); // \"\"
-    //}
-    //else
-    //{
-    //   memcpy(result, item.RawData, size);
-    //}
     return result;
 }
 
