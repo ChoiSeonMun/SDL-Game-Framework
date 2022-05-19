@@ -46,6 +46,15 @@
     <ClCompile Include="Framework\Csv.c">
       <Filter>Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Page.c">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Option.c">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\PageManager.c">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -84,6 +93,18 @@
     </ClInclude>
     <ClInclude Include="Framework\Csv.h">
       <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Page.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Option.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\PageIndex.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\PageManager.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

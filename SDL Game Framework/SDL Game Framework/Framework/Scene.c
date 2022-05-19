@@ -2,6 +2,7 @@
 #include "Scene.h"
 
 #include "Framework.h"
+#include "Framework/Csv.h"
 
 Scene g_Scene;
 
@@ -349,6 +350,50 @@ void release_main(void)
 }
 #pragma endregion
 
+#pragma region PageScene
+
+#include "Game/PageManager.h"
+
+typedef struct PageSceneData
+{
+	PageManager PageManager;
+} PageSceneData;
+
+void init_page(void)
+{
+	g_Scene.Data = malloc(sizeof(PageSceneData));
+	
+	PageSceneData* data = (PageSceneData*)g_Scene.Data;
+	memset(data, 0, sizeof(PageSceneData));
+
+	PageManager_Init(&data->PageManager);
+}
+
+void update_page(void)
+{
+	PageSceneData* data = (PageSceneData*)g_Scene.Data;
+
+	PageManager_Update(&data->PageManager);
+}
+
+void render_page(void)
+{
+	PageSceneData* data = (PageSceneData*)g_Scene.Data;
+
+	PageManager_Render(&data->PageManager);
+}
+
+void release_page(void)
+{
+	PageSceneData* data = (PageSceneData*)g_Scene.Data;
+
+	PageManager_Release(&data->PageManager);
+
+	SafeFree(g_Scene.Data);
+}
+
+#pragma endregion
+
 bool Scene_IsSetNextScene(void)
 {
 	if (SCENE_NULL == s_nextScene)
@@ -391,6 +436,12 @@ void Scene_Change(void)
 		g_Scene.Update = update_main;
 		g_Scene.Render = render_main;
 		g_Scene.Release = release_main;
+		break;
+	case SCENE_PAGE:
+		g_Scene.Init = init_page;
+		g_Scene.Update = update_page;
+		g_Scene.Render = render_page;
+		g_Scene.Release = release_page;
 		break;
 	}
 
