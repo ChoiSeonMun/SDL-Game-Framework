@@ -28,7 +28,6 @@ struct Parsing_Data {
     int16   CHOOSE_3_NEXT_SCENE;
     wchar_t CHOOSE_3_TEXT[128];
 
-    wchar_t MULTI_TEXT[20][100];
 };
 
 //
