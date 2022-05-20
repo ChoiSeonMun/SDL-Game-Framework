@@ -1,5 +1,9 @@
 페이지 ID,배경 이미지,배경 음악,선택지1,선택지1 페이지 ID,선택지1 폰트,선택지1 폰트 크기,선택지2,선택지2 페이지 ID,선택지1 폰트,선택지1 폰트 크기
-1,background.jpg,powerful.mp3,퇴근한다.,2,GmarketSansTTFLight.ttf,32,자습한다.,3,GmarketSansTTFLight.ttf,32
+1,background.jpg,powerful.mp3,"퇴근한다.
+헿 집에 갈랭.
+헿 집에 갈랭.
+헿 집에 갈랭.
+헿 집에 갈랭.",2,GmarketSansTTFLight.ttf,32,자습한다.,3,GmarketSansTTFLight.ttf,32
 2,background.jpg,powerful.mp3,퇴근한다.,3,GmarketSansTTFLight.ttf,32,자습한다.,4,GmarketSansTTFLight.ttf,32
 3,background.jpg,powerful.mp3,퇴근한다.,4,GmarketSansTTFLight.ttf,32,자습한다.,5,GmarketSansTTFLight.ttf,32
 4,background.jpg,powerful.mp3,퇴근한다.,5,GmarketSansTTFLight.ttf,32,자습한다.,6,GmarketSansTTFLight.ttf,32

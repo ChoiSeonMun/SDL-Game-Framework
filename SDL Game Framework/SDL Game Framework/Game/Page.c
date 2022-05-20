@@ -71,13 +71,37 @@ void Page_Release(Page* page)
 
 void Page_SetOption(Page* page, int32 optionIndex, const CsvItem* csvRow, int32 startColumn)
 {
+	memset(&page->Options[optionIndex], 0, sizeof(Option));
+
 	const wchar_t* text = ParseToUnicode(csvRow[startColumn]);
-	int32 len = wcslen(text);
 	int32 nextPageIndex = ParseToInt(csvRow[startColumn + 1]);
 	const char* font = ParseToAscii(csvRow[startColumn + 2]);
 	int32 fontSize = ParseToInt(csvRow[startColumn + 3]);
 
-	Text_CreateText(&page->Options[optionIndex].Text, font, fontSize, text, len);
+	const wchar_t* lineStart = text;
+	for (int32 line = 0; line < TEXT_MAX_LINE; ++line)
+	{
+		const wchar_t* lineEnd = lineStart;
+		while (true)
+		{
+			if (L'\n' == *lineEnd || L'\0' == *lineEnd)
+			{
+				break;
+			}
+
+			++lineEnd;
+		}
+
+		int32 lineLength = lineEnd - lineStart;
+		Text_CreateText(&page->Options[optionIndex].Text[line], font, fontSize, lineStart, lineLength);
+
+		if (L'\0' == *lineEnd)
+		{
+			break;
+		}
+
+		lineStart = lineEnd + 1;
+	}
 	page->Options[optionIndex].NextPage = nextPageIndex;
 
 	SafeFree(text);

@@ -2,12 +2,13 @@
 
 #include "Framework.h"
 #include "PageIndex.h"
+#include "Config.h"
 
 typedef struct Option
 {
 	int32		PosX;
 	int32		PosY;
-	Text		Text;
+	Text		Text[TEXT_MAX_LINE];
 	EPageIndex	NextPage;
 	SDL_Color	Color;
 } Option;

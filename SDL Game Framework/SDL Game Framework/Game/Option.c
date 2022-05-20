@@ -13,10 +13,19 @@ void Option_Update(Option* option)
 
 void Option_Render(Option* option)
 {
-	Renderer_DrawTextBlended(&option->Text, option->PosX, option->PosY, option->Color);
+	for (int32 i = 0; i < TEXT_MAX_LINE; ++i)
+	{
+		Renderer_DrawTextBlended(&option->Text[i],
+			option->PosX,
+			option->PosY + i * SPACE_BETWEEN_LINES,
+			option->Color);
+	}
 }
 
 void Option_Release(Option* option)
 {
-	Text_FreeText(&option->Text);
+	for (int32 i = 0; i < TEXT_MAX_LINE; ++i)
+	{
+		Text_FreeText(&option->Text[i]);
+	}
 }

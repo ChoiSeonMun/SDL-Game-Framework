@@ -133,6 +133,7 @@ char* ParseToAscii(const CsvItem item)
 	int32 size = strlen(item.RawData);
 	char* result = malloc(size + 1);
 	memset(result, 0, size + 1);
+	
 	if (item.RawData[0] == '"' && item.RawData[size - 1] == '"')
 	{
 		memcpy(result, &item.RawData[1], size - 2);
