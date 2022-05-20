@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "csv.h"
 
+#define DELIMETER	'|'
+
 static byte* s_Buffer;
 static byte* s_BufferPointer;
 static char s_Path[MAX_PATH];
@@ -32,7 +34,7 @@ int32 countCategory(const char* firstLine)
 	int32 result = 1;
 	while (*firstLine != '\n')
 	{
-		if (*firstLine == ',')
+		if (*firstLine == DELIMETER)
 		{
 			++result;
 		}
@@ -68,7 +70,7 @@ void CreateCsvFile(CsvFile* csvFile, const char* filename)
 				break;
 			}
 
-			if (',' == *lineEnd)
+			if (DELIMETER == *lineEnd)
 			{
 				++commaCount;
 			}
@@ -80,7 +82,7 @@ void CreateCsvFile(CsvFile* csvFile, const char* filename)
 		const char* recordEnd = recordStart;
 		for (int32 i = 0; i < csvFile->ColumnCount; ++i)
 		{
-			while (*recordEnd != ',' && recordEnd != lineEnd)
+			while (*recordEnd != DELIMETER && recordEnd != lineEnd)
 			{
 				++recordEnd;
 			}
